@@ -1,0 +1,122 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "An API for processing an appeal against a late filing penalty (LFP)",
+    "version": "1.0.0",
+    "title": "Companies House LFP Appeals API"
+  },
+  "host": "api.companieshouse.gov.uk",
+  "basePath": "/company/{companyNumber}/penalties/late-filing/appeals",
+  "schemes": [
+    "https"
+  ],
+  "tags": [
+    {
+      "name": "Appeals"
+    },
+    {
+      "name": "Reasons"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Penalty Transactions",
+            "schema": {
+              "$ref": "#/definitions/TransactionReferences"
+            }
+          }
+        ],
+        "tags": [
+          "Appeals"
+        ],
+        "summary": "Create a new appeal",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Create's a new LFP appeal resource"
+          }
+        }
+      }
+    },
+    "/{requestId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "requestId",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get the appeal resource",
+        "tags": [
+          "Appeals"
+        ]
+      }
+    },
+    "/{requestId}/reasons": {
+      "parameters":[
+        {
+          "in": "path",
+          "name": "requestId",
+          "type": "string",
+          "required": true
+        } 
+      ],
+      "post": {
+        "summary": "Add a reason for the appeal",
+        "parameters": [
+          {
+            "in": "body",
+            "schema": {
+              "$ref":"#/definitions/AppealReason"
+            }
+          }
+        ],
+        "tags": [
+          "Reasons"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "TransactionReferences": {
+      "description": "A list of penalty transactions",
+      "type": "object",
+      "properties": {
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "AppealReason": {
+      "description": "A reason the user would like an appeal",
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "start_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "end_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "affected_person": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
