@@ -19,17 +19,17 @@
     }
   ],
   "paths": {
-    "/": {
+    "/{penaltyReference}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "penaltyReference",
+          "required": true,
+          "type": "string",
+          "description": "The LFP reference number"
+        }
+      ],
       "post": {
-        "parameters": [
-          {
-            "in": "body",
-            "name": "Penalty Transactions",
-            "schema": {
-              "$ref": "#/definitions/TransactionReferences"
-            }
-          }
-        ],
         "tags": [
           "Appeals"
         ],
@@ -39,66 +39,219 @@
         ],
         "responses": {
           "201": {
-            "description": "Create's a new LFP appeal resource"
+            "description": "A new appeal resource has been created"
+          },
+          "404": {
+            "description": "A penalty does not exist for the reference number"
           }
         }
-      }
-    },
-    "/{requestId}": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "requestId",
-          "type": "string",
-          "required": true
-        }
-      ],
+      },
       "get": {
         "summary": "Get the appeal resource",
         "tags": [
           "Appeals"
-        ]
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "The appeal resource",
+            "schema": {
+              "$ref": "#/definitions/AppealResource"
+            }
+          },
+          "404": {
+            "description": "There is no appeal for this penalty"
+          }
+        }
       }
     },
-    "/{requestId}/reasons": {
-      "parameters":[
+    "/{penaltyReference}/reasons": {
+      "parameters": [
         {
           "in": "path",
-          "name": "requestId",
+          "name": "penaltyReference",
           "type": "string",
           "required": true
-        } 
+        }
       ],
       "post": {
         "summary": "Add a reason for the appeal",
         "parameters": [
           {
             "in": "body",
+            "name": "Appeal reason",
             "schema": {
-              "$ref":"#/definitions/AppealReason"
+              "$ref": "#/definitions/AppealReasonInput"
             }
           }
         ],
         "tags": [
           "Reasons"
-        ]
-      }
-    }
-  },
-  "definitions": {
-    "TransactionReferences": {
-      "description": "A list of penalty transactions",
-      "type": "object",
-      "properties": {
-        "references": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        ],
+        "responses": {
+          "201": {
+            "description": "A reason has been added for this appeal",
+            "schema": {
+              "$ref": "#/definitions/Reason"
+            }
           }
         }
       }
     },
-    "AppealReason": {
+    "/{penaltyReference}/reasons/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "penaltyReference",
+          "type": "string",
+          "required": true,
+          "description": "The penalty reference"
+        },
+        {
+          "in": "path",
+          "name": "id",
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "description": "The unique identifier for the reason"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Reasons"
+        ],
+        "summary": "Delete a reason for the appeal",
+        "responses": {
+          "200": {
+            "description": "The reason has been deleted along with any attachments"
+          },
+          "404": {
+            "description": "The reason does not exist for this appeal"
+          }
+        }
+      },
+      "patch": {
+        "tags":[
+          "Reasons"
+        ],
+        "summary": "Update the reason for this appeal",
+        "parameters":[
+          {
+            "in": "body",
+            "name": "Appeal reason",
+            "required": true,
+            "schema": {
+              "$ref":"#/definitions/AppealReasonInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The reason has been updated"
+          },
+          "404": {
+            "description": "The reason does not exist for this appeal"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AppealResource": {
+      "description": "The full resource of for the appeal",
+      "type": "object",
+      "properties": {
+        "etag": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["open", "submitted"]
+        },
+        "created_on": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "$ref": "#/definitions/CreatedBy"
+        },
+        "penalty": {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "type": "string"
+            },
+            "made_up_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "penalty_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "amount": {
+              "type": "number",
+              "format": "float",
+              "example": 150
+            },
+            "costs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TransactionItem"
+              }
+            }
+          }
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reason"
+          }
+        }
+      }
+    },
+    "Attachment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "links": {
+          "type": "object",
+          "properties": {
+            "download": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
+        }
+      }
+    },
+    "CreatedBy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "forename": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
+      }
+    },
+    "AppealReasonInput": {
       "description": "A reason the user would like an appeal",
       "type": "object",
       "properties": {
@@ -109,12 +262,73 @@
           "type": "string",
           "format": "date"
         },
-        "end_on": {
+        "ended_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "affected_person": {
+          "type": "string",
+          "example": "director"
+        },
+        "continued_illness": {
+          "type": "boolean"
+        },
+        "additional_information": {
+          "type": "string",
+          "example": "I was really, really ill!"
+        }
+      }
+    },
+    "Reason": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "start_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "ended_on": {
           "type": "string",
           "format": "date"
         },
         "affected_person": {
           "type": "string"
+        },
+        "additional_information": {
+          "type": "string"
+        },
+        "continued_illness": {
+          "type": "boolean"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Attachment"
+          }
+        }
+      }
+    },
+    "TransactionItem": {
+      "description": "A single transaction item from the finance system",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "example": "court"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "example": 25
         }
       }
     }
