@@ -16,6 +16,9 @@
     },
     {
       "name": "Reasons"
+    },
+    {
+      "name": "Attachments"
     }
   ],
   "paths": {
@@ -42,7 +45,10 @@
             "description": "A new appeal resource has been created"
           },
           "404": {
-            "description": "A penalty does not exist for the reference number"
+            "description": "A penalty does not exist for the reference number",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       },
@@ -62,7 +68,10 @@
             }
           },
           "404": {
-            "description": "There is no appeal for this penalty"
+            "description": "There is no appeal for this penalty",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -96,6 +105,12 @@
             "schema": {
               "$ref": "#/definitions/Reason"
             }
+          },
+          "400": {
+            "description": "there was an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -128,22 +143,25 @@
             "description": "The reason has been deleted along with any attachments"
           },
           "404": {
-            "description": "The reason does not exist for this appeal"
+            "description": "The reason does not exist for this appeal",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       },
       "patch": {
-        "tags":[
+        "tags": [
           "Reasons"
         ],
         "summary": "Update the reason for this appeal",
-        "parameters":[
+        "parameters": [
           {
             "in": "body",
             "name": "Appeal reason",
             "required": true,
             "schema": {
-              "$ref":"#/definitions/AppealReasonInput"
+              "$ref": "#/definitions/AppealReasonInput"
             }
           }
         ],
@@ -152,7 +170,111 @@
             "description": "The reason has been updated"
           },
           "404": {
-            "description": "The reason does not exist for this appeal"
+            "description": "The reason does not exist for this appeal",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/{penaltyReference}/reasons/{id}/attachments": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "penaltyReference",
+          "type": "string",
+          "required": true,
+          "description": "The penalty reference"
+        },
+        {
+          "in": "path",
+          "name": "id",
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "description": "The unique identifier for the reason"
+        }
+      ],
+      "post": {
+        "tags": [
+          "Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "file",
+            "type": "file",
+            "description": "the file content",
+            "required": true
+          }
+        ],
+        "summary": "upload an attachment for the appeal reason",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "responses": {
+          "202": {
+            "description": "the file was accepted and is being scanned for viruses",
+            "schema": {
+              "$ref": "#/definitions/Attachment"
+            }
+          },
+          "400": {
+            "description": "there was an error processing the request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "the appeal reason does not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/{penaltyReference}/reasons/{id}/attachments/{attachmentId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "penaltyReference",
+          "type": "string",
+          "required": true,
+          "description": "The penalty reference"
+        },
+        {
+          "in": "path",
+          "name": "id",
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "description": "The unique identifier for the reason"
+        },
+        {
+          "in": "path",
+          "name": "attachmentId",
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "description": "The unique identifier for the attachment"
+        }
+      ],
+      "delete": {
+        "summary": "delete an attachment",
+        "tags": [
+          "Attachments"
+        ],
+        "responses": {
+          "200": {
+            "description": "the attachment was deleted"
+          },
+          "404": {
+            "description": "The attachment does not exist",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
           }
         }
       }
@@ -168,7 +290,10 @@
         },
         "status": {
           "type": "string",
-          "enum": ["open", "submitted"]
+          "enum": [
+            "open",
+            "submitted"
+          ]
         },
         "created_on": {
           "type": "string",
@@ -248,6 +373,15 @@
         "email": {
           "type": "string",
           "format": "email"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "error description"
         }
       }
     },
