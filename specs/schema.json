@@ -6,7 +6,7 @@
     "title": "Companies House LFP Appeals API"
   },
   "host": "api.companieshouse.gov.uk",
-  "basePath": "/company/{companyNumber}/penalties/late-filing/appeals",
+  "basePath": "/company/{companyNumber}/penalties/late-filing",
   "schemes": [
     "https"
   ],
@@ -22,7 +22,7 @@
     }
   ],
   "paths": {
-    "/{penaltyReference}": {
+    "/{penaltyReference}/appeals": {
       "parameters": [
         {
           "in": "path",
@@ -76,7 +76,7 @@
         }
       }
     },
-    "/{penaltyReference}/reasons": {
+    "/{penaltyReference}/appeals/reasons": {
       "parameters": [
         {
           "in": "path",
@@ -115,7 +115,7 @@
         }
       }
     },
-    "/{penaltyReference}/reasons/{id}": {
+    "/{penaltyReference}/appeals/reasons/{id}": {
       "parameters": [
         {
           "in": "path",
@@ -178,7 +178,7 @@
         }
       }
     },
-    "/{penaltyReference}/reasons/{id}/attachments": {
+    "/{penaltyReference}/appeals/reasons/{id}/attachments": {
       "parameters": [
         {
           "in": "path",
@@ -235,7 +235,7 @@
         }
       }
     },
-    "/{penaltyReference}/reasons/{id}/attachments/{attachmentId}": {
+    "/{penaltyReference}/appeals/reasons/{id}/attachments/{attachmentId}": {
       "parameters": [
         {
           "in": "path",
