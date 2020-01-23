@@ -14,9 +14,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.BDDAssertions.then;
 
-/**
- * Basic integration tests
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppealApplicationTests {
