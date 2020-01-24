@@ -9,6 +9,7 @@
 ## How to run
 
 ### Run as a Spring Boot application
+
 `mvn clean install spring-boot:run`
 
 ## Useful Endpoints
