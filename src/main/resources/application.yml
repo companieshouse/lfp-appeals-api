@@ -1,2 +1,14 @@
 server:
   port: 9000
+
+---
+spring:
+  profiles: local
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: local
+#      authentication-database:
+#      username:
+#      password:
