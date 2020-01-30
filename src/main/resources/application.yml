@@ -9,6 +9,3 @@ spring:
       host: localhost
       port: 27017
       database: local
-#      authentication-database:
-#      username:
-#      password:
