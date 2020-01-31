@@ -8,9 +8,22 @@
 
 ## How to run
 
-### Run as a Spring Boot application
+**To run locally, this application is currently dependent on a local instance of MongoDB to be running at localhost:27017**
 
-`mvn clean install spring-boot:run`
+### Run MongoDB
+           
+1. Deploy an instance of MongoDB in a docker container: 
+
+`docker run -p 27017:27017 --name mongodb -d mongo:3.6`
+
+### Run Spring boot
+
+1. `mvn clean install spring-boot:run`
+
+2. Navigate to the running app in a browser: 
+
+`http://localhost:9000`
+
 
 ## Useful Endpoints
 
