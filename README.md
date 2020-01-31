@@ -8,16 +8,30 @@
 
 ## How to run
 
-### Run as a Spring Boot application
+**To run locally, this application is currently dependent on a local instance of MongoDB to be running at localhost:27017**
 
-Using local profile:
-`mvn clean install spring-boot:run -Dspring.profiles.active=local`
+### Run MongoDB
+           
+1. Install mongo using Homebrew:
+    
+`brew install mongodb-community@3.6`
+    
+2. Run mongoDB:
+    
+`mongod`
+    
+3. (optional) Start the mongo shell, default port is 27017:
+    
+`mongo`
 
-### Run with MongoDB
+### Run Spring boot
 
-This application uses MongoDB as it's datastore, to run MongoDB:
+1. `mvn clean install spring-boot:run`
 
-1. Deploy an instance of MongoDB in a docker container `docker run -p 27017:27017 --name mongodb -d mongo:3.6` 
+2. Navigate to the running app in a browser: 
+
+`http://localhost:9000`
+
 
 ## Useful Endpoints
 
