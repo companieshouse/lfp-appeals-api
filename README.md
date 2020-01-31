@@ -12,17 +12,9 @@
 
 ### Run MongoDB
            
-1. Install mongo using Homebrew:
-    
-`brew install mongodb-community@3.6`
-    
-2. Run mongoDB:
-    
-`mongod`
-    
-3. (optional) Start the mongo shell, default port is 27017:
-    
-`mongo`
+1. Deploy an instance of MongoDB in a docker container: 
+
+`docker run -p 27017:27017 --name mongodb -d mongo:3.6`
 
 ### Run Spring boot
 
