@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.spring.boot>2.2.4.RELEASE</version.spring.boot>
         <version.lombok>1.18.12</version.lombok>
-        <version.springdoc.openapi>1.2.30</version.springdoc.openapi>
+        <version.springdoc.openapi>1.2.31</version.springdoc.openapi>
     </properties>
 
 
