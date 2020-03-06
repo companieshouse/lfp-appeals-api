@@ -1,0 +1,76 @@
+openapi: 3.0.1
+info:
+  title: Companies House LFP Appeals API
+  description: An API for processing an appeal against a late filing penalty (LFP)
+  version: 1.0.0
+servers:
+  - url: localhost:9000
+  - url: api.companieshouse.gov.uk
+tags:
+  - name: Appeal
+paths:
+  /appeals:
+    post:
+      tags:
+        - Appeal
+      summary: Create a new appeal
+      operationId: createAppeal
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Appeal'
+        required: true
+      responses:
+        '201':
+          description: 'A new appeal resource has been created'
+        '422':
+          description: 'Invalid appeal data'
+        '500':
+          description: 'Internal server error'
+components:
+  schemas:
+    Appeal:
+      required:
+        - penaltyIdentifier
+        - reason
+      type: object
+      properties:
+        penaltyIdentifier:
+          $ref: '#/components/schemas/PenaltyIdentifier'
+        reason:
+          $ref: '#/components/schemas/Reason'
+    PenaltyIdentifier:
+      required:
+        - companyNumber
+        - penaltyReference
+      type: object
+      properties:
+        companyNumber:
+          type: string
+          description: The company number
+          example: '12345678'
+        penaltyReference:
+          type: string
+          description: The penalty reference
+          example: 'A1235678'
+    Reason:
+      description: The reason for this appeal
+      required:
+        - other
+      type: object
+      properties:
+        other:
+          $ref: '#/components/schemas/OtherReason'
+    OtherReason:
+      required:
+        - title
+        - description
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Reason title'
+        description:
+          type: string
+          example: 'Reason description'

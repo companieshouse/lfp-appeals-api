@@ -16,6 +16,14 @@
 
 `docker run -p 27017:27017 --name mongodb -d mongo:3.6`
 
+2. Access the bash shell inside the mongo container:
+
+`docker exec -it mongodb bash`
+
+3. Start mongo:
+
+`mongo`
+
 ### Run Spring boot
 
 1. `mvn clean install spring-boot:run`

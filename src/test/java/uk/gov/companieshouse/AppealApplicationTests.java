@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = AppealApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AppealApplicationTests {
 
     @LocalServerPort
@@ -26,11 +26,9 @@ public class AppealApplicationTests {
 
     @Test
     public void shouldReturn200WhenSendingRequestToManagementEndpoint() {
-        @SuppressWarnings("rawtypes")
         ResponseEntity<Map> entity = this.testRestTemplate.getForEntity(
             "http://localhost:" + this.port + "/actuator/info", Map.class);
 
         then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-
 }

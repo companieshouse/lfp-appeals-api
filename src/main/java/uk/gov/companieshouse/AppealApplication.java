@@ -5,10 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @EnableMongoRepositories
-@SpringBootApplication
+@SpringBootApplication()
 public class AppealApplication {
 
     public static void main (String[] args) {
         SpringApplication.run(AppealApplication.class, args);
     }
+
 }
