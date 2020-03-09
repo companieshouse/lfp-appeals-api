@@ -9,12 +9,17 @@ servers:
 tags:
   - name: Appeal
 paths:
-  /appeals:
+  /companies/{company-id}/appeals:
     post:
       tags:
         - Appeal
       summary: Create a new appeal
       operationId: createAppeal
+      parameters:
+        - name: company-id
+          in: path
+          required: true
+          description: Company id
       requestBody:
         content:
           'application/json':

@@ -19,7 +19,7 @@ public class Appeal {
     private String _id;
 
     @JsonIgnore
-    private final LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     @JsonIgnore
     private String userId;
