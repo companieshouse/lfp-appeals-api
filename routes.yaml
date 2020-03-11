@@ -1,0 +1,5 @@
+app_name: lfp-appeals-api
+group: api 
+weight: 900
+routes:
+  1: ^/companies/(.*)/appeals/.*
