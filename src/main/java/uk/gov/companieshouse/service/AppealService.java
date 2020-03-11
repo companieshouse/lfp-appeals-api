@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.util.Optional;
@@ -16,9 +17,9 @@ public class AppealService {
 
     private final AppealRepository appealRepository;
 
-    public String createAppeal(String userId, String companyId, Appeal appeal) throws ServiceException {
+    public String createAppeal(String companyId, Appeal appeal, CreatedBy createdBy) throws Exception {
 
-        appeal.setUserId(userId);
+        appeal.setCreatedBy(createdBy);
         appeal.setCreatedAt(LocalDateTime.now());
 
         Appeal savedAppeal = appealRepository.insert(appeal);
@@ -26,8 +27,7 @@ public class AppealService {
         return Optional.ofNullable(savedAppeal)
             .map(Appeal::get_id)
             .orElseThrow(() ->
-                new ServiceException(String.format("Appeal not saved in database for user id %s and company id %s",
-                    userId, companyId)));
+                new Exception(String.format("Appeal not saved in database for company id %s", companyId)));
     }
 
 }

@@ -14,12 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.service.ServiceException;
+import uk.gov.companieshouse.util.EricHeaderParser;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,8 +35,8 @@ public class AppealControllerTestIT {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
 
-    private static final String RESOURCE_ID_HEADER = "resource_id";
-    private static final String USER_ID_HEADER = "Eric-identity";
+    private static final String IDENTITY_HEADER = "ERIC-identity";
+    private static final String AUTHORISED_USER_HEADER = "ERIC-Authorised-User";
 
     private static final String TEST_USER_ID = "1234";
     private static final String TEST_COMPANY_ID = "12345678";
@@ -48,6 +49,9 @@ public class AppealControllerTestIT {
     private AppealService appealService;
 
     @MockBean
+    private EricHeaderParser ericHeaderParser;
+
+    @MockBean
     private AppealRepository appealRepository;
 
     @Rule
@@ -57,9 +61,11 @@ public class AppealControllerTestIT {
     private MockMvc mockMvc;
 
     @Before
-    public void setUp() throws ServiceException {
+    public void setUp() throws Exception {
 
-        when(appealService.createAppeal(any(String.class), any(String.class), any(Appeal.class)))
+        when(ericHeaderParser.retrieveUser(any(String.class), any(String.class))).thenReturn(new CreatedBy());
+
+        when(appealService.createAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
             .thenReturn(TEST_RESOURCE_ID);
     }
 
@@ -73,19 +79,59 @@ public class AppealControllerTestIT {
             .headers(createHttpHeaders())
             .content(appealAsJson))
             .andExpect(status().isCreated())
-            .andExpect(header().string(RESOURCE_ID_HEADER, TEST_RESOURCE_ID));
+            .andExpect(header().string(HttpHeaders.LOCATION, TEST_RESOURCE_ID));
     }
 
     @Test
-    public void whenNullHeader_return400() throws Exception {
+    public void whenNullEricIdentityHeader_return400() throws Exception {
 
         String appealAsJson = asJsonString(validAppeal());
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header(AUTHORISED_USER_HEADER, TEST_USER_ID)
             .content(appealAsJson))
             .andExpect(status().isBadRequest())
-            .andExpect(status().reason("Missing request header 'Eric-identity' for method parameter of type String"));
+            .andExpect(status().reason("Missing request header 'ERIC-identity' for method parameter of type String"));
+    }
+
+    @Test
+    public void whenNullEricAuthorisedUserHeader_return400() throws Exception {
+
+        String appealAsJson = asJsonString(validAppeal());
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header(IDENTITY_HEADER, TEST_USER_ID)
+            .content(appealAsJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(status().reason("Missing request header 'ERIC-Authorised-User' for method parameter of type String"));
+    }
+
+    @Test
+    public void whenBlankEricIdentityHeader_return401() throws Exception {
+
+        String appealAsJson = asJsonString(validAppeal());
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header(AUTHORISED_USER_HEADER, TEST_USER_ID)
+            .header(IDENTITY_HEADER, "")
+            .content(appealAsJson))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void whenBlankEricAuthorisedUserHeader_return401() throws Exception {
+
+        String appealAsJson = asJsonString(validAppeal());
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .header(IDENTITY_HEADER, TEST_USER_ID)
+            .header(AUTHORISED_USER_HEADER, "")
+            .content(appealAsJson))
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -116,8 +162,8 @@ public class AppealControllerTestIT {
     @Test
     public void whenExceptionFromService_return500() throws Exception {
 
-        when(appealService.createAppeal(any(String.class), any(String.class), any(Appeal.class)))
-            .thenThrow(ServiceException.class);
+        when(appealService.createAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
+            .thenThrow(Exception.class);
 
         String appealAsJson = asJsonString(validAppeal());
 
@@ -125,8 +171,7 @@ public class AppealControllerTestIT {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .headers(createHttpHeaders())
             .content(appealAsJson))
-            .andExpect(status().isInternalServerError())
-            .andExpect(header().doesNotExist(USER_ID_HEADER));
+            .andExpect(status().isInternalServerError());
     }
 
     private Appeal validAppeal() {
@@ -159,7 +204,8 @@ public class AppealControllerTestIT {
 
     private HttpHeaders createHttpHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(USER_ID_HEADER, TEST_USER_ID);
+        httpHeaders.add(IDENTITY_HEADER, TEST_USER_ID);
+        httpHeaders.add(AUTHORISED_USER_HEADER, TEST_USER_ID);
         return httpHeaders;
     }
 }

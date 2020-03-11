@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.service.ServiceException;
+import uk.gov.companieshouse.util.EricHeaderParser;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -32,8 +35,8 @@ import java.util.Map;
 @RequestMapping("/companies")
 public class AppealController {
 
-    public static final String RESOURCE_ID_HEADER = "resource_id";
     public final AppealService appealService;
+    public final EricHeaderParser ericHeaderParser;
 
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {
@@ -42,23 +45,37 @@ public class AppealController {
         @ApiResponse(responseCode = "422", description = "Invalid appeal data")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> submitAppeal(@RequestHeader("Eric-identity") final String userId,
+    public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
+                                               @RequestHeader("ERIC-Authorised-User") String ericAuthorisedUser,
                                                @PathVariable("company-id") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
 
         log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
-            companyId, userId, Json.pretty(appeal));
+            companyId, ericIdentity, Json.pretty(appeal));
+
+        if (StringUtils.isBlank(ericIdentity) || StringUtils.isBlank(ericAuthorisedUser)) {
+
+            log.error("Authorisation missing");
+
+            return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .build();
+        }
+
+        CreatedBy createdBy = ericHeaderParser.retrieveUser(ericIdentity, ericAuthorisedUser);
+
+        log.info("created by {}", Json.pretty(createdBy));
 
         try {
 
-            String resourceId = appealService.createAppeal(userId, companyId, appeal);
+            String id = appealService.createAppeal(companyId, appeal, createdBy);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(RESOURCE_ID_HEADER, resourceId)
+                .header(HttpHeaders.LOCATION, id)
                 .build();
 
-        } catch (ServiceException e) {
+        } catch (Exception e) {
 
             log.error("Unable to create appeal", e);
             return ResponseEntity

@@ -22,7 +22,7 @@ public class Appeal {
     private LocalDateTime createdAt;
 
     @JsonIgnore
-    private String userId;
+    private CreatedBy createdBy;
 
     @Valid
     @NotNull(message = "penaltyIdentifier must not be null")

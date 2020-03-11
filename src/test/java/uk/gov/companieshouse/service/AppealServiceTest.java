@@ -14,22 +14,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.OtherReason;
-import uk.gov.companieshouse.model.PenaltyIdentifier;
-import uk.gov.companieshouse.model.Reason;
+import uk.gov.companieshouse.model.*;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppealServiceTest {
 
-    private static final String TEST_USER_ID = "1234";
     private static final String TEST_COMPANY_ID = "12345678";
     private static final String TEST_RESOURCE_ID = "555";
     private static final String TEST_PENALTY_REFERENCE = "A12345678";
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
-
 
     @InjectMocks
     private AppealService appealService;
@@ -41,16 +36,16 @@ public class AppealServiceTest {
     public final ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void testCreateAppeal_returnsResourceId() throws ServiceException {
+    public void testCreateAppeal_returnsResourceId() throws Exception {
 
         Appeal appeal = createAppeal();
 
         Appeal persistedAppeal = createAppeal();
-        persistedAppeal.setUserId(TEST_USER_ID);
+        persistedAppeal.setCreatedBy(new CreatedBy());
         persistedAppeal.set_id(TEST_RESOURCE_ID);
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
-        String resourceId = appealService.createAppeal(TEST_USER_ID, TEST_COMPANY_ID, appeal);
+        String resourceId = appealService.createAppeal(TEST_COMPANY_ID, appeal, new CreatedBy());
 
         assertThat(resourceId, is(notNullValue()));
         assertThat(resourceId, is(TEST_RESOURCE_ID));
@@ -58,30 +53,30 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() throws ServiceException {
+    public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() throws Exception {
 
         Appeal persistedAppeal = createAppeal();
-        persistedAppeal.setUserId(TEST_USER_ID);
+        persistedAppeal.setCreatedBy(new CreatedBy());
         persistedAppeal.set_id(null);
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
-        exception.expect(ServiceException.class);
-        exception.expectMessage("Appeal not saved in database for user id 1234 and company id 12345678");
+        exception.expect(Exception.class);
+        exception.expectMessage("Appeal not saved in database for company id 12345678");
 
-        appealService.createAppeal(TEST_USER_ID, TEST_COMPANY_ID, createAppeal());
+        appealService.createAppeal(TEST_COMPANY_ID, createAppeal(), new CreatedBy());
     }
 
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfUnableToInsertData() throws ServiceException {
+    public void testCreateAppeal_throwsExceptionIfUnableToInsertData() throws Exception {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
-        exception.expect(ServiceException.class);
-        exception.expectMessage("Appeal not saved in database for user id 1234 and company id 12345678");
+        exception.expect(Exception.class);
+        exception.expectMessage("Appeal not saved in database for company id 12345678");
 
-        appealService.createAppeal(TEST_USER_ID, TEST_COMPANY_ID, createAppeal());
+        appealService.createAppeal(TEST_COMPANY_ID, createAppeal(), new CreatedBy());
     }
 
     private Appeal createAppeal() {
