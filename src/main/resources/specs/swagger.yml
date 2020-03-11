@@ -29,6 +29,8 @@ paths:
       responses:
         '201':
           description: 'A new appeal resource has been created'
+        '401':
+          description: 'Unauthorised request'
         '422':
           description: 'Invalid appeal data'
         '500':

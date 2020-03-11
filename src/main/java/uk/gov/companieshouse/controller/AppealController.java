@@ -41,8 +41,9 @@ public class AppealController {
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Appeal resource created"),
-        @ApiResponse(responseCode = "500", description = "Internal server error"),
-        @ApiResponse(responseCode = "422", description = "Invalid appeal data")
+        @ApiResponse(responseCode = "401", description = "Unauthorised request"),
+        @ApiResponse(responseCode = "422", description = "Invalid appeal data"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
@@ -55,18 +56,14 @@ public class AppealController {
 
         if (StringUtils.isBlank(ericIdentity) || StringUtils.isBlank(ericAuthorisedUser)) {
 
-            log.error("Authorisation missing");
-
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .build();
         }
 
-        CreatedBy createdBy = ericHeaderParser.retrieveUser(ericIdentity, ericAuthorisedUser);
-
-        log.info("created by {}", Json.pretty(createdBy));
-
         try {
+
+            CreatedBy createdBy = ericHeaderParser.retrieveUser(ericIdentity, ericAuthorisedUser);
 
             String id = appealService.createAppeal(companyId, appeal, createdBy);
 
