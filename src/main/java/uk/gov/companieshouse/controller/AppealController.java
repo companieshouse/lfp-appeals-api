@@ -72,7 +72,7 @@ public class AppealController {
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.LOCATION, id)
+                .header(HttpHeaders.LOCATION, id) // this should be updated with URI, i.e. /appeals/{id}
                 .build();
 
         } catch (Exception e) {
