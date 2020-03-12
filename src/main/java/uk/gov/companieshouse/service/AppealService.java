@@ -30,4 +30,10 @@ public class AppealService {
                 new Exception(String.format("Appeal not saved in database for company id %s", companyId)));
     }
 
+    public Appeal getAppeal(String id) throws Exception {
+
+        return appealRepository.findById(id)
+            .orElseThrow(() -> new Exception(String.format("Appeal not found for id %s", id)));
+    }
+
 }

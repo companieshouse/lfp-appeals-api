@@ -12,14 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
@@ -46,10 +39,10 @@ public class AppealController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
-                                               @RequestHeader("ERIC-Authorised-User") String ericAuthorisedUser,
-                                               @PathVariable("company-id") final String companyId,
-                                               @Valid @RequestBody final Appeal appeal) {
+    public ResponseEntity submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
+                                       @RequestHeader("ERIC-Authorised-User") String ericAuthorisedUser,
+                                       @PathVariable("company-id") final String companyId,
+                                       @Valid @RequestBody final Appeal appeal) {
 
         log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
             companyId, ericIdentity, Json.pretty(appeal));
@@ -80,6 +73,31 @@ public class AppealController {
                 .build();
         }
     }
+
+    @Operation(summary = "Get an appeal by ID", tags = "Appeal")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Appeal not found")
+    })
+    @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
+                                                @PathVariable("id") final String id) {
+
+        log.info("GET /companies/{}/appeals/{}", companyId, id);
+
+        try {
+
+            Appeal appeal = appealService.getAppeal(id);
+
+            return new ResponseEntity(appeal, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
