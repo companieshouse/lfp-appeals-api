@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Service;
+import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.repository.AppealRepository;
@@ -17,7 +18,7 @@ public class AppealService {
 
     private final AppealRepository appealRepository;
 
-    public String createAppeal(String companyId, Appeal appeal, CreatedBy createdBy) throws Exception {
+    public Long saveAppeal(String companyId, Appeal appeal, CreatedBy createdBy) throws Exception {
 
         appeal.setCreatedBy(createdBy);
         appeal.setCreatedAt(LocalDateTime.now());
@@ -25,15 +26,15 @@ public class AppealService {
         Appeal savedAppeal = appealRepository.insert(appeal);
 
         return Optional.ofNullable(savedAppeal)
-            .map(Appeal::get_id)
+            .map(Appeal::getId)
             .orElseThrow(() ->
                 new Exception(String.format("Appeal not saved in database for company id %s", companyId)));
     }
 
-    public Appeal getAppeal(String id) throws Exception {
+    public Appeal getAppeal(Long id) {
 
         return appealRepository.findById(id)
-            .orElseThrow(() -> new Exception(String.format("Appeal not found for id %s", id)));
+            .orElseThrow(() -> new AppealNotFoundException(id));
     }
 
 }

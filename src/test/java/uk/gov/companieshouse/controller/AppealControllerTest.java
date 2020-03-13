@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
@@ -25,13 +26,14 @@ import uk.gov.companieshouse.util.EricHeaderParser;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = AppealController.class)
-public class AppealControllerTestIT {
+@WebMvcTest
+public class AppealControllerTest {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
 
@@ -40,7 +42,7 @@ public class AppealControllerTestIT {
 
     private static final String TEST_USER_ID = "1234";
     private static final String TEST_COMPANY_ID = "12345678";
-    private static final String TEST_RESOURCE_ID = "555";
+    private static final Long TEST_RESOURCE_ID = 1L;
     private static final String TEST_PENALTY_REFERENCE = "A12345678";
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
@@ -65,7 +67,7 @@ public class AppealControllerTestIT {
 
         when(ericHeaderParser.retrieveUser(any(String.class), any(String.class))).thenReturn(new CreatedBy());
 
-        when(appealService.createAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
+        when(appealService.saveAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
             .thenReturn(TEST_RESOURCE_ID);
     }
 
@@ -79,7 +81,7 @@ public class AppealControllerTestIT {
             .headers(createHttpHeaders())
             .content(appealAsJson))
             .andExpect(status().isCreated())
-            .andExpect(header().string(HttpHeaders.LOCATION, TEST_RESOURCE_ID));
+            .andExpect(header().string(HttpHeaders.LOCATION, String.valueOf(TEST_RESOURCE_ID)));
     }
 
     @Test
@@ -162,7 +164,7 @@ public class AppealControllerTestIT {
     @Test
     public void whenExceptionFromService_return500() throws Exception {
 
-        when(appealService.createAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
+        when(appealService.saveAppeal(any(String.class), any(Appeal.class), any(CreatedBy.class)))
             .thenThrow(Exception.class);
 
         String appealAsJson = asJsonString(validAppeal());
@@ -173,6 +175,30 @@ public class AppealControllerTestIT {
             .content(appealAsJson))
             .andExpect(status().isInternalServerError());
     }
+
+    @Test
+    public void whenAppealExists_return200() throws Exception {
+
+        when(appealService.getAppeal(any(Long.class))).thenReturn(validAppeal());
+
+        String appealAsJson = asJsonString(validAppeal());
+
+        mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(content().json(appealAsJson));
+    }
+
+    @Test
+    public void whenAppealDoesNotExist_return404() throws Exception {
+
+        when(appealService.getAppeal(any(Long.class))).thenThrow(AppealNotFoundException.class);
+
+        mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, "1")
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isNotFound());
+    }
+
 
     private Appeal validAppeal() {
 

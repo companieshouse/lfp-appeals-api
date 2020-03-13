@@ -16,7 +16,7 @@ public class Appeal {
 
     @JsonIgnore
     @Id
-    private String _id;
+    private Long id;
 
     @JsonIgnore
     private LocalDateTime createdAt;

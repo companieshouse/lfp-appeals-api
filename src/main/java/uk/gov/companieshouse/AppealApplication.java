@@ -2,10 +2,8 @@ package uk.gov.companieshouse;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@EnableMongoRepositories
-@SpringBootApplication(scanBasePackages = "uk.gov.companieshouse")
+@SpringBootApplication
 public class AppealApplication {
 
     public static void main (String[] args) {
