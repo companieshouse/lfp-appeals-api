@@ -14,10 +14,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.spring.boot>2.2.5.RELEASE</version.spring.boot>
         <version.lombok>1.18.12</version.lombok>
-        <rest-service-common-library.version>0.0.3</rest-service-common-library.version>
         <version.springdoc.openapi>1.2.33</version.springdoc.openapi>
     </properties>
-
 
     <dependencies>
         <!-- Spring/SpringBoot -->
@@ -37,13 +35,6 @@
             <version>${version.spring.boot}</version>
         </dependency>
 
-        <!-- Companies House -->
-<!--        <dependency>-->
-<!--            <groupId>uk.gov.companieshouse</groupId>-->
-<!--            <artifactId>rest-service-common-library</artifactId>-->
-<!--            <version>${rest-service-common-library.version}</version>-->
-<!--        </dependency>-->
-
         <!-- Swagger documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -58,13 +49,6 @@
             <version>${version.lombok}</version>
         </dependency>
 
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.10.5</version>
-        </dependency>
-
-
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,17 +56,7 @@
             <version>${version.spring.boot}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.github.robwin</groupId>
-            <artifactId>assertj-swagger</artifactId>
-            <version>0.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-            <version>2.9.2</version>
-            <type>pom</type>
-        </dependency>
+
     </dependencies>
 
     <build>
