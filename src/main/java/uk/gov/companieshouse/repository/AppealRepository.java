@@ -11,5 +11,5 @@ public interface AppealRepository extends MongoRepository<Appeal, Long> {
 
     Appeal insert(Appeal appeal);
 
-    Optional<Appeal> findById(Long id);
+    Optional<Appeal> findById(String id);
 }

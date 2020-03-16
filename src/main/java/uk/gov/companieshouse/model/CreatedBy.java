@@ -1,13 +1,12 @@
 package uk.gov.companieshouse.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
-@Data
+@Builder
+@AllArgsConstructor
 public class CreatedBy {
 
     private String id;
-    private String email;
-    private String forename;
-    private String surname;
 
 }

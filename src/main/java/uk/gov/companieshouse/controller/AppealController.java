@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.util.EricHeaderParser;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -37,7 +35,6 @@ import java.util.Map;
 public class AppealController {
 
     public final AppealService appealService;
-    public final EricHeaderParser ericHeaderParser;
 
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {
@@ -48,14 +45,13 @@ public class AppealController {
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
-                                       @RequestHeader("ERIC-Authorised-User") String ericAuthorisedUser,
                                        @PathVariable("company-id") final String companyId,
                                        @Valid @RequestBody final Appeal appeal) {
 
         log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
             companyId, ericIdentity, Json.pretty(appeal));
 
-        if (StringUtils.isBlank(ericIdentity) || StringUtils.isBlank(ericAuthorisedUser)) {
+        if (StringUtils.isBlank(ericIdentity)) {
 
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
@@ -64,18 +60,16 @@ public class AppealController {
 
         try {
 
-            CreatedBy createdBy = ericHeaderParser.retrieveUser(ericIdentity, ericAuthorisedUser);
-
-            Long id = appealService.saveAppeal(companyId, appeal, createdBy);
+            String id = appealService.saveAppeal(companyId, appeal, ericIdentity);
 
             return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.LOCATION, String.valueOf(id)) // this should be updated with URI, i.e. /appeals/{id}
+                .header(HttpHeaders.LOCATION, id) // this should be updated with URI, i.e. /appeals/{id}
                 .build();
 
-        } catch (Exception e) {
+        } catch (Exception ex) {
 
-            log.error("Unable to create appeal", e);
+            log.error("Unable to create appeal for company number {} and user id {}", companyId, ericIdentity, ex);
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .build();
@@ -89,7 +83,7 @@ public class AppealController {
     })
     @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
-                                                @PathVariable("id") final Long id) {
+                                                @PathVariable("id") final String id) {
 
         log.info("GET /companies/{}/appeals/{}", companyId, id);
 
@@ -99,11 +93,11 @@ public class AppealController {
 
             return new ResponseEntity(appeal, HttpStatus.OK);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ex) {
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.error("Unable to get appeal for company number {} and id {}", companyId, id, ex);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
