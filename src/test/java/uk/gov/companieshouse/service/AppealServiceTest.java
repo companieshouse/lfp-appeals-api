@@ -15,7 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.companieshouse.exception.AppealNotFoundException;
-import uk.gov.companieshouse.model.*;
+import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.CreatedBy;
+import uk.gov.companieshouse.model.OtherReason;
+import uk.gov.companieshouse.model.PenaltyIdentifier;
+import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.util.Optional;
