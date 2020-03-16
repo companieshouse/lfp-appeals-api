@@ -48,21 +48,19 @@ public class AppealController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
+    public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String userId,
                                                @PathVariable("company-id") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
 
         log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
-            companyId, ericIdentity, Json.pretty(appeal));
+            companyId, userId, Json.pretty(appeal));
 
-        if (StringUtils.isBlank(ericIdentity)) {
-            return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .build();
+        if (StringUtils.isBlank(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
-            String id = appealService.saveAppeal(companyId, appeal, ericIdentity);
+            String id = appealService.saveAppeal(companyId, appeal, userId);
 
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -73,7 +71,7 @@ public class AppealController {
             return ResponseEntity.created(location).build();
 
         } catch (Exception ex) {
-            log.error("Unable to create appeal for company number {} and user id {}", companyId, ericIdentity, ex);
+            log.error("Unable to create appeal for company number {} and user id {}", companyId, userId, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

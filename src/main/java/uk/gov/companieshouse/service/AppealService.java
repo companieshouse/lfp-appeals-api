@@ -18,13 +18,13 @@ public class AppealService {
 
     private final AppealRepository appealRepository;
 
-    public String saveAppeal(String companyId, Appeal appeal, String ericIdentity) throws Exception {
+    public String saveAppeal(String companyId, Appeal appeal, String userId) throws Exception {
 
-        appeal.setCreatedBy(CreatedBy.builder().id(ericIdentity).build());
+        appeal.setCreatedBy(CreatedBy.builder().id(userId).build());
         appeal.setCreatedAt(LocalDateTime.now());
 
         return Optional.ofNullable(appealRepository.insert(appeal)).map(Appeal::getId).orElseThrow(() ->
-            new Exception(String.format("Appeal not saved in database for company id %s", companyId)));
+            new Exception(String.format("Appeal not saved in database for companyId %s and userId", companyId, userId)));
     }
 
     public Appeal getAppeal(String id) {
