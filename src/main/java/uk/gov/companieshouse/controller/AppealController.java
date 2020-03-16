@@ -2,6 +2,7 @@ package uk.gov.companieshouse.controller;
 
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,17 @@ public class AppealController {
 
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Appeal resource created"),
+        @ApiResponse(responseCode = "201", description = "Appeal resource created", headers = {
+            @Header(name = "location")
+        }),
         @ApiResponse(responseCode = "401", description = "Unauthorised request"),
         @ApiResponse(responseCode = "422", description = "Invalid appeal data"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
-                                       @PathVariable("company-id") final String companyId,
-                                       @Valid @RequestBody final Appeal appeal) {
+                                               @PathVariable("company-id") final String companyId,
+                                               @Valid @RequestBody final Appeal appeal) {
 
         log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
             companyId, ericIdentity, Json.pretty(appeal));
