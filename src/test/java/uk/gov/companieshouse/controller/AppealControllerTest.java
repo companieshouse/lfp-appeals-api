@@ -73,7 +73,7 @@ public class AppealControllerTest {
             .headers(createHttpHeaders())
             .content(appealAsJson))
             .andExpect(status().isCreated())
-            .andExpect(header().string(HttpHeaders.LOCATION, String.valueOf(TEST_RESOURCE_ID)));
+            .andExpect(header().string(HttpHeaders.LOCATION,"http://localhost/companies/12345678/appeals/" + TEST_RESOURCE_ID));
     }
 
     @Test

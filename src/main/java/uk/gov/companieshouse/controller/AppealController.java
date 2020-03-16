@@ -7,24 +7,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.service.AppealService;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +37,7 @@ public class AppealController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
+    public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String ericIdentity,
                                        @PathVariable("company-id") final String companyId,
                                        @Valid @RequestBody final Appeal appeal) {
 
@@ -62,17 +55,18 @@ public class AppealController {
 
             String id = appealService.saveAppeal(companyId, appeal, ericIdentity);
 
-            return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .header(HttpHeaders.LOCATION, id) // this should be updated with URI, i.e. /appeals/{id}
-                .build();
+            URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
+
+            return ResponseEntity.created(location).build();
 
         } catch (Exception ex) {
 
             log.error("Unable to create appeal for company number {} and user id {}", companyId, ericIdentity, ex);
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -91,12 +85,12 @@ public class AppealController {
 
             Appeal appeal = appealService.getAppeal(id);
 
-            return new ResponseEntity(appeal, HttpStatus.OK);
+            return ResponseEntity.status(HttpStatus.OK).body(appeal);
 
         } catch (Exception ex) {
 
             log.error("Unable to get appeal for company number {} and id {}", companyId, id, ex);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
