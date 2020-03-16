@@ -71,7 +71,7 @@ public class AppealServiceTest {
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
         exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for company id 12345678");
+        exception.expectMessage("Appeal not saved in database for companyId: 12345678 and userId: 1");
 
         appealService.saveAppeal(TEST_COMPANY_ID, createAppeal(), TEST_ERIC_ID);
     }
@@ -83,7 +83,7 @@ public class AppealServiceTest {
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
         exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for company id 12345678");
+        exception.expectMessage("Appeal not saved in database for companyId: 12345678 and userId: 1");
 
         appealService.saveAppeal(TEST_COMPANY_ID, createAppeal(), TEST_ERIC_ID);
     }

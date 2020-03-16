@@ -24,7 +24,7 @@ public class AppealService {
         appeal.setCreatedAt(LocalDateTime.now());
 
         return Optional.ofNullable(appealRepository.insert(appeal)).map(Appeal::getId).orElseThrow(() ->
-            new Exception(String.format("Appeal not saved in database for companyId %s and userId", companyId, userId)));
+            new Exception(String.format("Appeal not saved in database for companyId: %s and userId: %s", companyId, userId)));
     }
 
     public Appeal getAppeal(String id) {
