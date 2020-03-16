@@ -14,15 +14,29 @@
            
 1. Deploy an instance of MongoDB in a docker container: 
 
-`docker run -p 27017:27017 --name mongodb -d mongo:3.6`
+    `docker run -p 27017:27017 --name mongodb -d mongo:3.6`
 
-2. Access the bash shell inside the mongo container:
+### Connect to your MongoDB instance
 
-`docker exec -it mongodb bash`
+1. Access the bash shell inside the mongo container:
 
-3. Start mongo:
+    `docker exec -it mongodb bash`
 
-`mongo`
+2. Start mongo:
+
+    `mongo`
+
+3. Show databases:
+
+    `show dbs`
+
+4. Switch to 'test' database (for example):
+
+    `use test`
+
+5. Retrieve all documents in the 'appeals' collection:
+
+    `myCursor = db.appeals.find( {} )`
 
 ### Run Spring boot
 
@@ -30,7 +44,7 @@
 
 2. Navigate to the running app in a browser: 
 
-`http://localhost:9000`
+    `http://localhost:9000`
 
 
 ## Useful Endpoints
