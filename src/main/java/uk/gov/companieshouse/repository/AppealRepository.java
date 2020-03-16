@@ -10,6 +10,5 @@ import java.util.Optional;
 public interface AppealRepository extends MongoRepository<Appeal, Long> {
 
     Appeal insert(Appeal appeal);
-
     Optional<Appeal> findById(String id);
 }

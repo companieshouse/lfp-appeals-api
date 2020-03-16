@@ -31,5 +31,4 @@ public class AppealService {
 
         return appealRepository.findById(id).orElseThrow(() -> new AppealNotFoundException(id));
     }
-
 }

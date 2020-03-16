@@ -48,14 +48,12 @@ public class AppealController {
             companyId, ericIdentity, Json.pretty(appeal));
 
         if (StringUtils.isBlank(ericIdentity)) {
-
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .build();
         }
 
         try {
-
             String id = appealService.saveAppeal(companyId, appeal, ericIdentity);
 
             URI location = ServletUriComponentsBuilder
@@ -67,7 +65,6 @@ public class AppealController {
             return ResponseEntity.created(location).build();
 
         } catch (Exception ex) {
-
             log.error("Unable to create appeal for company number {} and user id {}", companyId, ericIdentity, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -85,25 +82,19 @@ public class AppealController {
         log.info("GET /companies/{}/appeals/{}", companyId, id);
 
         try {
-
             Appeal appeal = appealService.getAppeal(id);
-
             return ResponseEntity.status(HttpStatus.OK).body(appeal);
-
         } catch (Exception ex) {
-
             log.error("Unable to get appeal for company number {} and id {}", companyId, id, ex);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
-
         ex.getBindingResult().getFieldErrors().forEach(error ->
             errors.put(error.getField(), error.getDefaultMessage()));
 

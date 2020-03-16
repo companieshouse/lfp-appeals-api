@@ -8,5 +8,4 @@ import lombok.Builder;
 public class CreatedBy {
 
     private String id;
-
 }
