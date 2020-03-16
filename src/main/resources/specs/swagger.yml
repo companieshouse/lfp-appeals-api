@@ -4,12 +4,12 @@ info:
   description: An API for processing an appeal against a late filing penalty (LFP)
   version: 1.0.0
 servers:
-  - url: localhost:9000
+  - url: 'localhost:9000'
   - url: api.companieshouse.gov.uk
 tags:
   - name: Appeal
 paths:
-  /companies/{company-id}/appeals:
+  '/companies/{company-id}/appeals':
     post:
       tags:
         - Appeal
@@ -19,22 +19,61 @@ paths:
         - name: company-id
           in: path
           required: true
-          description: Company id
+          description: Company ID
+          schema:
+            type: string
+        - name: ERIC-identity
+          in: header
+          required: true
+          description: User ID
+          schema:
+            type: string
       requestBody:
         content:
-          'application/json':
+          application/json:
             schema:
               $ref: '#/components/schemas/Appeal'
         required: true
       responses:
         '201':
-          description: 'A new appeal resource has been created'
+          description: A new appeal resource has been created
+          headers:
+            'location':
+              description: Url of the newly created resource
+              schema:
+                type: string
+
         '401':
-          description: 'Unauthorised request'
+          description: Unauthorised request
         '422':
-          description: 'Invalid appeal data'
+          description: Invalid appeal data
         '500':
-          description: 'Internal server error'
+          description: Internal server error
+  '/companies/{company-id}/appeals/{id}':
+    get:
+      tags:
+        - Appeal
+      summary: Get appeal by ID
+      operationId: getAppeal
+      parameters:
+        - name: company-id
+          in: path
+          required: true
+          description: Company ID
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: Resource ID
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/schemas/Appeal'
+        '404':
+          description: Appeal not found
+
 components:
   schemas:
     Appeal:
@@ -60,7 +99,7 @@ components:
         penaltyReference:
           type: string
           description: The penalty reference
-          example: 'A1235678'
+          example: A1235678
     Reason:
       description: The reason for this appeal
       required:
@@ -77,7 +116,7 @@ components:
       properties:
         title:
           type: string
-          example: 'Reason title'
+          example: Reason title
         description:
           type: string
-          example: 'Reason description'
+          example: Reason description
