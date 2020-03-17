@@ -59,7 +59,7 @@ public class AppealControllerTest {
     @Before
     public void setUp() throws Exception {
 
-        when(appealService.saveAppeal(any(String.class), any(Appeal.class), any(String.class)))
+        when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
             .thenReturn(TEST_RESOURCE_ID);
     }
 
@@ -128,7 +128,7 @@ public class AppealControllerTest {
     @Test
     public void whenExceptionFromService_return500() throws Exception {
 
-        when(appealService.saveAppeal(any(String.class), any(Appeal.class), any(String.class)))
+        when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
             .thenThrow(Exception.class);
 
         String appealAsJson = asJsonString(validAppeal());

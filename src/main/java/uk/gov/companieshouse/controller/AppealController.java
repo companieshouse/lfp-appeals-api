@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.controller;
 
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +35,7 @@ import java.util.Map;
 @RequestMapping("/companies")
 public class AppealController {
 
-    public final AppealService appealService;
+    private final AppealService appealService;
 
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {
@@ -52,15 +51,17 @@ public class AppealController {
                                                @PathVariable("company-id") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
 
-        log.info("POST /companies/{}/appeals with user id {} and appeal data {}",
-            companyId, userId, Json.pretty(appeal));
+        final String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+
+        log.info("POST /companies/{}/appeals with user id {} and penalty reference {}",
+            companyId, userId, penaltyReference);
 
         if (StringUtils.isBlank(userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         try {
-            String id = appealService.saveAppeal(companyId, appeal, userId);
+            String id = appealService.saveAppeal(appeal, userId);
 
             URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -71,7 +72,8 @@ public class AppealController {
             return ResponseEntity.created(location).build();
 
         } catch (Exception ex) {
-            log.error("Unable to create appeal for company number {} and user id {}", companyId, userId, ex);
+            log.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
+                companyId, penaltyReference, userId, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

@@ -54,7 +54,7 @@ public class AppealServiceTest {
         persistedAppeal.setId(TEST_RESOURCE_ID);
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
-        String resourceId = appealService.saveAppeal(TEST_COMPANY_ID, appeal, TEST_ERIC_ID);
+        String resourceId = appealService.saveAppeal(appeal, TEST_ERIC_ID);
 
         assertThat(resourceId, is(notNullValue()));
         assertThat(resourceId, is(TEST_RESOURCE_ID));
@@ -71,9 +71,10 @@ public class AppealServiceTest {
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
         exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for companyId: 12345678 and userId: 1");
+        exception.expectMessage("Appeal not saved in database for companyId: 12345678, " +
+            "penaltyReference: A12345678 and userId: 1");
 
-        appealService.saveAppeal(TEST_COMPANY_ID, createAppeal(), TEST_ERIC_ID);
+        appealService.saveAppeal(createAppeal(), TEST_ERIC_ID);
     }
 
 
@@ -83,9 +84,10 @@ public class AppealServiceTest {
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
         exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for companyId: 12345678 and userId: 1");
+        exception.expectMessage("Appeal not saved in database for companyId: 12345678, " +
+            "penaltyReference: A12345678 and userId: 1");
 
-        appealService.saveAppeal(TEST_COMPANY_ID, createAppeal(), TEST_ERIC_ID);
+        appealService.saveAppeal(createAppeal(), TEST_ERIC_ID);
     }
 
     @Test
