@@ -1,42 +1,37 @@
 package uk.gov.companieshouse.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
-import uk.gov.companieshouse.repository.AppealRepository;
 import uk.gov.companieshouse.service.AppealService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest
 public class AppealControllerTest {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
-
     private static final String IDENTITY_HEADER = "ERIC-identity";
-
     private static final String TEST_USER_ID = "1234";
     private static final String TEST_COMPANY_ID = "12345678";
     private static final String TEST_RESOURCE_ID = "1";
@@ -47,16 +42,10 @@ public class AppealControllerTest {
     @MockBean
     private AppealService appealService;
 
-    @MockBean
-    private AppealRepository appealRepository;
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Autowired
     private MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))

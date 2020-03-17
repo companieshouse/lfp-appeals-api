@@ -49,8 +49,9 @@ public class AppealServiceTest {
 
         String resourceId = appealService.saveAppeal(appeal, TEST_ERIC_ID);
 
-        assertNotNull(resourceId);
-        assertEquals(resourceId, TEST_RESOURCE_ID);
+        Assertions.assertAll("Create appeal returns resource id",
+            () -> assertNotNull(resourceId),
+            () -> assertEquals(resourceId, TEST_RESOURCE_ID));
     }
 
     @Test
