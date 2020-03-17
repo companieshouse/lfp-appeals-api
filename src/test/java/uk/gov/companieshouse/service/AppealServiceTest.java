@@ -41,10 +41,14 @@ public class AppealServiceTest {
     public void testCreateAppeal_returnsResourceId() throws Exception {
 
         Appeal appeal = createAppeal();
-        Appeal persistedAppeal = createAppeal();
 
-        persistedAppeal.setCreatedBy(new CreatedBy(TEST_ERIC_ID));
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setId(TEST_ERIC_ID);
+
+        Appeal persistedAppeal = createAppeal();
+        persistedAppeal.setCreatedBy(createdBy);
         persistedAppeal.setId(TEST_RESOURCE_ID);
+
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
         String resourceId = appealService.saveAppeal(appeal, TEST_ERIC_ID);
@@ -57,8 +61,11 @@ public class AppealServiceTest {
     @Test
     public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setId(TEST_ERIC_ID);
+
         Appeal persistedAppeal = createAppeal();
-        persistedAppeal.setCreatedBy(new CreatedBy(TEST_ERIC_ID));
+        persistedAppeal.setCreatedBy(createdBy);
         persistedAppeal.setId(null);
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);

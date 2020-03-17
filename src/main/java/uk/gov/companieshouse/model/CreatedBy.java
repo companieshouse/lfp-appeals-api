@@ -1,10 +1,8 @@
 package uk.gov.companieshouse.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 
-@Builder
-@AllArgsConstructor
+@Data
 public class CreatedBy {
 
     private String id;

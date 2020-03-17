@@ -21,8 +21,12 @@ public class AppealService {
 
     public String saveAppeal(Appeal appeal, String userId) throws Exception {
 
-        appeal.setCreatedBy(CreatedBy.builder().id(userId).build());
-        appeal.setCreatedAt(LocalDateTime.now());
+        final CreatedBy createdBy = new CreatedBy();
+        createdBy.setId(userId);
+        appeal.setCreatedBy(createdBy);
+
+        final LocalDateTime createdAt = LocalDateTime.now();
+        appeal.setCreatedAt(createdAt);
 
         final PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
 
