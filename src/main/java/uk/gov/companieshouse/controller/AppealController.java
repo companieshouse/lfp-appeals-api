@@ -81,7 +81,8 @@ public class AppealController {
     @Operation(summary = "Get an appeal by ID", tags = "Appeal")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeal not found")
+        @ApiResponse(responseCode = "404", description = "Appeal not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,

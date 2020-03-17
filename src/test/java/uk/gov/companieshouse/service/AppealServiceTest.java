@@ -6,9 +6,8 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 
 import org.mockito.InjectMocks;
@@ -40,14 +39,10 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
     @Test
     public void testCreateAppeal_returnsResourceId() throws Exception {
 
         Appeal appeal = createAppeal();
-
         Appeal persistedAppeal = createAppeal();
 
         persistedAppeal.setCreatedBy(new CreatedBy(TEST_ERIC_ID));
@@ -58,11 +53,10 @@ public class AppealServiceTest {
 
         assertThat(resourceId, is(notNullValue()));
         assertThat(resourceId, is(TEST_RESOURCE_ID));
-
     }
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() throws Exception {
+    public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
         Appeal persistedAppeal = createAppeal();
         persistedAppeal.setCreatedBy(new CreatedBy(TEST_ERIC_ID));
@@ -70,46 +64,33 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
-        exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for companyId: 12345678, " +
-            "penaltyReference: A12345678 and userId: 1");
-
-        appealService.saveAppeal(createAppeal(), TEST_ERIC_ID);
+        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TEST_ERIC_ID));
     }
 
-
     @Test
-    public void testCreateAppeal_throwsExceptionIfUnableToInsertData() throws Exception {
+    public void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
-        exception.expect(Exception.class);
-        exception.expectMessage("Appeal not saved in database for companyId: 12345678, " +
-            "penaltyReference: A12345678 and userId: 1");
-
-        appealService.saveAppeal(createAppeal(), TEST_ERIC_ID);
+        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TEST_ERIC_ID));
     }
 
     @Test
-    public void testGetAppealById_returnsAppeal() throws Exception {
+    public void testGetAppealById_returnsAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(java.util.Optional.of(createAppeal()));
 
         Appeal appeal = appealService.getAppeal(TEST_RESOURCE_ID);
 
         assertThat(appeal, is(notNullValue()));
-
     }
 
     @Test
-    public void testGetAppealById_throwsExceptionIfUnableToFindAppeal() throws Exception {
+    public void testGetAppealById_throwsExceptionIfUnableToFindAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        exception.expect(AppealNotFoundException.class);
-        exception.expectMessage("Appeal not found for id: 1");
-
-        appealService.getAppeal(TEST_RESOURCE_ID);
+        Assertions.assertThrows(AppealNotFoundException.class, () -> appealService.getAppeal(TEST_RESOURCE_ID));
     }
 
     private Appeal createAppeal() {
