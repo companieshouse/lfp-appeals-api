@@ -1,18 +1,11 @@
 package uk.gov.companieshouse.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
@@ -23,7 +16,12 @@ import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(SpringExtension.class)
 public class AppealServiceTest {
 
     private static final String TEST_COMPANY_ID = "12345678";
@@ -51,8 +49,8 @@ public class AppealServiceTest {
 
         String resourceId = appealService.saveAppeal(appeal, TEST_ERIC_ID);
 
-        assertThat(resourceId, is(notNullValue()));
-        assertThat(resourceId, is(TEST_RESOURCE_ID));
+        assertNotNull(resourceId);
+        assertEquals(resourceId, TEST_RESOURCE_ID);
     }
 
     @Test
@@ -82,7 +80,7 @@ public class AppealServiceTest {
 
         Appeal appeal = appealService.getAppeal(TEST_RESOURCE_ID);
 
-        assertThat(appeal, is(notNullValue()));
+        assertNotNull(appeal);
     }
 
     @Test
