@@ -7,7 +7,7 @@ import uk.gov.companieshouse.model.Appeal;
 import java.util.Optional;
 
 @Repository
-public interface AppealRepository extends MongoRepository<Appeal, Long> {
+public interface AppealRepository extends MongoRepository<Appeal, String> {
 
     Appeal insert(Appeal appeal);
     Optional<Appeal> findById(String id);
