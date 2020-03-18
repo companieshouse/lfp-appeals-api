@@ -95,10 +95,10 @@ public class AppealServiceTest {
         Appeal appeal = appealOpt.get();
 
         assertAll("Get appeal returns appeal with resource ID",
-            () -> assertEquals(appeal.getPenaltyIdentifier().getPenaltyReference(), TEST_PENALTY_REFERENCE),
-            () -> assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), TEST_COMPANY_ID),
-            () -> assertEquals(appeal.getReason().getOther().getTitle(), TEST_REASON_TITLE),
-            () -> assertEquals(appeal.getReason().getOther().getDescription(), TEST_REASON_DESCRIPTION));
+            () -> assertEquals(TEST_PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference()),
+            () -> assertEquals(TEST_COMPANY_ID, appeal.getPenaltyIdentifier().getCompanyNumber()),
+            () -> assertEquals(TEST_REASON_TITLE, appeal.getReason().getOther().getTitle()),
+            () -> assertEquals(TEST_REASON_DESCRIPTION, appeal.getReason().getOther().getDescription()));
     }
 
     @Test
@@ -109,5 +109,6 @@ public class AppealServiceTest {
         Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
 
         assertFalse(appealOpt.isPresent());
+        assertEquals(Optional.empty(), appealOpt);
     }
 }
