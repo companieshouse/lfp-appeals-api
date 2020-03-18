@@ -4,9 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +29,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/companies")
 public class AppealController {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AppealController.class);
+
     private final AppealService appealService;
+
+    public AppealController(AppealService appealService) {
+        this.appealService = appealService;
+    }
 
     @Operation(summary = "Create a new appeal", tags = "Appeal")
     @ApiResponses(value = {

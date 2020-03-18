@@ -1,11 +1,8 @@
 package uk.gov.companieshouse.model;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-@Data
 public class PenaltyIdentifier {
 
     @NotBlank(message = "companyNumber must not be blank")
@@ -17,4 +14,23 @@ public class PenaltyIdentifier {
     @Pattern(regexp = "([A-Z]{1}[0-9]{8})",
         message = "penaltyReference is invalid")
     private String penaltyReference;
+
+    public PenaltyIdentifier() {
+    }
+
+    public String getCompanyNumber() {
+        return this.companyNumber;
+    }
+
+    public String getPenaltyReference() {
+        return this.penaltyReference;
+    }
+
+    public void setCompanyNumber(String companyNumber) {
+        this.companyNumber = companyNumber;
+    }
+
+    public void setPenaltyReference(String penaltyReference) {
+        this.penaltyReference = penaltyReference;
+    }
 }

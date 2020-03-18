@@ -1,9 +1,17 @@
 package uk.gov.companieshouse.model;
 
-import lombok.Data;
-
-@Data
 public class CreatedBy {
 
     private String id;
+
+    public CreatedBy() {
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }

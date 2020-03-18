@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
@@ -11,12 +9,14 @@ import uk.gov.companieshouse.repository.AppealRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
 public class AppealService {
 
     private final AppealRepository appealRepository;
+
+    public AppealService(AppealRepository appealRepository) {
+        this.appealRepository = appealRepository;
+    }
 
     public String saveAppeal(Appeal appeal, String userId) throws Exception {
 

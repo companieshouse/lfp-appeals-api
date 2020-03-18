@@ -42,13 +42,6 @@
             <version>${version.springdoc.openapi}</version>
         </dependency>
 
-        <!-- Other -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${version.lombok}</version>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
