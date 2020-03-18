@@ -1,0 +1,12 @@
+{
+  "penaltyIdentifier": {
+    "companyNumber": "12345678",
+    "penaltyReference": "A12345678"
+  },
+  "reasons": {
+    "other": {
+      "title": "This is a title",
+      "description": "This is a description"
+    }
+  }
+}
