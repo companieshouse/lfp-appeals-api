@@ -1,13 +1,12 @@
 package uk.gov.companieshouse.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.repository.AppealRepository;
 import uk.gov.companieshouse.util.TestUtil;
 
@@ -20,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -38,53 +38,53 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
-    private Appeal validAppeal;
-
-    @BeforeEach
-    public void setUp() {
-        validAppeal = TestUtil.getValidAppeal();
-    }
-
     @Test
     public void testCreateAppeal_returnsResourceId() throws Exception {
 
-        CreatedBy createdBy = new CreatedBy();
-        createdBy.setId(TEST_ERIC_ID);
+        ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
-        Appeal persistedAppeal = validAppeal;
-        persistedAppeal.setCreatedBy(createdBy);
-        persistedAppeal.setId(TEST_RESOURCE_ID);
+        Appeal appeal = TestUtil.getValidAppeal();
+        appeal.setId(TEST_RESOURCE_ID);
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
+        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        String resourceId = appealService.saveAppeal(validAppeal, TEST_ERIC_ID);
+        appealService.saveAppeal(appeal, TEST_ERIC_ID);
+
+        verify(appealRepository).insert(appealArgumentCaptor.capture());
+
+        assertAll("Create appeal sets created by and created at",
+            () -> assertEquals(TEST_ERIC_ID, appealArgumentCaptor.getValue().getCreatedBy().getId()),
+            () -> assertNotNull(appealArgumentCaptor.getValue().getCreatedAt()));
 
         assertAll("Create appeal returns resource id",
-            () -> assertNotNull(resourceId),
-            () -> assertEquals(resourceId, TEST_RESOURCE_ID));
+            () -> assertNotNull(appealArgumentCaptor.getValue().getId()),
+            () -> assertEquals(TEST_RESOURCE_ID, appealArgumentCaptor.getValue().getId()));
     }
 
     @Test
     public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
-        CreatedBy createdBy = new CreatedBy();
-        createdBy.setId(TEST_ERIC_ID);
+        Appeal appeal = TestUtil.getValidAppeal();
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(validAppeal);
+        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        assertThrows(Exception.class, () -> appealService.saveAppeal(validAppeal, TEST_ERIC_ID));
+        assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
     }
 
     @Test
     public void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
 
+        Appeal appeal = TestUtil.getValidAppeal();
+
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
-        assertThrows(Exception.class, () -> appealService.saveAppeal(validAppeal, TEST_ERIC_ID));
+        assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
     }
 
     @Test
     public void testGetAppealById_returnsAppeal() {
+
+        Appeal validAppeal = TestUtil.getValidAppeal();
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(validAppeal));
 
