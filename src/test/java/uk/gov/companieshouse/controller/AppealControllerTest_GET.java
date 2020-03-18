@@ -10,7 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.util.IntegrationTestUtil;
+import uk.gov.companieshouse.util.TestUtil;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,9 +34,9 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExists_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(IntegrationTestUtil.getValidAppeal());
+        when(appealService.getAppeal(any(String.class))).thenReturn(TestUtil.getValidAppeal());
 
-        String validAppeal = IntegrationTestUtil.asJsonString("src/test/resources/data/validAppeal.json");
+        String validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))

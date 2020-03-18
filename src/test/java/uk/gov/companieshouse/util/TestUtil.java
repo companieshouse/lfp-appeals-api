@@ -8,7 +8,7 @@ import uk.gov.companieshouse.model.Reason;
 
 import java.io.File;
 
-public class IntegrationTestUtil {
+public class TestUtil {
 
     public static final String TEST_COMPANY_ID = "12345678";
     public static final String TEST_PENALTY_REFERENCE = "A12345678";

@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.util.IntegrationTestUtil;
+import uk.gov.companieshouse.util.TestUtil;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -45,7 +45,7 @@ public class AppealControllerTest_POST {
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
             .thenReturn(TEST_RESOURCE_ID);
 
-        validAppeal = IntegrationTestUtil.asJsonString("src/test/resources/data/validAppeal.json");
+        validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class AppealControllerTest_POST {
     @Test
     public void whenInvalidInput_return422() throws Exception {
 
-        String invalidAppeal = IntegrationTestUtil.asJsonString
+        String invalidAppeal = TestUtil.asJsonString
             ("src/test/resources/data/invalidAppeal_penaltyIdentifierNull.json");
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)

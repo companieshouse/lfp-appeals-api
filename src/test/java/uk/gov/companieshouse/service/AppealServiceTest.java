@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.service;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,27 +9,27 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
-import uk.gov.companieshouse.model.OtherReason;
-import uk.gov.companieshouse.model.PenaltyIdentifier;
-import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
+import uk.gov.companieshouse.util.TestUtil;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 public class AppealServiceTest {
 
-    private static final String TEST_COMPANY_ID = "12345678";
     private static final String TEST_RESOURCE_ID = "1";
-    private static final String TEST_PENALTY_REFERENCE = "A12345678";
-    private static final String TEST_REASON_TITLE = "This is a title";
-    private static final String TEST_REASON_DESCRIPTION = "This is a description";
     private static final String TEST_ERIC_ID = "1";
+    public static final String TEST_COMPANY_ID = "12345678";
+    public static final String TEST_PENALTY_REFERENCE = "A12345678";
+    public static final String TEST_REASON_TITLE = "This is a title";
+    public static final String TEST_REASON_DESCRIPTION = "This is a description";
 
     @InjectMocks
     private AppealService appealService;
@@ -37,23 +37,28 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
+    private Appeal validAppeal;
+
+    @BeforeEach
+    public void setUp() {
+        validAppeal = TestUtil.getValidAppeal();
+    }
+
     @Test
     public void testCreateAppeal_returnsResourceId() throws Exception {
-
-        Appeal appeal = createAppeal();
 
         CreatedBy createdBy = new CreatedBy();
         createdBy.setId(TEST_ERIC_ID);
 
-        Appeal persistedAppeal = createAppeal();
+        Appeal persistedAppeal = validAppeal;
         persistedAppeal.setCreatedBy(createdBy);
         persistedAppeal.setId(TEST_RESOURCE_ID);
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
 
-        String resourceId = appealService.saveAppeal(appeal, TEST_ERIC_ID);
+        String resourceId = appealService.saveAppeal(validAppeal, TEST_ERIC_ID);
 
-        Assertions.assertAll("Create appeal returns resource id",
+        assertAll("Create appeal returns resource id",
             () -> assertNotNull(resourceId),
             () -> assertEquals(resourceId, TEST_RESOURCE_ID));
     }
@@ -64,13 +69,9 @@ public class AppealServiceTest {
         CreatedBy createdBy = new CreatedBy();
         createdBy.setId(TEST_ERIC_ID);
 
-        Appeal persistedAppeal = createAppeal();
-        persistedAppeal.setCreatedBy(createdBy);
-        persistedAppeal.setId(null);
+        when(appealRepository.insert(any(Appeal.class))).thenReturn(validAppeal);
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(persistedAppeal);
-
-        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TEST_ERIC_ID));
+        assertThrows(Exception.class, () -> appealService.saveAppeal(validAppeal, TEST_ERIC_ID));
     }
 
     @Test
@@ -78,17 +79,22 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
-        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TEST_ERIC_ID));
+        assertThrows(Exception.class, () -> appealService.saveAppeal(validAppeal, TEST_ERIC_ID));
     }
 
     @Test
     public void testGetAppealById_returnsAppeal() {
 
-        when(appealRepository.findById(any(String.class))).thenReturn(java.util.Optional.of(createAppeal()));
+        when(appealRepository.findById(any(String.class))).thenReturn(java.util.Optional.of(validAppeal));
 
         Appeal appeal = appealService.getAppeal(TEST_RESOURCE_ID);
 
-        assertNotNull(appeal);
+        assertAll("Get appeal returns appeal with resource ID",
+            () -> assertNotNull(appeal),
+            () -> assertEquals(appeal.getPenaltyIdentifier().getPenaltyReference(), TEST_PENALTY_REFERENCE),
+            () -> assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), TEST_COMPANY_ID),
+            () -> assertEquals(appeal.getReason().getOther().getTitle(), TEST_REASON_TITLE),
+            () -> assertEquals(appeal.getReason().getOther().getDescription(), TEST_REASON_DESCRIPTION));
     }
 
     @Test
@@ -96,26 +102,6 @@ public class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(AppealNotFoundException.class, () -> appealService.getAppeal(TEST_RESOURCE_ID));
-    }
-
-    private Appeal createAppeal() {
-
-        PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
-        penaltyIdentifier.setPenaltyReference(TEST_PENALTY_REFERENCE);
-        penaltyIdentifier.setCompanyNumber(TEST_COMPANY_ID);
-
-        OtherReason otherReason = new OtherReason();
-        otherReason.setTitle(TEST_REASON_TITLE);
-        otherReason.setDescription(TEST_REASON_DESCRIPTION);
-
-        Reason reason = new Reason();
-        reason.setOther(otherReason);
-
-        Appeal appeal = new Appeal();
-        appeal.setPenaltyIdentifier(penaltyIdentifier);
-        appeal.setReason(reason);
-
-        return appeal;
+        assertThrows(AppealNotFoundException.class, () -> appealService.getAppeal(TEST_RESOURCE_ID));
     }
 }
