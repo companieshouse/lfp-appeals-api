@@ -28,6 +28,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -81,22 +82,15 @@ public class AppealController {
     @Operation(summary = "Get an appeal by ID", tags = "Appeal")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeal not found"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
-                                                @PathVariable("id") final String id) {
+    public ResponseEntity<Optional<Appeal>> getAppealById(@PathVariable("company-id") final String companyId,
+                                                          @PathVariable("id") final String id) {
 
         log.info("GET /companies/{}/appeals/{}", companyId, id);
 
-        try {
-            Appeal appeal = appealService.getAppeal(id);
-            return ResponseEntity.status(HttpStatus.OK).body(appeal);
-        } catch (Exception ex) {
-            log.error("Unable to get appeal for company number {} and id {}", companyId, id, ex);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(appealService.getAppeal(id));
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

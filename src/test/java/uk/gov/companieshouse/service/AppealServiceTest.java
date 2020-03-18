@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.repository.AppealRepository;
@@ -16,8 +15,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -85,12 +86,15 @@ public class AppealServiceTest {
     @Test
     public void testGetAppealById_returnsAppeal() {
 
-        when(appealRepository.findById(any(String.class))).thenReturn(java.util.Optional.of(validAppeal));
+        when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(validAppeal));
 
-        Appeal appeal = appealService.getAppeal(TEST_RESOURCE_ID);
+        Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+
+        assertTrue(appealOpt.isPresent());
+
+        Appeal appeal = appealOpt.get();
 
         assertAll("Get appeal returns appeal with resource ID",
-            () -> assertNotNull(appeal),
             () -> assertEquals(appeal.getPenaltyIdentifier().getPenaltyReference(), TEST_PENALTY_REFERENCE),
             () -> assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), TEST_COMPANY_ID),
             () -> assertEquals(appeal.getReason().getOther().getTitle(), TEST_REASON_TITLE),
@@ -98,10 +102,12 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealById_throwsExceptionIfUnableToFindAppeal() {
+    public void testGetAppealById_returnsEmptyAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        assertThrows(AppealNotFoundException.class, () -> appealService.getAppeal(TEST_RESOURCE_ID));
+        Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+
+        assertFalse(appealOpt.isPresent());
     }
 }

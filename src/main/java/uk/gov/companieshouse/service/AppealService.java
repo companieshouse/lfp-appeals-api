@@ -36,8 +36,7 @@ public class AppealService {
                     penaltyIdentifier.getCompanyNumber(), penaltyIdentifier.getPenaltyReference(), userId)));
     }
 
-    public Appeal getAppeal(String id) {
-
-        return appealRepository.findById(id).orElseThrow(() -> new AppealNotFoundException(id));
+    public Optional<Appeal> getAppeal(String id) {
+        return appealRepository.findById(id);
     }
 }

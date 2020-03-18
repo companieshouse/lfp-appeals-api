@@ -8,14 +8,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.companieshouse.exception.AppealNotFoundException;
 import uk.gov.companieshouse.service.AppealService;
 import uk.gov.companieshouse.util.TestUtil;
+
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
 @ExtendWith(SpringExtension.class)
@@ -34,7 +37,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExists_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(TestUtil.getValidAppeal());
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(TestUtil.getValidAppeal()));
 
         String validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
 
@@ -45,12 +48,13 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealDoesNotExist_return404() throws Exception {
+    public void whenAppealDoesNotExist_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenThrow(AppealNotFoundException.class);
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").doesNotExist());
     }
 }
