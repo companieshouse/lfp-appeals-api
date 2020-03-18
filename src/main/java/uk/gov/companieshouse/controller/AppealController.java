@@ -33,7 +33,7 @@ import java.util.Optional;
 @RequestMapping("/companies")
 public class AppealController {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AppealController.class);
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AppealController.class);
 
     private final AppealService appealService;
 
@@ -57,7 +57,7 @@ public class AppealController {
 
         final String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
 
-        log.info("POST /companies/{}/appeals with user id {} and penalty reference {}",
+        LOGGER.info("POST /companies/{}/appeals with user id {} and penalty reference {}",
             companyId, userId, penaltyReference);
 
         if (StringUtils.isBlank(userId)) {
@@ -76,7 +76,7 @@ public class AppealController {
             return ResponseEntity.created(location).build();
 
         } catch (Exception ex) {
-            log.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
+            LOGGER.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
                 companyId, penaltyReference, userId, ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -91,7 +91,7 @@ public class AppealController {
     public ResponseEntity<Optional<Appeal>> getAppealById(@PathVariable("company-id") final String companyId,
                                                           @PathVariable("id") final String id) {
 
-        log.info("GET /companies/{}/appeals/{}", companyId, id);
+        LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
 
         return ResponseEntity.status(HttpStatus.OK).body(appealService.getAppeal(id));
     }
