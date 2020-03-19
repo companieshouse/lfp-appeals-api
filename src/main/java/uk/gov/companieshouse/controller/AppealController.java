@@ -86,15 +86,19 @@ public class AppealController {
     @Operation(summary = "Get an appeal by ID", tags = "Appeal")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Appeal not found"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Optional<Appeal>> getAppealById(@PathVariable("company-id") final String companyId,
-                                                          @PathVariable("id") final String id) {
+    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
+                                                @PathVariable("id") final String id) {
 
         LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(appealService.getAppeal(id));
+        Optional<Appeal> appealOpt = appealService.getAppeal(id);
+
+        return appealOpt.map(appeal -> ResponseEntity.status(HttpStatus.OK).body(appeal))
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

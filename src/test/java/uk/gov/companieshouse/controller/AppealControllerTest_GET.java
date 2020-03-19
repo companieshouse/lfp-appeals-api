@@ -48,13 +48,13 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealDoesNotExist_return200() throws Exception {
+    public void whenAppealDoesNotExist_return404() throws Exception {
 
         when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
+            .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());
     }
 }
