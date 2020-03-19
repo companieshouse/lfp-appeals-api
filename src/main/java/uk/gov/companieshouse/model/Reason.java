@@ -9,9 +9,6 @@ public class Reason {
     @NotNull(message = "other must not be null")
     private OtherReason other;
 
-    public Reason() {
-    }
-
     public OtherReason getOther() {
         return this.other;
     }

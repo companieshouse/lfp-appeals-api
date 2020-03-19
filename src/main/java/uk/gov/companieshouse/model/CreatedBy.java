@@ -4,9 +4,6 @@ public class CreatedBy {
 
     private String id;
 
-    public CreatedBy() {
-    }
-
     public String getId() {
         return this.id;
     }

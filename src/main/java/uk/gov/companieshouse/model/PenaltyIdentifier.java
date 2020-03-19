@@ -15,9 +15,6 @@ public class PenaltyIdentifier {
         message = "penaltyReference is invalid")
     private String penaltyReference;
 
-    public PenaltyIdentifier() {
-    }
-
     public String getCompanyNumber() {
         return this.companyNumber;
     }

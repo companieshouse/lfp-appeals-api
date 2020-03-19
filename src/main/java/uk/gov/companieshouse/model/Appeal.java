@@ -31,9 +31,6 @@ public class Appeal {
     @JsonProperty("reasons")
     private Reason reason;
 
-    public Appeal() {
-    }
-
     public String getId() {
         return this.id;
     }

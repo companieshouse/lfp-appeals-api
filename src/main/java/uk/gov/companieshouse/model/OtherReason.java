@@ -10,9 +10,6 @@ public class OtherReason {
     @NotBlank(message = "description must not be blank")
     private String description;
 
-    public OtherReason() {
-    }
-
     public String getTitle() {
         return this.title;
     }
