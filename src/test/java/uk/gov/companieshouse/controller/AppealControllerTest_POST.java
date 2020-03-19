@@ -92,7 +92,7 @@ public class AppealControllerTest_POST {
     @Test
     public void whenInvalidInput_return422() throws Exception {
 
-        String invalidAppeal = TestUtil.asJsonString
+        final String invalidAppeal = TestUtil.asJsonString
             ("src/test/resources/data/invalidAppeal_penaltyIdentifierNull.json");
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
@@ -117,7 +117,7 @@ public class AppealControllerTest_POST {
     }
 
     private HttpHeaders createHttpHeaders() {
-        HttpHeaders httpHeaders = new HttpHeaders();
+        final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(IDENTITY_HEADER, TEST_USER_ID);
         return httpHeaders;
     }

@@ -17,7 +17,7 @@ public class TestUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static String asJsonString(String pathname) {
+    public static final String asJsonString(String pathname) {
         try {
             Appeal appeal = MAPPER.readValue(new File(pathname), Appeal.class);
             return new ObjectMapper().writeValueAsString(appeal);
@@ -26,7 +26,7 @@ public class TestUtil {
         }
     }
 
-    public static Appeal getValidAppeal() {
+    public static final Appeal getValidAppeal() {
 
         PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
         penaltyIdentifier.setPenaltyReference(TEST_PENALTY_REFERENCE);

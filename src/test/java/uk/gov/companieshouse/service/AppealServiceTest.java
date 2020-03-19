@@ -41,9 +41,9 @@ public class AppealServiceTest {
     @Test
     public void testCreateAppeal_returnsResourceId() throws Exception {
 
-        ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
+        final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
-        Appeal appeal = TestUtil.getValidAppeal();
+        final Appeal appeal = TestUtil.getValidAppeal();
         appeal.setId(TEST_RESOURCE_ID);
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
@@ -64,7 +64,7 @@ public class AppealServiceTest {
     @Test
     public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
-        Appeal appeal = TestUtil.getValidAppeal();
+        final Appeal appeal = TestUtil.getValidAppeal();
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
@@ -74,7 +74,7 @@ public class AppealServiceTest {
     @Test
     public void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
 
-        Appeal appeal = TestUtil.getValidAppeal();
+        final Appeal appeal = TestUtil.getValidAppeal();
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
 
@@ -84,11 +84,11 @@ public class AppealServiceTest {
     @Test
     public void testGetAppealById_returnsAppeal() {
 
-        Appeal validAppeal = TestUtil.getValidAppeal();
+        final Appeal validAppeal = TestUtil.getValidAppeal();
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(validAppeal));
 
-        Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
 
         assertTrue(appealOpt.isPresent());
 
@@ -106,7 +106,7 @@ public class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
 
         assertFalse(appealOpt.isPresent());
         assertEquals(Optional.empty(), appealOpt);

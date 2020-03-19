@@ -39,7 +39,7 @@ public class AppealControllerTest_GET {
 
         when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(TestUtil.getValidAppeal()));
 
-        String validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
+        final String validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))

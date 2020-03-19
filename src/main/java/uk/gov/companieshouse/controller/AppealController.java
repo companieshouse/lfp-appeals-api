@@ -66,9 +66,9 @@ public class AppealController {
         }
 
         try {
-            String id = appealService.saveAppeal(appeal, userId);
+            final String id = appealService.saveAppeal(appeal, userId);
 
-            URI location = ServletUriComponentsBuilder
+            final URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(id)
@@ -95,7 +95,7 @@ public class AppealController {
 
         LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
 
-        Optional<Appeal> appealOpt = appealService.getAppeal(id);
+        final Optional<Appeal> appealOpt = appealService.getAppeal(id);
 
         return appealOpt.map(appeal -> ResponseEntity.status(HttpStatus.OK).body(appeal))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
@@ -105,7 +105,7 @@ public class AppealController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
 
-        Map<String, String> errors = new HashMap<>();
+        final Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
             errors.put(error.getField(), error.getDefaultMessage()));
 
