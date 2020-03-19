@@ -16,7 +16,6 @@
         <version.springdoc.openapi>1.2.34</version.springdoc.openapi>
     </properties>
 
-
     <dependencies>
         <!-- Spring/SpringBoot -->
         <dependency>
