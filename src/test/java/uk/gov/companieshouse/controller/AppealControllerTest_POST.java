@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.service.AppealService;
-import uk.gov.companieshouse.util.TestUtil;
+
+import java.io.File;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -37,6 +39,7 @@ public class AppealControllerTest_POST {
     @Autowired
     private MockMvc mockMvc;
 
+    private final ObjectMapper mapper = new ObjectMapper();
     private String validAppeal;
 
     @BeforeEach
@@ -45,7 +48,7 @@ public class AppealControllerTest_POST {
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
             .thenReturn(TEST_RESOURCE_ID);
 
-        validAppeal = TestUtil.asJsonString("src/test/resources/data/validAppeal.json");
+        validAppeal = asJsonString("src/test/resources/data/validAppeal.json");
     }
 
     @Test
@@ -92,7 +95,7 @@ public class AppealControllerTest_POST {
     @Test
     public void whenInvalidInput_return422() throws Exception {
 
-        final String invalidAppeal = TestUtil.asJsonString
+        final String invalidAppeal = asJsonString
             ("src/test/resources/data/invalidAppeal_penaltyIdentifierNull.json");
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
@@ -114,6 +117,15 @@ public class AppealControllerTest_POST {
             .headers(createHttpHeaders())
             .content(validAppeal))
             .andExpect(status().isInternalServerError());
+    }
+
+    private String asJsonString(String pathname) {
+        try {
+            Appeal appeal = mapper.readValue(new File(pathname), Appeal.class);
+            return new ObjectMapper().writeValueAsString(appeal);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private HttpHeaders createHttpHeaders() {
