@@ -46,6 +46,7 @@ public class AppealController {
         @ApiResponse(responseCode = "201", description = "Appeal resource created", headers = {
             @Header(name = "location")
         }),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
         @ApiResponse(responseCode = "401", description = "Unauthorised request"),
         @ApiResponse(responseCode = "422", description = "Invalid appeal data"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
