@@ -95,9 +95,9 @@ public class AppealController {
 
         LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
 
-        final Optional<Appeal> appealOpt = appealService.getAppeal(id);
+        final Optional<Appeal> appeal = appealService.getAppeal(id);
 
-        return appealOpt.map(appeal -> ResponseEntity.status(HttpStatus.OK).body(appeal))
+        return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
