@@ -3,3 +3,4 @@ group: api
 weight: 900
 routes:
   1: ^/companies/(.*)/appeals/.*
+  2: ^/companies/(.*)/appeals
