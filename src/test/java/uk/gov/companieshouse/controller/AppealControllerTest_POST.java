@@ -11,10 +11,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
+import java.util.List;
+import java.util.function.Function;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -107,6 +111,29 @@ public class AppealControllerTest_POST {
     }
 
     @Test
+    public void whenInvalidAttachment_return422() throws Exception {
+
+        final Attachment invalidAttachement = mapper.readValue(
+            new File("src/test/resources/data/invalidAttachement.json"), 
+            Attachment.class
+        );
+
+        final String invalidAppeal = asJsonString
+            ("src/test/resources/data/validAppeal.json", appeal -> {
+                final List<Attachment> attachments = List.of(invalidAttachement);
+                appeal.getReason().getOther().setAttachments(attachments);
+                return appeal;
+            });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidAppeal))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(content().json("{'penaltyIdentifier':'penaltyIdentifier must not be null'}"));
+    }
+
+    @Test
     public void whenExceptionFromService_return500() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
@@ -119,13 +146,17 @@ public class AppealControllerTest_POST {
             .andExpect(status().isInternalServerError());
     }
 
-    private String asJsonString(String pathname) {
+    private String asJsonString(final String pathname, final Function<Appeal, Appeal> appealModifier) {
         try {
-            Appeal appeal = mapper.readValue(new File(pathname), Appeal.class);
-            return new ObjectMapper().writeValueAsString(appeal);
-        } catch (Exception e) {
+            final Appeal appeal = mapper.readValue(new File(pathname), Appeal.class);
+            return new ObjectMapper().writeValueAsString(appealModifier.apply(appeal));
+        } catch (final Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String asJsonString(final String pathname) {
+        return asJsonString(pathname, Function.identity());
     }
 
     private HttpHeaders createHttpHeaders() {

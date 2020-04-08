@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.service;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -7,12 +8,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,11 +40,22 @@ public class AppealServiceTest {
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
 
+    private final ObjectMapper mapper = new ObjectMapper();
+    private List<Attachment> testAttachments;
+
     @InjectMocks
     private AppealService appealService;
 
     @Mock
     private AppealRepository appealRepository;
+
+    @Before
+    public void beforeTest() throws IOException {
+        testAttachments = mapper.readValue(
+            new File("src/test/resources/data/listOfValidAttachments.json"),
+            List.class
+        );
+    }
 
     @Test
     public void testCreateAppeal_returnsResourceId() throws Exception {
@@ -105,6 +123,7 @@ public class AppealServiceTest {
         assertEquals(TEST_COMPANY_ID, appeal.getPenaltyIdentifier().getCompanyNumber());
         assertEquals(TEST_REASON_TITLE, appeal.getReason().getOther().getTitle());
         assertEquals(TEST_REASON_DESCRIPTION, appeal.getReason().getOther().getDescription());
+        assertEquals(testAttachments, appeal.getReason().getOther().getAttachments());
     }
 
     @Test
@@ -120,6 +139,7 @@ public class AppealServiceTest {
 
     private Appeal getValidAppeal() {
 
+
         PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
         penaltyIdentifier.setPenaltyReference(TEST_PENALTY_REFERENCE);
         penaltyIdentifier.setCompanyNumber(TEST_COMPANY_ID);
@@ -127,6 +147,8 @@ public class AppealServiceTest {
         OtherReason otherReason = new OtherReason();
         otherReason.setTitle(TEST_REASON_TITLE);
         otherReason.setDescription(TEST_REASON_DESCRIPTION);
+        
+        otherReason.setAttachments(testAttachments);
 
         Reason reason = new Reason();
         reason.setOther(otherReason);
