@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.service.AppealService;
 
@@ -39,7 +36,7 @@ public class AppealController {
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AppealController.class);
 
     private final AppealService appealService;
-    
+
     public AppealController(AppealService appealService) {
         this.appealService = appealService;
     }

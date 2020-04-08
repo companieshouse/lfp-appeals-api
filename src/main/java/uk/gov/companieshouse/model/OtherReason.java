@@ -1,8 +1,9 @@
 package uk.gov.companieshouse.model;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public class OtherReason {
     @NotBlank(message = "description must not be blank")
     private String description;
 
-    @NotNull()
+    @Valid
     private List<Attachment> attachments;
 
     public String getTitle() {
@@ -29,23 +30,26 @@ public class OtherReason {
         return attachments;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
+    public void setAttachments(final List<Attachment> attachments) {
+        if (attachments == null) {
+            this.attachments = Collections.emptyList();
+        }
         this.attachments = attachments;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OtherReason that = (OtherReason) o;
+        final OtherReason that = (OtherReason) o;
         return Objects.equals(title, that.title) &&
             Objects.equals(description, that.description) && 
             attachments.equals(that.attachments);
@@ -59,7 +63,7 @@ public class OtherReason {
     @Override
     public String toString() {
 
-        String attachmentsAsString = attachments.stream()
+        final String attachmentsAsString = attachments.stream()
             .reduce("", (a, b) -> a + ", [" + b.toString() + "]", String::concat);
 
         return "OtherReason{" +

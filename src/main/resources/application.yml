@@ -5,6 +5,3 @@ spring:
   data:
     mongodb:
       uri: ${APPEALS_API_MONGODB_URL}
- 
-appeals:
-  maxFileSize: 5000000

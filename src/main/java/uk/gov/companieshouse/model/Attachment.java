@@ -2,23 +2,21 @@ package uk.gov.companieshouse.model;
 
 import java.util.Objects;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import org.springframework.beans.factory.annotation.Value;
-
-
-public class Attachment { 
+public class Attachment {
 
     @NotBlank(message = "attachement id must not be null.")
     private String id;
-    @NotBlank(message = "name must not be null.")
+
+    @NotBlank(message = "name must not be blank.")
     private String name;
-    @NotBlank(message = "contentType must not be null.")
+
+    @NotBlank(message = "contentType must not be blank.")
     private String contentType;
-    @Min(1)
+
+    @NotNull()
     private Integer size;
 
     public String getId() {

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,10 +52,14 @@ public class AppealServiceTest {
 
     @Before
     public void beforeTest() throws IOException {
-        testAttachments = mapper.readValue(
-            new File("src/test/resources/data/listOfValidAttachments.json"),
+        List<Object> listOfAttachmentObjects = mapper.readValue(
+            new File("src/test/resources/data/listOfValidAttachments.json"), 
             List.class
         );
+                
+        testAttachments = listOfAttachmentObjects.stream()
+                .map(obj -> mapper.convertValue(obj, Attachment.class))
+                .collect(Collectors.toList());
     }
 
     @Test
@@ -147,7 +152,6 @@ public class AppealServiceTest {
         OtherReason otherReason = new OtherReason();
         otherReason.setTitle(TEST_REASON_TITLE);
         otherReason.setDescription(TEST_REASON_DESCRIPTION);
-        
         otherReason.setAttachments(testAttachments);
 
         Reason reason = new Reason();

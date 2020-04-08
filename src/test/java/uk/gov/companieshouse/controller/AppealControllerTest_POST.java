@@ -17,8 +17,10 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -45,26 +47,46 @@ public class AppealControllerTest_POST {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private String validAppeal;
+    private List<Attachment> attachments;
 
     @BeforeEach
     public void setUp() throws Exception {
 
-        when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
-            .thenReturn(TEST_RESOURCE_ID);
+        when(appealService.saveAppeal(any(Appeal.class), any(String.class))).thenReturn(TEST_RESOURCE_ID);
 
         validAppeal = asJsonString("src/test/resources/data/validAppeal.json");
+        List<Object> listOfAttachmentObjects = mapper.readValue(
+            new File("src/test/resources/data/listOfValidattachments.json"), 
+            ArrayList.class);
+
+        attachments = listOfAttachmentObjects.stream()
+            .map(obj -> mapper.convertValue(obj, Attachment.class))
+            .collect(Collectors.toList());
     }
 
     @Test
     public void whenValidInput_return201() throws Exception {
 
-        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .headers(createHttpHeaders())
-            .content(validAppeal))
-            .andExpect(status().isCreated())
-            .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
+        String validAppealWithAttachments = asJsonString("src/test/resources/data/validAppeal.json", appeal -> {        
+            appeal.getReason().getOther().setAttachments(attachments);
+            return appeal;
+        });
+
+        List<String> validAppeals = List.of(
+            validAppeal,
+            validAppealWithAttachments
+        );
+
+        for (String appeal : validAppeals) {
+            mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(createHttpHeaders())
+                .content(appeal))
+                .andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
                 + TEST_RESOURCE_ID));
+        }
+        
     }
 
     @Test
@@ -113,24 +135,20 @@ public class AppealControllerTest_POST {
     @Test
     public void whenInvalidAttachment_return422() throws Exception {
 
-        final Attachment invalidAttachement = mapper.readValue(
-            new File("src/test/resources/data/invalidAttachement.json"), 
-            Attachment.class
-        );
-
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/validAppeal.json", appeal -> {
-                final List<Attachment> attachments = List.of(invalidAttachement);
-                appeal.getReason().getOther().setAttachments(attachments);
+                final Attachment invalidAttachment = attachments.get(0);
+                invalidAttachment.setName("");
+                appeal.getReason().getOther().setAttachments(List.of(invalidAttachment));
                 return appeal;
             });
-
+        
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .headers(createHttpHeaders())
             .content(invalidAppeal))
             .andExpect(status().isUnprocessableEntity())
-            .andExpect(content().json("{'penaltyIdentifier':'penaltyIdentifier must not be null'}"));
+            .andExpect(content().json("{'reason.other.attachments[0].name':'name must not be blank.'}"));
     }
 
     @Test
