@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +18,8 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -55,13 +54,10 @@ public class AppealControllerTest_POST {
         when(appealService.saveAppeal(any(Appeal.class), any(String.class))).thenReturn(TEST_RESOURCE_ID);
 
         validAppeal = asJsonString("src/test/resources/data/validAppeal.json");
-        List<Object> listOfAttachmentObjects = mapper.readValue(
-            new File("src/test/resources/data/listOfValidattachments.json"), 
-            ArrayList.class);
-
-        attachments = listOfAttachmentObjects.stream()
-            .map(obj -> mapper.convertValue(obj, Attachment.class))
-            .collect(Collectors.toList());
+        attachments = mapper.readValue(
+            new File("src/test/resources/data/listOfValidAttachments.json"), 
+            new TypeReference<List<Attachment>>() { }
+        );
     }
 
     @Test
@@ -148,7 +144,7 @@ public class AppealControllerTest_POST {
             .headers(createHttpHeaders())
             .content(invalidAppeal))
             .andExpect(status().isUnprocessableEntity())
-            .andExpect(content().json("{'reason.other.attachments[0].name':'name must not be blank.'}"));
+            .andExpect(content().json("{'reason.other.attachments[0].name':'attachment name must not be blank'}"));
     }
 
     @Test

@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,14 +52,10 @@ public class AppealServiceTest {
 
     @BeforeAll
     public static void beforeTest() throws IOException {
-        List<Object> listOfAttachmentObjects = mapper.readValue(
+        testAttachments = mapper.readValue(
             new File("src/test/resources/data/listOfValidAttachments.json"), 
-            List.class
+            new TypeReference<List<Attachment>>() { }
         );
-                
-        testAttachments = listOfAttachmentObjects.stream()
-                .map(obj -> mapper.convertValue(obj, Attachment.class))
-                .collect(Collectors.toList());
     }
 
     @Test
