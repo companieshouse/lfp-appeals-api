@@ -2,21 +2,23 @@ package uk.gov.companieshouse.model;
 
 import java.util.Objects;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class Attachment {
 
-    @NotBlank(message = "attachement id must not be null.")
+    @NotBlank(message = "attachment id must not be blank")
     private String id;
 
-    @NotBlank(message = "name must not be blank.")
+    @NotBlank(message = "attachment name must not be blank")
     private String name;
 
-    @NotBlank(message = "contentType must not be blank.")
+    @NotBlank(message = "attachment contentType must not be blank")
     private String contentType;
 
-    @NotNull()
+    @NotNull
+    @Min(1)
     private Integer size;
 
     public String getId() {
@@ -31,7 +33,7 @@ public class Attachment {
         return contentType;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return size;
     }
 
@@ -47,7 +49,7 @@ public class Attachment {
         this.contentType = contentType;
     }
 
-    public void setSize(int size) {
+    public void setSize(Integer size) {
         this.size = size;
     }
 
