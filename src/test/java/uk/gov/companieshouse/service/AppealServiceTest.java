@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.service;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -41,8 +41,8 @@ public class AppealServiceTest {
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
 
-    private final ObjectMapper mapper = new ObjectMapper();
-    private List<Attachment> testAttachments;
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static List<Attachment> testAttachments;
 
     @InjectMocks
     private AppealService appealService;
@@ -50,8 +50,8 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
-    @Before
-    public void beforeTest() throws IOException {
+    @BeforeAll
+    public static void beforeTest() throws IOException {
         List<Object> listOfAttachmentObjects = mapper.readValue(
             new File("src/test/resources/data/listOfValidAttachments.json"), 
             List.class
@@ -128,6 +128,7 @@ public class AppealServiceTest {
         assertEquals(TEST_COMPANY_ID, appeal.getPenaltyIdentifier().getCompanyNumber());
         assertEquals(TEST_REASON_TITLE, appeal.getReason().getOther().getTitle());
         assertEquals(TEST_REASON_DESCRIPTION, appeal.getReason().getOther().getDescription());
+        assertFalse(testAttachments.isEmpty());
         assertEquals(testAttachments, appeal.getReason().getOther().getAttachments());
     }
 
