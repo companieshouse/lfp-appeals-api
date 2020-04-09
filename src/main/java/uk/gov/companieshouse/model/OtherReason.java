@@ -51,8 +51,8 @@ public class OtherReason {
         if (o == null || getClass() != o.getClass()) return false;
         final OtherReason that = (OtherReason) o;
         return Objects.equals(title, that.title) &&
-            Objects.equals(description, that.description) && 
-            attachments.equals(that.attachments);
+               Objects.equals(description, that.description) && 
+               attachments.equals(that.attachments);
     }
 
     @Override

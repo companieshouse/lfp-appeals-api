@@ -58,7 +58,10 @@ public class Attachment {
         if (o == null || getClass() != o.getClass())
             return false;
         Attachment that = (Attachment) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return Objects.equals(id, that.id) && 
+               Objects.equals(name, that.name) && 
+               Objects.equals(contentType, that.contentType) &&
+               Objects.equals(size, that.size);
     }
 
     @Override
