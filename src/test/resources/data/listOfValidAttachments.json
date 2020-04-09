@@ -1,0 +1,14 @@
+[
+    {
+      "id": "123",
+      "name": "something.txt",
+      "contentType": "text/plain",
+      "size": 1000
+    },
+    {
+      "id": "1234",
+      "name": "somethingElse.txt",
+      "contentType": "text/plain",
+      "size": 123
+    }
+  ]
