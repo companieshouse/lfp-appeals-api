@@ -17,8 +17,8 @@ public class Attachment {
     @NotBlank(message = "attachment contentType must not be blank")
     private String contentType;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "attachment size must not be null")
+    @Min(value = 1, message = "attachment size must be greater than 0 bytes")
     private Integer size;
 
     public String getId() {
