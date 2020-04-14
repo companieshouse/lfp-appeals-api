@@ -4,7 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>uk.gov.companieshouse</groupId>
+    <parent>
+        <groupId>uk.gov.companieshouse</groupId>
+        <artifactId>companies-house-parent</artifactId>
+        <version>1.2.0</version>
+    </parent>
+
     <artifactId>lfp-appeals-api</artifactId>
     <version>0.0.1</version>
 
@@ -15,10 +20,6 @@
         <!-- Versions -->
         <version.spring.boot>2.2.6.RELEASE</version.spring.boot>
         <version.springdoc.openapi>1.3.1</version.springdoc.openapi>
-        <!-- Sonar configuration -->
-        <sonar.host.url>${CODE_ANALYSIS_HOST_URL}</sonar.host.url>
-        <sonar.login>${CODE_ANALYSIS_LOGIN}</sonar.login>
-        <sonar.password>${CODE_ANALYSIS_PASSWORD}</sonar.password>
     </properties>
 
     <dependencies>
@@ -113,21 +114,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.5</version>
-                <executions>
-                    <execution>
-                        <id>default-prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
