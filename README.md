@@ -1,4 +1,5 @@
 # LFP Appeals Processor API
+
 ## Technologies
 - [OpenJDK 11](https://jdk.java.net/archive/)
 - [Maven](https://maven.apache.org/download.cgi)
