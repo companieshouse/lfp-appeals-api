@@ -13,6 +13,7 @@ import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
@@ -90,9 +91,13 @@ public class AppealControllerTest_GET {
         Reason reason = new Reason();
         reason.setOther(otherReason);
 
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setId("123abc456");
+
         Appeal appeal = new Appeal();
         appeal.setPenaltyIdentifier(penaltyIdentifier);
         appeal.setReason(reason);
+        appeal.setCreatedBy(createdBy);
 
         return appeal;
     }

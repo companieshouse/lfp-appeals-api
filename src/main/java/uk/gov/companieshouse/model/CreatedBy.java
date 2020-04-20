@@ -2,8 +2,11 @@ package uk.gov.companieshouse.model;
 
 import java.util.Objects;
 
-public class CreatedBy {
+import com.fasterxml.jackson.annotation.JsonAlias;
 
+public class CreatedBy {
+    
+    @JsonAlias({"_id"})
     private String id;
 
     public String getId() {

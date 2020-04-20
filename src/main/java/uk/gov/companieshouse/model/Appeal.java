@@ -20,7 +20,6 @@ public class Appeal {
     @JsonIgnore
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     private CreatedBy createdBy;
 
     @Valid

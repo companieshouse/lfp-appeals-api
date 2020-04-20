@@ -8,5 +8,8 @@
       "title": "This is a title",
       "description": "This is a description"
     }
+  },
+  "createdBy": {
+    "_id": "123abc456"
   }
 }
