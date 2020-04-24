@@ -63,13 +63,13 @@ public class OtherReason {
     @Override
     public String toString() {
 
-        final String attachmentsAsString = attachments.stream()
-            .reduce("", (a, b) -> a + ", [" + b.toString() + "]", String::concat);
+        final String attachmentsAsString = attachments != null ? attachments.stream()
+            .reduce("", (a, b) -> a + ", [" + b.toString() + "]", String::concat) : "";
 
         return "OtherReason{" +
             "title='" + title + '\'' +
             ", description='" + description + '\'' +
-            ", attachements='" + attachmentsAsString + '\'' +
+            ", attachments='" + attachmentsAsString + '\'' +
             '}';
     }
 }
