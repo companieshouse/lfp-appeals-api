@@ -74,7 +74,7 @@ public class AppealController {
                 .buildAndExpand(id)
                 .toUri();
 
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(id);
 
         } catch (Exception ex) {
             LOGGER.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
