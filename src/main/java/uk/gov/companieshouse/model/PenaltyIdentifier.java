@@ -12,7 +12,7 @@ public class PenaltyIdentifier {
     private String companyNumber;
 
     @NotBlank(message = "penaltyReference must not be blank")
-    @Pattern(regexp = "([A-Z][0-9]{8})|(PEN[1-9]A/((SC|NI)[0-9]{1,6}|[0-9]{1,8}))",
+    @Pattern(regexp = "([A-Z0-9/]{8,14})",
         message = "penaltyReference is invalid")
     private String penaltyReference;
 
