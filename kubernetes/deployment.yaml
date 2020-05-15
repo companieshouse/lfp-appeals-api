@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lfp-appeals-api
+spec:
+  selector:
+    matchLabels:
+      app: lfp-appeals-api
+  template:
+    metadata:
+      labels:
+        app: lfp-appeals-api
+    spec:
+      containers:
+        - name: lfp-appeals-api
+          image: lfp-appeals-api:1.0.0
+          env:
+            - name: APPEALS_API_MONGODB_URL
+              value: 'mongodb://mongo/appeals'
+          ports:
+            - containerPort: 9000

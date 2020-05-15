@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lfp-appeals-api
+spec:
+  selector:
+    app: lfp-appeals-api
+  ports:
+    - protocol: TCP
+      port: 9000

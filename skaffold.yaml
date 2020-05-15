@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta3
+kind: Config
+metadata:
+  name: lfp-appeals-api
+build:
+  artifacts:
+    - image: lfp-appeals-api
+      jib: {}
+deploy:
+  kubectl:
+    manifests:
+    - kubernetes/deployment.yaml
+    - kubernetes/service.yaml
