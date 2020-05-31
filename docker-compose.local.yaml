@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  lfp-appeals-api:
+    environment:
+      - APPEALS_API_MONGODB_URL=mongodb://mongo/appeals
+    networks:
+      - chs-dev
