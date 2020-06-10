@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
+import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.ChipsContact;
@@ -155,7 +156,7 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
 
         verify(appealRepository).insert(appealArgumentCaptor.capture());
         verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
@@ -176,7 +177,7 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
 
         verify(appealRepository).insert(appealArgumentCaptor.capture());
         verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
@@ -195,7 +196,7 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        Assertions.assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
 
         verify(appealRepository).insert(appealArgumentCaptor.capture());
         verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
