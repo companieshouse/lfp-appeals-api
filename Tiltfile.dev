@@ -1,5 +1,5 @@
 local_resource(
-  name = 'lfp-appeals-api-build',
+  name = 'dev:lfp-appeals-api-build',
   cmd = 'mvn compile',
   deps = ['src']
 )
