@@ -21,6 +21,8 @@ import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +49,7 @@ public class AppealServiceTest {
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final ObjectMapper mapper = new ObjectMapper();
     private static List<Attachment> testAttachments;
 
@@ -230,6 +233,18 @@ public class AppealServiceTest {
         assertEquals(Optional.empty(), appealOpt);
     }
 
+    @Test
+    public void testBuildChipsContact() {
+
+        Appeal appeal = getValidAppeal();
+
+        ChipsContact chipsContact = appealService.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        assertEquals(expectedContactDescription(), chipsContact.getContactDescription());
+    }
+
     private Appeal getValidAppeal() {
 
         PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
@@ -247,7 +262,19 @@ public class AppealServiceTest {
         Appeal appeal = new Appeal();
         appeal.setPenaltyIdentifier(penaltyIdentifier);
         appeal.setReason(reason);
+        appeal.setCreatedAt(LocalDateTime.now());
 
         return appeal;
+    }
+
+    private static String expectedContactDescription() {
+        return "Appeal submitted" +
+            "\n\nYour reference number is your company number " + TEST_COMPANY_ID +
+            "\n\nCompany Number: " + TEST_COMPANY_ID +
+            "\nEmail address: " +
+            "\n\nAppeal Reason" +
+            "\nReason: " + TEST_REASON_TITLE +
+            "\nFurther information: " + TEST_REASON_DESCRIPTION +
+            "\nSupporting documents: None";
     }
 }

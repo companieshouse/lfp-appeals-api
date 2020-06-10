@@ -16,7 +16,6 @@ import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;

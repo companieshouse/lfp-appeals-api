@@ -82,7 +82,6 @@ public class AppealControllerTest_POST {
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
                 + TEST_RESOURCE_ID));
         }
-        
     }
 
     @Test

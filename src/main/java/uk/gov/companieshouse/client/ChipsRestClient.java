@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.client;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +14,7 @@ import uk.gov.companieshouse.model.ChipsContact;
 @Component
 public class ChipsRestClient {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ChipsRestClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChipsRestClient.class);
 
     private final RestTemplate restTemplate;
 

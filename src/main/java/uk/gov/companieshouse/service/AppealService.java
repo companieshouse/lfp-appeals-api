@@ -88,7 +88,7 @@ public class AppealService {
         }
     }
 
-    private ChipsContact buildChipsContact(Appeal appeal) {
+    protected ChipsContact buildChipsContact(Appeal appeal) {
 
         final String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
         final OtherReason otherReason = appeal.getReason().getOther();
@@ -97,17 +97,14 @@ public class AppealService {
         chipsContact.setCompanyNumber(companyNumber);
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
 
-        final String contactDescription = "Appeal submitted \n" +
-            "\n" +
-            "Your reference number is your company number " + companyNumber + "\n" +
-            "\n" +
-            "Company Number: " + companyNumber + "\n" +
-            "Email address: " + "\n" +
-            "\n" +
-            "Appeal Reason" + "\n" +
-            "Reason: " + otherReason.getTitle() + "\n" +
-            "Further information: " + otherReason.getDescription() + "\n" +
-            "Supporting documents: None";
+        final String contactDescription = "Appeal submitted" +
+            "\n\nYour reference number is your company number " + companyNumber +
+            "\n\nCompany Number: " + companyNumber +
+            "\nEmail address: " +
+            "\n\nAppeal Reason" +
+            "\nReason: " + otherReason.getTitle() +
+            "\nFurther information: " + otherReason.getDescription() +
+            "\nSupporting documents: None";
 
         chipsContact.setContactDescription(contactDescription);
 
