@@ -15,6 +15,7 @@ import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
@@ -49,6 +50,8 @@ public class AppealServiceTest {
     private static final String TEST_PENALTY_REFERENCE = "A12345678";
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
+    private static final String TEST_EMAIL_ADDRESS = "someone@email.com";
+    private static final String TEST_CHIPS_URL = "http://someurl";
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -127,7 +130,7 @@ public class AppealServiceTest {
     public void testCreateAppealChipsEnabled_returnsResourceId() throws Exception {
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn("http://someurl");
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString()))
             .thenReturn(ResponseEntity.accepted().build());
@@ -146,7 +149,7 @@ public class AppealServiceTest {
         final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn("http://someurl");
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString()))
             .thenReturn(ResponseEntity.badRequest().build());
@@ -168,7 +171,7 @@ public class AppealServiceTest {
         final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn("http://someurl");
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString())).thenReturn(null);
 
@@ -189,7 +192,7 @@ public class AppealServiceTest {
         final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn("http://someurl");
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         final Appeal appeal = getValidAppeal();
         appeal.setId(TEST_RESOURCE_ID);
@@ -264,6 +267,9 @@ public class AppealServiceTest {
         appeal.setPenaltyIdentifier(penaltyIdentifier);
         appeal.setReason(reason);
         appeal.setCreatedAt(LocalDateTime.now());
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setEmailAddress(TEST_EMAIL_ADDRESS);
+        appeal.setCreatedBy(createdBy);
 
         return appeal;
     }
@@ -272,7 +278,7 @@ public class AppealServiceTest {
         return "Appeal submitted" +
             "\n\nYour reference number is your company number " + TEST_COMPANY_ID +
             "\n\nCompany Number: " + TEST_COMPANY_ID +
-            "\nEmail address: " +
+            "\nEmail address: " + TEST_EMAIL_ADDRESS +
             "\n\nAppeal Reason" +
             "\nReason: " + TEST_REASON_TITLE +
             "\nFurther information: " + TEST_REASON_DESCRIPTION +

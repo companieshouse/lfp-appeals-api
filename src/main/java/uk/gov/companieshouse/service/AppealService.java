@@ -38,9 +38,7 @@ public class AppealService {
 
     public String saveAppeal(Appeal appeal, String userId) throws Exception {
 
-        final CreatedBy createdBy = new CreatedBy();
-        createdBy.setId(userId);
-        appeal.setCreatedBy(createdBy);
+        appeal.getCreatedBy().setId(userId);
 
         final LocalDateTime createdAt = LocalDateTime.now();
         appeal.setCreatedAt(createdAt);
@@ -101,7 +99,7 @@ public class AppealService {
         final String contactDescription = "Appeal submitted" +
             "\n\nYour reference number is your company number " + companyNumber +
             "\n\nCompany Number: " + companyNumber +
-            "\nEmail address: " +
+            "\nEmail address: " + appeal.getCreatedBy().getEmailAddress() +
             "\n\nAppeal Reason" +
             "\nReason: " + otherReason.getTitle() +
             "\nFurther information: " + otherReason.getDescription() +
