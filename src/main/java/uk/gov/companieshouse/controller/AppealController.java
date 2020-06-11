@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -10,15 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.service.AppealService;
@@ -95,10 +88,29 @@ public class AppealController {
 
         LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
 
-        final Optional<Appeal> appeal = appealService.getAppeal(id);
+        final Optional<Appeal> appeal = appealService.getAppealById(id);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
+    @Operation(summary = "Get an appeal by penalty reference", tags = "Appeal")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Appeal not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Appeal> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
+                                                              @RequestParam(name="penaltyReference") final String penaltyId) {
+
+        LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyId);
+
+        final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(companyId, penaltyId);
+
+        return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
+            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

@@ -37,7 +37,7 @@ public class AppealServiceTest {
     private static final String TEST_RESOURCE_ID = "1";
     private static final String TEST_ERIC_ID = "1";
     private static final String TEST_COMPANY_ID = "12345678";
-    private static final String TEST_PENALTY_REFERENCE = "A12345678";
+    private static final String TEST_PENALTY_REFERENCE = "A1234567";
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
 
@@ -114,7 +114,7 @@ public class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(validAppeal));
 
-        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+        final Optional<Appeal> appealOpt = appealService.getAppealById(TEST_RESOURCE_ID);
 
         assertTrue(appealOpt.isPresent());
 
@@ -133,7 +133,39 @@ public class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+        final Optional<Appeal> appealOpt = appealService.getAppealById(TEST_RESOURCE_ID);
+
+        assertFalse(appealOpt.isPresent());
+        assertEquals(Optional.empty(), appealOpt);
+    }
+
+    @Test
+    public void testGetAppealByPenaltyReference_returnsAppeal() {
+
+        final Appeal validAppeal = getValidAppeal();
+
+        when(appealRepository.findByPenaltyReference(any(String.class),any(String.class))).thenReturn(Optional.of(validAppeal));
+
+        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_COMPANY_ID, TEST_PENALTY_REFERENCE);
+
+        assertTrue(appealOpt.isPresent());
+
+        Appeal appeal = appealOpt.get();
+
+        assertEquals(TEST_PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference());
+        assertEquals(TEST_COMPANY_ID, appeal.getPenaltyIdentifier().getCompanyNumber());
+        assertEquals(TEST_REASON_TITLE, appeal.getReason().getOther().getTitle());
+        assertEquals(TEST_REASON_DESCRIPTION, appeal.getReason().getOther().getDescription());
+        assertFalse(testAttachments.isEmpty());
+        assertEquals(testAttachments, appeal.getReason().getOther().getAttachments());
+    }
+
+    @Test
+    public void testGetAppealByPenaltyReference_returnsEmptyAppeal() {
+
+        when(appealRepository.findByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.empty());
+
+        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_COMPANY_ID, TEST_PENALTY_REFERENCE);
 
         assertFalse(appealOpt.isPresent());
         assertEquals(Optional.empty(), appealOpt);

@@ -7,6 +7,7 @@ import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,7 +36,11 @@ public class AppealService {
                     penaltyIdentifier.getCompanyNumber(), penaltyIdentifier.getPenaltyReference(), userId)));
     }
 
-    public Optional<Appeal> getAppeal(String id) {
+    public Optional<Appeal> getAppealById(String id) {
         return appealRepository.findById(id);
+    }
+
+    public Optional<Appeal> getAppealByPenaltyReference(String companyNumber, String penaltyReference){
+        return appealRepository.findByPenaltyReference(companyNumber, penaltyReference);
     }
 }

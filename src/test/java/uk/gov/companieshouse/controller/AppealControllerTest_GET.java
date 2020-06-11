@@ -33,6 +33,7 @@ public class AppealControllerTest_GET {
     private final String APPEALS_URI = "/companies/{company-id}/appeals";
     private final String TEST_RESOURCE_ID = "1";
     private final String TEST_COMPANY_ID = "12345678";
+    private final String TEST_PENALTY_ID = "A1234567";
 
     @MockBean
     private AppealService appealService;
@@ -43,9 +44,9 @@ public class AppealControllerTest_GET {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void whenAppealExists_return200() throws Exception {
+    public void whenAppealExistsById_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+        when(appealService.getAppealById(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
 
         final String validAppeal = asJsonString();
 
@@ -56,11 +57,35 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealDoesNotExist_return404() throws Exception {
+    public void whenAppealDoesNotExistById_return404() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
+        when(appealService.getAppealById(any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    public void whenAppealExistsByPenalty_return200() throws Exception {
+
+        when(appealService.getAppealByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+
+        final String validAppeal = asJsonString();
+
+        mockMvc.perform(get(APPEALS_URI + "?penaltyReference={id}", TEST_COMPANY_ID, TEST_PENALTY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(content().json(validAppeal));
+    }
+
+    @Test
+    public void whenAppealDoesNotExistByPenalty_return404() throws Exception {
+
+        when(appealService.getAppealByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(get(APPEALS_URI + "?penaltyReference={id}", TEST_COMPANY_ID, TEST_PENALTY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());
