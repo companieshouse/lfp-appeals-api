@@ -7,7 +7,6 @@ import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service

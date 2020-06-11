@@ -4,9 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.PenaltyIdentifier;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
