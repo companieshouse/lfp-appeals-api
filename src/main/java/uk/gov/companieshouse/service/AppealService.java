@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.service;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Service
 public class AppealService {
 
-    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(AppealService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealService.class);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final AppealRepository appealRepository;
