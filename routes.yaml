@@ -2,5 +2,6 @@ app_name: lfp-appeals-api
 group: api 
 weight: 900
 routes:
-  1: ^/companies/(.*)/appeals/.*
-  2: ^/companies/(.*)/appeals
+  1: ^/companies/(.*)/appeals:penaltyReference
+  2: ^/companies/(.*)/appeals/.*
+  3: ^/companies/(.*)/appeals
