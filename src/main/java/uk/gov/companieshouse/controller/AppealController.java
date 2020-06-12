@@ -101,7 +101,7 @@ public class AppealController {
     })
     @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Appeal> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
-                                                              @RequestParam(name="penaltyReference") final String penaltyId) {
+                                                              @RequestParam(value="penaltyReference") final String penaltyId) {
 
         LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyId);
 
