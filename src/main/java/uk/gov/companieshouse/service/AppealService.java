@@ -3,14 +3,12 @@ package uk.gov.companieshouse.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.ChipsContact;
-import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.repository.AppealRepository;
@@ -75,15 +73,12 @@ public class AppealService {
         LOGGER.debug("Creating contact in chips for companyId: {}, penaltyReference: {} and " +
             "userId: {}", penaltyIdentifier.getCompanyNumber(), penaltyIdentifier.getPenaltyReference(), userId);
 
-        ResponseEntity<String> responseEntity = chipsRestClient.createContactInChips(chipsContact,
-            chipsConfiguration.getChipsRestServiceUrl());
-
-        if (responseEntity == null || !responseEntity.getStatusCode().is2xxSuccessful()) {
+        try {
+            chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
+        } catch (ChipsServiceException chipsServiceException) {
             LOGGER.debug("Deleting appeal with id {} from mongodb", id);
             appealRepository.deleteById(id);
-            throw new ChipsServiceException(String.format("Contact cannot be created in chips for companyId: %s, " +
-                    "penaltyReference: %s and userId: %s", penaltyIdentifier.getCompanyNumber(),
-                penaltyIdentifier.getPenaltyReference(), userId));
+            throw chipsServiceException;
         }
     }
 

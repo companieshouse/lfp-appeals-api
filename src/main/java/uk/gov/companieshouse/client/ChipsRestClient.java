@@ -5,16 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.ChipsContact;
 
 @Component
 public class ChipsRestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChipsRestClient.class);
+    private static final String CHIPS_ERROR_MESSAGE = "Failed to create contact in CHIPS for company number: %s";
 
     private final RestTemplate restTemplate;
 
@@ -23,20 +24,21 @@ public class ChipsRestClient {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<String> createContactInChips(ChipsContact contactDetails, String chipsUri) {
+    public void createContactInChips(ChipsContact contactDetails, String chipsUri) {
 
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<ChipsContact> entity = new HttpEntity<>(contactDetails, headers);
+        final HttpEntity<ChipsContact> entity = new HttpEntity<>(contactDetails, new HttpHeaders());
+        final String companyNumber = contactDetails.getCompanyNumber();
+        final ResponseEntity<String> responseEntity;
 
-        ResponseEntity<String> responseEntity;
         try {
-            LOGGER.debug("Making a POST request to: {} for company number: {}", chipsUri, contactDetails.getCompanyNumber());
+            LOGGER.debug("Making a POST request to: {} for company number: {}", chipsUri, companyNumber);
             responseEntity = restTemplate.postForEntity(chipsUri, entity, String.class);
-        } catch (Exception e) {
-            LOGGER.error("Unable to create contact in CHIPS for company number: {}, error: {}",
-                contactDetails.getCompanyNumber(), e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception ex) {
+            throw new ChipsServiceException(String.format(CHIPS_ERROR_MESSAGE, companyNumber), ex);
         }
-        return responseEntity;
+
+        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+            throw new ChipsServiceException(String.format(CHIPS_ERROR_MESSAGE, companyNumber));
+        }
     }
 }

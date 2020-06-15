@@ -9,12 +9,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.ChipsContact;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,28 +44,13 @@ public class ChipsRestClientTest {
         when(restTemplate.postForEntity(TEST_CHIPS_URL, entity, String.class))
             .thenReturn(ResponseEntity.accepted().build());
 
-        final ResponseEntity<String> responseEntity = chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL);
+        chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL);
 
-        assertEquals(new ResponseEntity<String>(HttpStatus.ACCEPTED), responseEntity);
+        verify(restTemplate, times(1)).postForEntity(TEST_CHIPS_URL, entity, String.class);
     }
 
     @Test
-    public void testCreateContactInChips_badRequestReturns500Response() {
-
-        final ChipsContact chipsContact = createChipsContact();
-
-        final HttpEntity<ChipsContact> entity = new HttpEntity<>(chipsContact, new HttpHeaders());
-
-        when(restTemplate.postForEntity(TEST_CHIPS_URL, entity, String.class))
-            .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
-
-        final ResponseEntity<String> responseEntity = chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL);
-
-        assertEquals(new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR), responseEntity);
-    }
-
-    @Test
-    public void testCreateContactInChips_serverErrorReturns500Response() {
+    public void testCreateContactInChips_restCallThrowsException() {
 
         final ChipsContact chipsContact = createChipsContact();
 
@@ -71,9 +59,45 @@ public class ChipsRestClientTest {
         when(restTemplate.postForEntity(TEST_CHIPS_URL, entity, String.class))
             .thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        final ResponseEntity<String> responseEntity = chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL);
+        ChipsServiceException chipsServiceException = assertThrows(ChipsServiceException.class,
+            () -> chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL));
 
-        assertEquals(new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR), responseEntity);
+        assertEquals("Failed to create contact in CHIPS for company number: " + TEST_COMPANY_NUMBER,
+            chipsServiceException.getMessage());
+    }
+
+    @Test
+    public void testCreateContactInChips_badRequestThrowsChipsServiceException() {
+
+        final ChipsContact chipsContact = createChipsContact();
+
+        final HttpEntity<ChipsContact> entity = new HttpEntity<>(chipsContact, new HttpHeaders());
+
+        when(restTemplate.postForEntity(TEST_CHIPS_URL, entity, String.class))
+            .thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+
+        ChipsServiceException chipsServiceException = assertThrows(ChipsServiceException.class,
+            () -> chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL));
+
+        assertEquals("Failed to create contact in CHIPS for company number: " + TEST_COMPANY_NUMBER,
+            chipsServiceException.getMessage());
+    }
+
+    @Test
+    public void testCreateContactInChips_internalServerErrorThrowsChipsServiceException() {
+
+        final ChipsContact chipsContact = createChipsContact();
+
+        final HttpEntity<ChipsContact> entity = new HttpEntity<>(chipsContact, new HttpHeaders());
+
+        when(restTemplate.postForEntity(TEST_CHIPS_URL, entity, String.class))
+            .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
+        ChipsServiceException chipsServiceException = assertThrows(ChipsServiceException.class,
+            () -> chipsRestClient.createContactInChips(chipsContact, TEST_CHIPS_URL));
+
+        assertEquals("Failed to create contact in CHIPS for company number: " + TEST_COMPANY_NUMBER,
+            chipsServiceException.getMessage());
     }
 
     private ChipsContact createChipsContact() {

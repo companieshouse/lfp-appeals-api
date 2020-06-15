@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -8,7 +10,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.exception.ChipsServiceException;
@@ -28,9 +29,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -38,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,7 +72,8 @@ public class AppealServiceTest {
     public static void beforeTest() throws IOException {
         testAttachments = mapper.readValue(
             new File("src/test/resources/data/listOfValidAttachments.json"),
-            new TypeReference<>() { }
+            new TypeReference<>() {
+            }
         );
     }
 
@@ -132,9 +132,6 @@ public class AppealServiceTest {
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
-        when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString()))
-            .thenReturn(ResponseEntity.accepted().build());
-
         final Appeal appeal = getValidAppeal();
         appeal.setId(TEST_RESOURCE_ID);
 
@@ -144,55 +141,14 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsBadRequest() {
+    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsError() {
 
         final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
-        when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString()))
-            .thenReturn(ResponseEntity.badRequest().build());
-
-        final Appeal appeal = getValidAppeal();
-        appeal.setId(TEST_RESOURCE_ID);
-
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
-
-        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
-
-        verify(appealRepository).insert(appealArgumentCaptor.capture());
-        verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
-    }
-
-    @Test
-    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsNull() {
-
-        final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
-
-        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
-
-        when(chipsRestClient.createContactInChips(any(ChipsContact.class), anyString())).thenReturn(null);
-
-        final Appeal appeal = getValidAppeal();
-        appeal.setId(TEST_RESOURCE_ID);
-
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
-
-        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
-
-        verify(appealRepository).insert(appealArgumentCaptor.capture());
-        verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
-    }
-
-    @Test
-    public void testCreateAppealChipsEnabled_throwsExceptionIfUnableToMakeRequest() {
-
-        final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
-
-        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
-        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
+        doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(any(ChipsContact.class), anyString());
 
         final Appeal appeal = getValidAppeal();
         appeal.setId(TEST_RESOURCE_ID);
