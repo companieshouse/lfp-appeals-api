@@ -11,4 +11,5 @@ public interface AppealRepository extends MongoRepository<Appeal, String> {
 
     Appeal insert(Appeal appeal);
     Optional<Appeal> findById(String id);
+    void deleteById(String id);
 }

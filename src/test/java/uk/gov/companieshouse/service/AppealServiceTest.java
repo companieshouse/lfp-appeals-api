@@ -1,14 +1,22 @@
 package uk.gov.companieshouse.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.client.ChipsRestClient;
+import uk.gov.companieshouse.config.ChipsConfiguration;
+import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
+import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
@@ -16,22 +24,23 @@ import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class AppealServiceTest {
 
     private static final String TEST_RESOURCE_ID = "1";
@@ -40,7 +49,10 @@ public class AppealServiceTest {
     private static final String TEST_PENALTY_REFERENCE = "A12345678";
     private static final String TEST_REASON_TITLE = "This is a title";
     private static final String TEST_REASON_DESCRIPTION = "This is a description";
+    private static final String TEST_EMAIL_ADDRESS = "someone@email.com";
+    private static final String TEST_CHIPS_URL = "http://someurl";
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final ObjectMapper mapper = new ObjectMapper();
     private static List<Attachment> testAttachments;
 
@@ -50,11 +62,18 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
+    @Mock
+    private ChipsRestClient chipsRestClient;
+
+    @Mock
+    private ChipsConfiguration chipsConfiguration;
+
     @BeforeAll
     public static void beforeTest() throws IOException {
         testAttachments = mapper.readValue(
-            new File("src/test/resources/data/listOfValidAttachments.json"), 
-            new TypeReference<List<Attachment>>() { }
+            new File("src/test/resources/data/listOfValidAttachments.json"),
+            new TypeReference<>() {
+            }
         );
     }
 
@@ -108,6 +127,41 @@ public class AppealServiceTest {
     }
 
     @Test
+    public void testCreateAppealChipsEnabled_returnsResourceId() throws Exception {
+
+        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
+
+        final Appeal appeal = getValidAppeal();
+        appeal.setId(TEST_RESOURCE_ID);
+
+        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
+
+        assertEquals(TEST_RESOURCE_ID, appealService.saveAppeal(appeal, TEST_ERIC_ID));
+    }
+
+    @Test
+    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsError() {
+
+        final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
+
+        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
+
+        doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(any(ChipsContact.class), anyString());
+
+        final Appeal appeal = getValidAppeal();
+        appeal.setId(TEST_RESOURCE_ID);
+
+        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
+
+        assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+
+        verify(appealRepository).insert(appealArgumentCaptor.capture());
+        verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
+    }
+
+    @Test
     public void testGetAppealById_returnsAppeal() {
 
         final Appeal validAppeal = getValidAppeal();
@@ -139,8 +193,19 @@ public class AppealServiceTest {
         assertEquals(Optional.empty(), appealOpt);
     }
 
-    private Appeal getValidAppeal() {
+    @Test
+    public void testBuildChipsContact() {
 
+        Appeal appeal = getValidAppeal();
+
+        ChipsContact chipsContact = appealService.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        assertEquals(expectedContactDescription(), chipsContact.getContactDescription());
+    }
+
+    private Appeal getValidAppeal() {
 
         PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
         penaltyIdentifier.setPenaltyReference(TEST_PENALTY_REFERENCE);
@@ -157,7 +222,22 @@ public class AppealServiceTest {
         Appeal appeal = new Appeal();
         appeal.setPenaltyIdentifier(penaltyIdentifier);
         appeal.setReason(reason);
+        appeal.setCreatedAt(LocalDateTime.now());
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setEmailAddress(TEST_EMAIL_ADDRESS);
+        appeal.setCreatedBy(createdBy);
 
         return appeal;
+    }
+
+    private static String expectedContactDescription() {
+        return "Appeal submitted" +
+            "\n\nYour reference number is your company number " + TEST_COMPANY_ID +
+            "\n\nCompany Number: " + TEST_COMPANY_ID +
+            "\nEmail address: " + TEST_EMAIL_ADDRESS +
+            "\n\nAppeal Reason" +
+            "\nReason: " + TEST_REASON_TITLE +
+            "\nFurther information: " + TEST_REASON_DESCRIPTION +
+            "\nSupporting documents: None";
     }
 }

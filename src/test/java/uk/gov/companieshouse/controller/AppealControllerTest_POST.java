@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import uk.gov.companieshouse.model.Appeal;
@@ -28,8 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AppealControllerTest_POST {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
@@ -55,8 +54,8 @@ public class AppealControllerTest_POST {
 
         validAppeal = asJsonString("src/test/resources/data/validAppeal.json");
         attachments = mapper.readValue(
-            new File("src/test/resources/data/listOfValidAttachments.json"), 
-            new TypeReference<List<Attachment>>() { }
+            new File("src/test/resources/data/listOfValidAttachments.json"),
+            new TypeReference<>() { }
         );
     }
 
@@ -83,7 +82,6 @@ public class AppealControllerTest_POST {
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
                 + TEST_RESOURCE_ID));
         }
-        
     }
 
     @Test
