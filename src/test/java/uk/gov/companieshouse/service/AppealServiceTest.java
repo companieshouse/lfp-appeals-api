@@ -155,7 +155,7 @@ public class AppealServiceTest {
 
         when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
 
-        Assertions.assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
 
         verify(appealRepository).insert(appealArgumentCaptor.capture());
         verify(appealRepository).deleteById(appealArgumentCaptor.getValue().getId());
