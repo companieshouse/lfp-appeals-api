@@ -109,7 +109,7 @@ public class AppealService {
         return appealRepository.findById(id);
     }
 
-    public Optional<Appeal> getAppealByPenaltyReference(String companyNumber, String penaltyReference){
-        return appealRepository.findByPenaltyReference(companyNumber, penaltyReference);
+    public Optional<Appeal> getAppealByPenaltyReference(String penaltyReference){
+        return appealRepository.findByPenaltyReference(penaltyReference);
     }
 }

@@ -13,8 +13,8 @@ public interface AppealRepository extends MongoRepository<Appeal, String> {
     Appeal insert(Appeal appeal);
     Optional<Appeal> findById(String id);
 
-    @Query("{ 'penaltyIdentifier' : {'companyNumber' : ?0, 'penaltyReference' : ?1 } }")
-    Optional<Appeal> findByPenaltyReference(String companyNumber, String penaltyReference);
+    @Query("{ 'penaltyIdentifier' : {'penaltyReference' : ?0 } }")
+    Optional<Appeal> findByPenaltyReference(String penaltyReference);
 
     void deleteById(String id);
 }

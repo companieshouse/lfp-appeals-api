@@ -2,6 +2,7 @@ package uk.gov.companieshouse.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.objenesis.instantiator.basic.NewInstanceInstantiator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,9 @@ import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
+import java.net.http.HttpTimeoutException;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -69,11 +72,12 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExistsByPenalty_return200() throws Exception {
 
-        when(appealService.getAppealByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+        when(appealService.getAppealByPenaltyReference(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
 
         final String validAppeal = asJsonString();
 
-        mockMvc.perform(get(APPEALS_URI + "?penaltyReference={id}", TEST_COMPANY_ID, TEST_PENALTY_ID)
+        mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
+            .queryParam("penaltyReference", TEST_PENALTY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().json(validAppeal));
@@ -82,9 +86,10 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealDoesNotExistByPenalty_return404() throws Exception {
 
-        when(appealService.getAppealByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.empty());
+        when(appealService.getAppealByPenaltyReference(any(String.class))).thenReturn(Optional.empty());
 
-        mockMvc.perform(get(APPEALS_URI + "?penaltyReference={id}", TEST_COMPANY_ID, TEST_PENALTY_ID)
+        mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
+            .queryParam("penaltyReference", TEST_PENALTY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());

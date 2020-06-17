@@ -197,9 +197,9 @@ public class AppealServiceTest {
 
         final Appeal validAppeal = getValidAppeal();
 
-        when(appealRepository.findByPenaltyReference(any(String.class),any(String.class))).thenReturn(Optional.of(validAppeal));
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.of(validAppeal));
 
-        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_COMPANY_ID, TEST_PENALTY_REFERENCE);
+        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_PENALTY_REFERENCE);
 
         assertTrue(appealOpt.isPresent());
 
@@ -216,9 +216,9 @@ public class AppealServiceTest {
     @Test
     public void testGetAppealByPenaltyReference_returnsEmptyAppeal() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.empty());
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.empty());
 
-        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_COMPANY_ID, TEST_PENALTY_REFERENCE);
+        final Optional<Appeal> appealOpt = appealService.getAppealByPenaltyReference(TEST_PENALTY_REFERENCE);
 
         assertFalse(appealOpt.isPresent());
         assertEquals(Optional.empty(), appealOpt);
