@@ -9,6 +9,7 @@ import uk.gov.companieshouse.model.CreatedBy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.companieshouse.TestData.Appeal.CreatedBy.email;
 import static uk.gov.companieshouse.TestData.Appeal.CreatedBy.id;
 
 @ExtendWith(SpringExtension.class)
@@ -24,7 +25,7 @@ public class CreatedByMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            CreatedByEntity mapped = mapper.map(new CreatedBy(id));
+            CreatedByEntity mapped = mapper.map(new CreatedBy(id, email));
             assertEquals(id, mapped.getId());
         }
     }
@@ -40,6 +41,7 @@ public class CreatedByMapperTest {
         void shouldMapValueWhenValueIsNotNull() {
             CreatedBy mapped = mapper.map(new CreatedByEntity(id));
             assertEquals(id, mapped.getId());
+            assertNull(mapped.getEmailAddress());
         }
     }
 }

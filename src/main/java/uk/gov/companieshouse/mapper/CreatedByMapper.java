@@ -21,6 +21,6 @@ public class CreatedByMapper implements Mapper<CreatedByEntity, CreatedBy> {
         if (value == null) {
             return null;
         }
-        return new CreatedBy(value.getId());
+        return new CreatedBy(value.getId(), null);
     }
 }

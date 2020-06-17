@@ -8,6 +8,7 @@ public interface TestData {
         LocalDateTime createdAt = LocalDateTime.of(2010, 12, 31, 23, 59);
         interface CreatedBy {
             String id = "USER#1";
+            String email = "user@example.com";
         }
         interface PenaltyIdentifier {
             String companyNumber = "12345678";

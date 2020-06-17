@@ -6,35 +6,45 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.client.ChipsRestClient;
+import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
+import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
+import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 
-import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class AppealServiceTest {
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String TEST_CHIPS_URL = "http://someurl";
 
     @InjectMocks
     private AppealService appealService;
@@ -45,13 +55,19 @@ public class AppealServiceTest {
     @Mock
     private AppealRepository appealRepository;
 
+    @Mock
+    private ChipsRestClient chipsRestClient;
+
+    @Mock
+    private ChipsConfiguration chipsConfiguration;
+
     @Test
     public void testCreateAppeal_returnsResourceId() {
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
 
-        assertEquals(TestData.Appeal.id, appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id));
+        assertEquals(TestData.Appeal.id, appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id));
     }
 
     @Test
@@ -60,7 +76,7 @@ public class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
 
-        appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id);
+        appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id);
 
         ArgumentCaptor<AppealEntity> appealArgumentCaptor = ArgumentCaptor.forClass(AppealEntity.class);
         verify(appealRepository).insert(appealArgumentCaptor.capture());
@@ -75,7 +91,7 @@ public class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(null));
 
-        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id)).getMessage();
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id)).getMessage();
         assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
@@ -85,15 +101,44 @@ public class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
-        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id)).getMessage();
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id)).getMessage();
         assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
-    public void testGetAppealById_returnsAppeal() throws IOException {
+    public void testCreateAppealChipsEnabled_returnsResourceId() {
+
+        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
+
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
+
+        assertEquals(TestData.Appeal.id, appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id));
+    }
+
+    @Test
+    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsError() {
+
+        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
+        when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
+
+        doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(any(ChipsContact.class), anyString());
+
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
+
+        assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(createAppeal(), TestData.Appeal.CreatedBy.id));
+
+        verify(appealRepository).insert(createAppealEntity(null));
+        verify(appealRepository).deleteById(TestData.Appeal.id);
+    }
+
+    @Test
+    public void testGetAppealById_returnsAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.id)));
-        when(appealMapper.map(any(AppealEntity.class))).thenReturn(getValidAppeal());
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
 
         Appeal appeal = appealService.getAppeal(TestData.Appeal.id).orElseThrow();
 
@@ -118,11 +163,37 @@ public class AppealServiceTest {
         assertFalse(appeal.isPresent());
     }
 
-    private Appeal getValidAppeal() {
+    @Test
+    public void testBuildChipsContact() {
+
+        Appeal appeal = createAppeal();
+
+        ChipsContact chipsContact = appealService.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        assertEquals(expectedContactDescription(), chipsContact.getContactDescription());
+    }
+
+    private static String expectedContactDescription() {
+        return "Appeal submitted" +
+            "\n\nYour reference number is your company number " + TestData.Appeal.PenaltyIdentifier.companyNumber +
+            "\n\nCompany Number: " + TestData.Appeal.PenaltyIdentifier.companyNumber +
+            "\nEmail address: " + TestData.Appeal.CreatedBy.email +
+            "\n\nAppeal Reason" +
+            "\nReason: " + TestData.Appeal.Reason.OtherReason.title +
+            "\nFurther information: " + TestData.Appeal.Reason.OtherReason.description +
+            "\nSupporting documents: None";
+    }
+
+    private Appeal createAppeal() {
         return new Appeal(
             null,
-            null,
-            null,
+            TestData.Appeal.createdAt,
+            new CreatedBy(
+                TestData.Appeal.CreatedBy.id,
+                TestData.Appeal.CreatedBy.email
+            ),
             new PenaltyIdentifier(
                 TestData.Appeal.PenaltyIdentifier.companyNumber,
                 TestData.Appeal.PenaltyIdentifier.penaltyReference
