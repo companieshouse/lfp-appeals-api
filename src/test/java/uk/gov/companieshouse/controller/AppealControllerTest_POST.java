@@ -152,7 +152,7 @@ public class AppealControllerTest_POST {
     public void whenExceptionFromService_return500() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
-            .thenThrow(Exception.class);
+            .thenThrow(RuntimeException.class);
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)

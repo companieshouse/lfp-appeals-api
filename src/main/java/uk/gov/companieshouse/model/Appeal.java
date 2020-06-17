@@ -2,19 +2,15 @@ package uk.gov.companieshouse.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Document(collection = "appeals")
 public class Appeal {
 
     @JsonIgnore
-    @Id
     private String id;
 
     @JsonIgnore
@@ -30,6 +26,18 @@ public class Appeal {
     @NotNull(message = "reasons must not be null")
     @JsonProperty("reasons")
     private Reason reason;
+
+    public Appeal() {
+        this(null, null, null, null, null);
+    }
+
+    public Appeal(String id, LocalDateTime createdAt, CreatedBy createdBy, PenaltyIdentifier penaltyIdentifier, Reason reason) {
+        this.id = id;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.penaltyIdentifier = penaltyIdentifier;
+        this.reason = reason;
+    }
 
     public String getId() {
         return this.id;

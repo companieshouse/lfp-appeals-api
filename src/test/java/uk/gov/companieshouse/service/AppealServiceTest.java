@@ -1,12 +1,20 @@
 package uk.gov.companieshouse.service;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.database.entity.AppealEntity;
+import uk.gov.companieshouse.database.entity.AttachmentEntity;
+import uk.gov.companieshouse.database.entity.CreatedByEntity;
+import uk.gov.companieshouse.database.entity.OtherReasonEntity;
+import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
+import uk.gov.companieshouse.database.entity.ReasonEntity;
+import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
@@ -14,19 +22,13 @@ import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,98 +36,76 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class AppealServiceTest {
 
-    private static final String TEST_RESOURCE_ID = "1";
-    private static final String TEST_ERIC_ID = "1";
-    private static final String TEST_COMPANY_ID = "12345678";
-    private static final String TEST_PENALTY_REFERENCE = "A12345678";
-    private static final String TEST_REASON_TITLE = "This is a title";
-    private static final String TEST_REASON_DESCRIPTION = "This is a description";
-
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static List<Attachment> testAttachments;
-
     @InjectMocks
     private AppealService appealService;
 
     @Mock
+    private AppealMapper appealMapper;
+
+    @Mock
     private AppealRepository appealRepository;
 
-    @BeforeAll
-    public static void beforeTest() throws IOException {
-        testAttachments = mapper.readValue(
-            new File("src/test/resources/data/listOfValidAttachments.json"), 
-            new TypeReference<List<Attachment>>() { }
-        );
+    @Test
+    public void testCreateAppeal_returnsResourceId() {
+
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
+
+        assertEquals(TestData.Appeal.id, appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id));
     }
 
     @Test
-    public void testCreateAppeal_returnsResourceId() throws Exception {
+    public void testCreateAppeal_verify_createdBy_createdAt_setOnAppeal() {
 
-        final Appeal appeal = getValidAppeal();
-        appeal.setId(TEST_RESOURCE_ID);
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
+        appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id);
 
-        assertEquals(TEST_RESOURCE_ID, appealService.saveAppeal(appeal, TEST_ERIC_ID));
-    }
-
-    @Test
-    public void testCreateAppeal_verify_createdBy_createdAt_setOnAppeal() throws Exception {
-
-        final ArgumentCaptor<Appeal> appealArgumentCaptor = ArgumentCaptor.forClass(Appeal.class);
-
-        final Appeal appeal = getValidAppeal();
-        appeal.setId(TEST_RESOURCE_ID);
-
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
-
-        appealService.saveAppeal(appeal, TEST_ERIC_ID);
-
+        ArgumentCaptor<AppealEntity> appealArgumentCaptor = ArgumentCaptor.forClass(AppealEntity.class);
         verify(appealRepository).insert(appealArgumentCaptor.capture());
 
-        assertEquals(TEST_ERIC_ID, appealArgumentCaptor.getValue().getCreatedBy().getId());
+        assertEquals(TestData.Appeal.CreatedBy.id, appealArgumentCaptor.getValue().getCreatedBy().getId());
         assertNotNull(appealArgumentCaptor.getValue().getCreatedAt());
     }
 
     @Test
     public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
-        final Appeal appeal = getValidAppeal();
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(null));
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(appeal);
-
-        assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id)).getMessage();
+        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
     public void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
 
-        final Appeal appeal = getValidAppeal();
+        when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
-        when(appealRepository.insert(any(Appeal.class))).thenReturn(null);
-
-        assertThrows(Exception.class, () -> appealService.saveAppeal(appeal, TEST_ERIC_ID));
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(new Appeal(), TestData.Appeal.CreatedBy.id)).getMessage();
+        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
-    public void testGetAppealById_returnsAppeal() {
+    public void testGetAppealById_returnsAppeal() throws IOException {
 
-        final Appeal validAppeal = getValidAppeal();
+        when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.id)));
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(getValidAppeal());
 
-        when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(validAppeal));
+        Appeal appeal = appealService.getAppeal(TestData.Appeal.id).orElseThrow();
 
-        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
-
-        assertTrue(appealOpt.isPresent());
-
-        Appeal appeal = appealOpt.get();
-
-        assertEquals(TEST_PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference());
-        assertEquals(TEST_COMPANY_ID, appeal.getPenaltyIdentifier().getCompanyNumber());
-        assertEquals(TEST_REASON_TITLE, appeal.getReason().getOther().getTitle());
-        assertEquals(TEST_REASON_DESCRIPTION, appeal.getReason().getOther().getDescription());
-        assertFalse(testAttachments.isEmpty());
-        assertEquals(testAttachments, appeal.getReason().getOther().getAttachments());
+        assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
+        assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, appeal.getPenaltyIdentifier().getPenaltyReference());
+        assertEquals(TestData.Appeal.Reason.OtherReason.title, appeal.getReason().getOther().getTitle());
+        assertEquals(TestData.Appeal.Reason.OtherReason.description, appeal.getReason().getOther().getDescription());
+        assertEquals(1, appeal.getReason().getOther().getAttachments().size());
+        assertEquals(TestData.Appeal.Reason.Attachment.id, appeal.getReason().getOther().getAttachments().get(0).getId());
+        assertEquals(TestData.Appeal.Reason.Attachment.name, appeal.getReason().getOther().getAttachments().get(0).getName());
+        assertEquals(TestData.Appeal.Reason.Attachment.contentType, appeal.getReason().getOther().getAttachments().get(0).getContentType());
+        assertEquals(TestData.Appeal.Reason.Attachment.size, appeal.getReason().getOther().getAttachments().get(0).getSize());
     }
 
     @Test
@@ -133,31 +113,56 @@ public class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        final Optional<Appeal> appealOpt = appealService.getAppeal(TEST_RESOURCE_ID);
+        Optional<Appeal> appeal = appealService.getAppeal(TestData.Appeal.id);
 
-        assertFalse(appealOpt.isPresent());
-        assertEquals(Optional.empty(), appealOpt);
+        assertFalse(appeal.isPresent());
     }
 
     private Appeal getValidAppeal() {
+        return new Appeal(
+            null,
+            null,
+            null,
+            new PenaltyIdentifier(
+                TestData.Appeal.PenaltyIdentifier.companyNumber,
+                TestData.Appeal.PenaltyIdentifier.penaltyReference
+            ),
+            new Reason(new OtherReason(
+                TestData.Appeal.Reason.OtherReason.title,
+                TestData.Appeal.Reason.OtherReason.description,
+                Lists.newArrayList(new Attachment(
+                    TestData.Appeal.Reason.Attachment.id,
+                    TestData.Appeal.Reason.Attachment.name,
+                    TestData.Appeal.Reason.Attachment.contentType,
+                    TestData.Appeal.Reason.Attachment.size
+                ))
+            ))
+        );
+    }
 
-
-        PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
-        penaltyIdentifier.setPenaltyReference(TEST_PENALTY_REFERENCE);
-        penaltyIdentifier.setCompanyNumber(TEST_COMPANY_ID);
-
-        OtherReason otherReason = new OtherReason();
-        otherReason.setTitle(TEST_REASON_TITLE);
-        otherReason.setDescription(TEST_REASON_DESCRIPTION);
-        otherReason.setAttachments(testAttachments);
-
-        Reason reason = new Reason();
-        reason.setOther(otherReason);
-
-        Appeal appeal = new Appeal();
-        appeal.setPenaltyIdentifier(penaltyIdentifier);
-        appeal.setReason(reason);
-
-        return appeal;
+    private AppealEntity createAppealEntity(String id) {
+        return new AppealEntity(
+            id,
+            TestData.Appeal.createdAt,
+            new CreatedByEntity(TestData.Appeal.CreatedBy.id),
+            new PenaltyIdentifierEntity(
+                TestData.Appeal.PenaltyIdentifier.companyNumber,
+                TestData.Appeal.PenaltyIdentifier.penaltyReference
+            ),
+            new ReasonEntity(
+                new OtherReasonEntity(
+                    TestData.Appeal.Reason.OtherReason.title,
+                    TestData.Appeal.Reason.OtherReason.description,
+                    Lists.newArrayList(
+                        new AttachmentEntity(
+                            TestData.Appeal.Reason.Attachment.id,
+                            TestData.Appeal.Reason.Attachment.name,
+                            TestData.Appeal.Reason.Attachment.contentType,
+                            TestData.Appeal.Reason.Attachment.size
+                        )
+                    )
+                )
+            )
+        );
     }
 }

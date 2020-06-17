@@ -16,6 +16,15 @@ public class PenaltyIdentifier {
         message = "penaltyReference is invalid")
     private String penaltyReference;
 
+    public PenaltyIdentifier() {
+        this(null, null);
+    }
+
+    public PenaltyIdentifier(String companyNumber, String penaltyReference) {
+        this.companyNumber = companyNumber;
+        this.penaltyReference = penaltyReference;
+    }
+
     public String getCompanyNumber() {
         return this.companyNumber;
     }

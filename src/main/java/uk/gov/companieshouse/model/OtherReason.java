@@ -18,6 +18,16 @@ public class OtherReason {
     @Valid
     private List<Attachment> attachments;
 
+    public OtherReason() {
+        this(null, null, Collections.emptyList());
+    }
+
+    public OtherReason(String title, String description, List<Attachment> attachments) {
+        this.title = title;
+        this.description = description;
+        this.attachments = attachments;
+    }
+
     public String getTitle() {
         return this.title;
     }

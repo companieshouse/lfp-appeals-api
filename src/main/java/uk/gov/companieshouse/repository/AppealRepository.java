@@ -2,13 +2,13 @@ package uk.gov.companieshouse.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.database.entity.AppealEntity;
 
 import java.util.Optional;
 
 @Repository
-public interface AppealRepository extends MongoRepository<Appeal, String> {
+public interface AppealRepository extends MongoRepository<AppealEntity, String> {
 
-    Appeal insert(Appeal appeal);
-    Optional<Appeal> findById(String id);
+    AppealEntity insert(AppealEntity appeal);
+    Optional<AppealEntity> findById(String id);
 }
