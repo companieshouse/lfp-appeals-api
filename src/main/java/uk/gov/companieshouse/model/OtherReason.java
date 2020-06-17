@@ -69,7 +69,7 @@ public class OtherReason {
         return "OtherReason{" +
             "title='" + title + '\'' +
             ", description='" + description + '\'' +
-            ", attachements='" + attachmentsAsString + '\'' +
+            ", attachments='" + attachmentsAsString + '\'' +
             '}';
     }
 }

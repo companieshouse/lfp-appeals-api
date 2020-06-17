@@ -16,4 +16,5 @@ public interface AppealRepository extends MongoRepository<Appeal, String> {
     @Query("{ 'penaltyIdentifier' : {'companyNumber' : ?0, 'penaltyReference' : ?1 } }")
     Optional<Appeal> findByPenaltyReference(String companyNumber, String penaltyReference);
 
+    void deleteById(String id);
 }

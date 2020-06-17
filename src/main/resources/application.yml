@@ -5,3 +5,8 @@ spring:
   data:
     mongodb:
       uri: ${APPEALS_API_MONGODB_URL}
+
+chips:
+  enabled: ${CHIPS_FEATURE_ENABLED}
+  restservice:
+    url: ${CHIPS_REST_SERVICE_URL}

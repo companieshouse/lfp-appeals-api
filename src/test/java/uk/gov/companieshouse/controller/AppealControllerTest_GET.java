@@ -2,12 +2,11 @@ package uk.gov.companieshouse.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.OtherReason;
@@ -26,8 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AppealControllerTest_GET {
 
     private final String APPEALS_URI = "/companies/{company-id}/appeals";
@@ -46,7 +45,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExistsById_return200() throws Exception {
 
-        when(appealService.getAppealById(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
 
         final String validAppeal = asJsonString();
 
@@ -59,7 +58,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealDoesNotExistById_return404() throws Exception {
 
-        when(appealService.getAppealById(any(String.class))).thenReturn(Optional.empty());
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
