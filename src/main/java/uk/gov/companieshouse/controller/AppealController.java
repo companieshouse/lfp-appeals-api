@@ -108,7 +108,8 @@ public class AppealController {
 
         final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(companyId, penaltyId);
 
-        return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
+        return appeal
+            .map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
     }
