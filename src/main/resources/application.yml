@@ -4,9 +4,9 @@ server:
 spring:
   data:
     mongodb:
-      uri: "mongodb://localhost/test"
+      uri: ${APPEALS_API_MONGODB_URL}
 
 chips:
-  enabled: true
+  enabled: ${CHIPS_FEATURE_ENABLED}
   restservice:
-    url: "http://chpdev-pl6.internal.ch:23011/chips-restService/rest/chipsgeneric/messages/LFP_APPEAL_CONTACT"
+    url: ${CHIPS_REST_SERVICE_URL}
