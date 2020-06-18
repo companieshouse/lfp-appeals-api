@@ -2,16 +2,19 @@ package uk.gov.companieshouse.model;
 
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import org.springframework.data.annotation.Transient;
-
 public class CreatedBy {
     
-    @JsonAlias({"_id"})
     private String id;
-
-    @Transient
     private String emailAddress;
+
+    public CreatedBy() {
+        this(null, null);
+    }
+
+    public CreatedBy(String id, String emailAddress) {
+        this.id = id;
+        this.emailAddress = emailAddress;
+    }
 
     public String getId() {
         return this.id;
