@@ -166,10 +166,10 @@ public class AppealServiceTest {
     @Test
     public void testGetAppealByPenaltyReference_returnsAppeal() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)));
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
 
-        Appeal appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.companyNumber, TestData.Appeal.PenaltyIdentifier.penaltyReference).orElseThrow();
+        Appeal appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference).orElseThrow();
 
         assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, appeal.getPenaltyIdentifier().getPenaltyReference());
         assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
@@ -185,9 +185,9 @@ public class AppealServiceTest {
     @Test
     public void testGetAppealByPenaltyReference_returnsEmptyAppeal() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class), any(String.class))).thenReturn(Optional.empty());
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.empty());
 
-        Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.companyNumber,TestData.Appeal.PenaltyIdentifier.penaltyReference);
+        Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference);
 
         assertFalse(appeal.isPresent());
     }

@@ -115,7 +115,7 @@ public class AppealController {
 
         LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyReference);
 
-        final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(companyId, penaltyReference);
+        final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(penaltyReference);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
