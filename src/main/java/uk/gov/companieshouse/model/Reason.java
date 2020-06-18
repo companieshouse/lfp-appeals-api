@@ -10,6 +10,14 @@ public class Reason {
     @NotNull(message = "other must not be null")
     private OtherReason other;
 
+    public Reason() {
+        this(null);
+    }
+
+    public Reason(OtherReason other) {
+        this.other = other;
+    }
+
     public OtherReason getOther() {
         return this.other;
     }

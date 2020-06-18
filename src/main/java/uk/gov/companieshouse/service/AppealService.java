@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
+import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
+import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.model.OtherReason;
@@ -23,23 +25,22 @@ public class AppealService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealService.class);
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    private final AppealMapper appealMapper;
     private final AppealRepository appealRepository;
     private final ChipsRestClient chipsRestClient;
     private final ChipsConfiguration chipsConfiguration;
 
     @Autowired
-    public AppealService(AppealRepository appealRepository, ChipsRestClient chipsRestClient, ChipsConfiguration chipsConfiguration) {
+    public AppealService(AppealMapper appealMapper, AppealRepository appealRepository, ChipsRestClient chipsRestClient, ChipsConfiguration chipsConfiguration) {
+        this.appealMapper = appealMapper;
         this.appealRepository = appealRepository;
         this.chipsRestClient = chipsRestClient;
         this.chipsConfiguration = chipsConfiguration;
     }
 
-    public String saveAppeal(Appeal appeal, String userId) throws Exception {
-
+    public String saveAppeal(Appeal appeal, String userId) {
+        appeal.setCreatedAt(LocalDateTime.now());
         appeal.getCreatedBy().setId(userId);
-
-        final LocalDateTime createdAt = LocalDateTime.now();
-        appeal.setCreatedAt(createdAt);
 
         String appealId = createAppealInMongoDB(appeal, userId);
 
@@ -52,17 +53,13 @@ public class AppealService {
         return appealId;
     }
 
-    private String createAppealInMongoDB(Appeal appeal, String userId) throws Exception {
-
-        final PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
-
+    private String createAppealInMongoDB(Appeal appeal, String userId) {
         LOGGER.debug("Inserting appeal into mongo db for companyId: {}, penaltyReference: {} and " +
-            "userId: {}", penaltyIdentifier.getCompanyNumber(), penaltyIdentifier.getPenaltyReference(), userId);
+            "userId: {}", appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId);
 
-        return Optional.ofNullable(appealRepository.insert(appeal)).map(Appeal::getId).orElseThrow(() ->
-            new Exception(
-                String.format("Appeal not saved in database for companyId: %s, penaltyReference: %s and userId: %s",
-                    penaltyIdentifier.getCompanyNumber(), penaltyIdentifier.getPenaltyReference(), userId)));
+        return Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal))).map(AppealEntity::getId).orElseThrow(() ->
+            new RuntimeException(String.format("Appeal not saved in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
     }
 
     private void createContactInChips(Appeal appeal, String userId, String id) {
@@ -106,6 +103,6 @@ public class AppealService {
     }
 
     public Optional<Appeal> getAppeal(String id) {
-        return appealRepository.findById(id);
+        return appealRepository.findById(id).map(this.appealMapper::map);
     }
 }

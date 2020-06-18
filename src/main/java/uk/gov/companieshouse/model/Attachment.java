@@ -21,6 +21,17 @@ public class Attachment {
     @Min(value = 1, message = "attachment size must be greater than 0 bytes")
     private Integer size;
 
+    public Attachment() {
+        this(null, null, null, null);
+    }
+
+    public Attachment(String id, String name, String contentType, Integer size) {
+        this.id = id;
+        this.name = name;
+        this.contentType = contentType;
+        this.size = size;
+    }
+
     public String getId() {
         return id;
     }
