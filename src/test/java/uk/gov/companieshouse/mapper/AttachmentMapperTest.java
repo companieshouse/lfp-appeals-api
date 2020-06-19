@@ -27,7 +27,7 @@ public class AttachmentMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            AttachmentEntity mapped = mapper.map(new Attachment(id, name, contentType, size));
+            AttachmentEntity mapped = mapper.map(new Attachment(id, name, contentType, size, null));
             assertEquals(id, mapped.getId());
             assertEquals(name, mapped.getName());
             assertEquals(contentType, mapped.getContentType());
@@ -49,6 +49,7 @@ public class AttachmentMapperTest {
             assertEquals(name, mapped.getName());
             assertEquals(contentType, mapped.getContentType());
             assertEquals(size, mapped.getSize());
+            assertNull(mapped.getUrl());
         }
     }
 }

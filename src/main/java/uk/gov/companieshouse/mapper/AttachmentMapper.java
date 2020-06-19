@@ -30,7 +30,8 @@ public class AttachmentMapper implements Mapper<AttachmentEntity, Attachment> {
             value.getId(),
             value.getName(),
             value.getContentType(),
-            value.getSize()
+            value.getSize(),
+            null
         );
     }
 }
