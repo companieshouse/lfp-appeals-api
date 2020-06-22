@@ -54,7 +54,8 @@ public class AppealMapperTest {
                             TestData.Appeal.Reason.Attachment.id,
                             TestData.Appeal.Reason.Attachment.name,
                             TestData.Appeal.Reason.Attachment.contentType,
-                            TestData.Appeal.Reason.Attachment.size
+                            TestData.Appeal.Reason.Attachment.size,
+                            null
                         ))
                     )
                 )

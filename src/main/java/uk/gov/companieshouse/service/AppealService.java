@@ -10,6 +10,7 @@ import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
@@ -17,6 +18,7 @@ import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,9 +45,10 @@ public class AppealService {
         appeal.getCreatedBy().setId(userId);
 
         String appealId = createAppealInMongoDB(appeal, userId);
+        appeal.setId(appealId);
 
         if (chipsConfiguration.isChipsEnabled()) {
-            createContactInChips(appeal, userId, appealId);
+            createContactInChips(appeal, userId);
         } else {
             LOGGER.debug("CHIPS feature is disabled");
         }
@@ -62,7 +65,7 @@ public class AppealService {
                 appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
     }
 
-    private void createContactInChips(Appeal appeal, String userId, String id) {
+    private void createContactInChips(Appeal appeal, String userId) {
 
         final PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
         final ChipsContact chipsContact = buildChipsContact(appeal);
@@ -73,8 +76,8 @@ public class AppealService {
         try {
             chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
         } catch (ChipsServiceException chipsServiceException) {
-            LOGGER.debug("Deleting appeal with id {} from mongodb", id);
-            appealRepository.deleteById(id);
+            LOGGER.debug("Deleting appeal with id {} from mongodb", appeal.getId());
+            appealRepository.deleteById(appeal.getId());
             throw chipsServiceException;
         }
     }
@@ -95,18 +98,37 @@ public class AppealService {
             "\n\nAppeal Reason" +
             "\nReason: " + otherReason.getTitle() +
             "\nFurther information: " + otherReason.getDescription() +
-            "\nSupporting documents: None";
+            "\nSupporting documents: " + getAttachmentsStr(appeal.getId(), otherReason);
 
         chipsContact.setContactDescription(contactDescription);
 
         return chipsContact;
     }
 
+    private String getAttachmentsStr(String appealId, OtherReason otherReason) {
+
+        final List<Attachment> attachmentList = otherReason.getAttachments();
+
+        if (attachmentList == null || attachmentList.isEmpty()) {
+            return "None";
+        }
+        final StringBuilder sb = new StringBuilder();
+
+        attachmentList.forEach(attachment -> {
+            sb.append("\n  - ").append(attachment.getName());
+
+            Optional.ofNullable(attachment.getUrl()).ifPresent(url ->
+                sb.append("\n    ").append(url).append("&a=").append(appealId));
+        });
+
+        return sb.toString();
+    }
+
     public Optional<Appeal> getAppeal(String id) {
         return appealRepository.findById(id).map(this.appealMapper::map);
     }
 
-    public Optional<Appeal> getAppealByPenaltyReference(String penaltyReference){
+    public Optional<Appeal> getAppealByPenaltyReference(String penaltyReference) {
         return appealRepository.findByPenaltyReference(penaltyReference).map(this.appealMapper::map);
     }
 }

@@ -21,15 +21,18 @@ public class Attachment {
     @Min(value = 1, message = "attachment size must be greater than 0 bytes")
     private Integer size;
 
+    private String url;
+
     public Attachment() {
-        this(null, null, null, null);
+        this(null, null, null, null, null);
     }
 
-    public Attachment(String id, String name, String contentType, Integer size) {
+    public Attachment(String id, String name, String contentType, Integer size, String url) {
         this.id = id;
         this.name = name;
         this.contentType = contentType;
         this.size = size;
+        this.url = url;
     }
 
     public String getId() {
@@ -64,28 +67,40 @@ public class Attachment {
         this.size = size;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Attachment that = (Attachment) o;
-        return Objects.equals(id, that.id) && 
-               Objects.equals(name, that.name) && 
-               Objects.equals(contentType, that.contentType) &&
-               Objects.equals(size, that.size);
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(contentType, that.contentType) &&
+            Objects.equals(size, that.size) &&
+            Objects.equals(url, that.url);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, contentType, size);
+        return Objects.hash(id, name, contentType, size, url);
     }
 
     @Override
     public String toString() {
-        return "Attachment{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", contentType='" + contentType + '\''
-                + ", size='" + size + '\'' + '}';
+        return "Attachment{" +
+            "id='" + id + '\'' +
+            ", name='" + name + '\'' +
+            ", contentType='" + contentType + '\'' +
+            ", size=" + size +
+            ", url='" + url + '\'' +
+            '}';
     }
 
 }

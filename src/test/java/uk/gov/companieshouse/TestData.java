@@ -24,6 +24,7 @@ public interface TestData {
                 String name = "file.txt";
                 String contentType = "plain/text";
                 int size = 100;
+                String url = "http://localhost/appeal-a-penalty/download/prompt/1?c=00345567";
             }
         }
     }

@@ -28,6 +28,7 @@ import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,7 +147,7 @@ public class AppealServiceTest {
         assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, appeal.getPenaltyIdentifier().getPenaltyReference());
         assertEquals(TestData.Appeal.Reason.OtherReason.title, appeal.getReason().getOther().getTitle());
         assertEquals(TestData.Appeal.Reason.OtherReason.description, appeal.getReason().getOther().getDescription());
-        assertEquals(1, appeal.getReason().getOther().getAttachments().size());
+        assertEquals(2, appeal.getReason().getOther().getAttachments().size());
         assertEquals(TestData.Appeal.Reason.Attachment.id, appeal.getReason().getOther().getAttachments().get(0).getId());
         assertEquals(TestData.Appeal.Reason.Attachment.name, appeal.getReason().getOther().getAttachments().get(0).getName());
         assertEquals(TestData.Appeal.Reason.Attachment.contentType, appeal.getReason().getOther().getAttachments().get(0).getContentType());
@@ -175,7 +176,7 @@ public class AppealServiceTest {
         assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
         assertEquals(TestData.Appeal.Reason.OtherReason.title, appeal.getReason().getOther().getTitle());
         assertEquals(TestData.Appeal.Reason.OtherReason.description, appeal.getReason().getOther().getDescription());
-        assertEquals(1, appeal.getReason().getOther().getAttachments().size());
+        assertEquals(2, appeal.getReason().getOther().getAttachments().size());
         assertEquals(TestData.Appeal.Reason.Attachment.id, appeal.getReason().getOther().getAttachments().get(0).getId());
         assertEquals(TestData.Appeal.Reason.Attachment.name, appeal.getReason().getOther().getAttachments().get(0).getName());
         assertEquals(TestData.Appeal.Reason.Attachment.contentType, appeal.getReason().getOther().getAttachments().get(0).getContentType());
@@ -193,18 +194,64 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testBuildChipsContact() {
+    public void testBuildChipsContactWithAttachments() {
 
         Appeal appeal = createAppeal();
+        appeal.setId(TestData.Appeal.id);
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
 
         assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
-        assertEquals(expectedContactDescription(), chipsContact.getContactDescription());
+        String contactDescription = chipsContact.getContactDescription();
+        assertEquals(expectedContactDescriptionWithAttachments(), contactDescription);
     }
 
-    private static String expectedContactDescription() {
+    private static String expectedContactDescriptionWithAttachments() {
+        return "Appeal submitted" +
+            "\n\nYour reference number is your company number " + TestData.Appeal.PenaltyIdentifier.companyNumber +
+            "\n\nCompany Number: " + TestData.Appeal.PenaltyIdentifier.companyNumber +
+            "\nEmail address: " + TestData.Appeal.CreatedBy.email +
+            "\n\nAppeal Reason" +
+            "\nReason: " + TestData.Appeal.Reason.OtherReason.title +
+            "\nFurther information: " + TestData.Appeal.Reason.OtherReason.description +
+            "\nSupporting documents: " +
+            "\n  - " + TestData.Appeal.Reason.Attachment.name +
+            "\n    " + TestData.Appeal.Reason.Attachment.url + "&a=" + TestData.Appeal.id +
+            "\n  - " + TestData.Appeal.Reason.Attachment.name;
+    }
+
+    @Test
+    public void testBuildChipsContactEmptyAttachments() {
+
+        Appeal appeal = createAppeal();
+        appeal.setId(TestData.Appeal.id);
+        appeal.getReason().getOther().setAttachments(Collections.emptyList());
+
+        ChipsContact chipsContact = appealService.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        String contactDescription = chipsContact.getContactDescription();
+        assertEquals(expectedContactDescriptionWithoutAttachments(), contactDescription);
+    }
+
+    @Test
+    public void testBuildChipsContactNullAttachments() {
+
+        Appeal appeal = createAppeal();
+        appeal.setId(TestData.Appeal.id);
+        appeal.getReason().getOther().setAttachments(null);
+
+        ChipsContact chipsContact = appealService.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        String contactDescription = chipsContact.getContactDescription();
+        assertEquals(expectedContactDescriptionWithoutAttachments(), contactDescription);
+    }
+
+    private static String expectedContactDescriptionWithoutAttachments() {
         return "Appeal submitted" +
             "\n\nYour reference number is your company number " + TestData.Appeal.PenaltyIdentifier.companyNumber +
             "\n\nCompany Number: " + TestData.Appeal.PenaltyIdentifier.companyNumber +
@@ -231,12 +278,18 @@ public class AppealServiceTest {
                 TestData.Appeal.Reason.OtherReason.title,
                 TestData.Appeal.Reason.OtherReason.description,
                 Lists.newArrayList(new Attachment(
-                    TestData.Appeal.Reason.Attachment.id,
-                    TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType,
-                    TestData.Appeal.Reason.Attachment.size
-                ))
-            ))
+                        TestData.Appeal.Reason.Attachment.id,
+                        TestData.Appeal.Reason.Attachment.name,
+                        TestData.Appeal.Reason.Attachment.contentType,
+                        TestData.Appeal.Reason.Attachment.size,
+                        TestData.Appeal.Reason.Attachment.url
+                    ), new Attachment(
+                        TestData.Appeal.Reason.Attachment.id,
+                        TestData.Appeal.Reason.Attachment.name,
+                        TestData.Appeal.Reason.Attachment.contentType,
+                        TestData.Appeal.Reason.Attachment.size,
+                        null)
+                )))
         );
     }
 
