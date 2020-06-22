@@ -104,19 +104,19 @@ public class AppealController {
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @Operation(summary = "Get an appeal by penalty reference", tags = "Appeal")
+    @Operation(summary = "Get appeals by penalty reference", tags = "Appeal")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeal not found"),
+        @ApiResponse(responseCode = "200", description = "Appeals resource retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Appeals not found"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Appeal>> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
+    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-id") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
-        LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyReference);
+        LOGGER.info("GET /companies/{}/appeals?penaltyReference={}", companyId, penaltyReference);
 
-        final List<Appeal> appealList = appealService.getAppealByPenaltyReference(penaltyReference);
+        final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(penaltyReference);
 
         if (appealList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

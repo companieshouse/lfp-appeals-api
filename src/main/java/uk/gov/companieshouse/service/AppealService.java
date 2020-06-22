@@ -129,7 +129,7 @@ public class AppealService {
         return appealRepository.findById(id).map(this.appealMapper::map);
     }
 
-    public List<Appeal> getAppealByPenaltyReference(String penaltyReference){
+    public List<Appeal> getAppealsByPenaltyReference(String penaltyReference){
         return appealRepository.findByPenaltyReference(penaltyReference).stream().map(this.appealMapper::map).collect(Collectors.toList());
     }
 }
