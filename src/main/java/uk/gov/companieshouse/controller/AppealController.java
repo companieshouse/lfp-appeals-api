@@ -28,6 +28,7 @@ import uk.gov.companieshouse.service.AppealService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -110,15 +111,18 @@ public class AppealController {
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appeal> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
+    public ResponseEntity<List<Appeal>> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
         LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyReference);
 
-        final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(penaltyReference);
+        final List<Appeal> appealList = appealService.getAppealByPenaltyReference(penaltyReference);
 
-        return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        if (appealList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(appealList);
 
     }
 

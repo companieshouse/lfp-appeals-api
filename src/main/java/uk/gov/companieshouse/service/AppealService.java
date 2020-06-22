@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppealService {
@@ -45,10 +46,9 @@ public class AppealService {
         appeal.getCreatedBy().setId(userId);
 
         String appealId = createAppealInMongoDB(appeal, userId);
-        appeal.setId(appealId);
 
         if (chipsConfiguration.isChipsEnabled()) {
-            createContactInChips(appeal, userId);
+            createContactInChips(appeal, userId, appealId);
         } else {
             LOGGER.debug("CHIPS feature is disabled");
         }
@@ -65,7 +65,7 @@ public class AppealService {
                 appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
     }
 
-    private void createContactInChips(Appeal appeal, String userId) {
+    private void createContactInChips(Appeal appeal, String userId, String id) {
 
         final PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
         final ChipsContact chipsContact = buildChipsContact(appeal);
@@ -76,8 +76,8 @@ public class AppealService {
         try {
             chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
         } catch (ChipsServiceException chipsServiceException) {
-            LOGGER.debug("Deleting appeal with id {} from mongodb", appeal.getId());
-            appealRepository.deleteById(appeal.getId());
+            LOGGER.debug("Deleting appeal with id {} from mongodb", id);
+            appealRepository.deleteById(id);
             throw chipsServiceException;
         }
     }
@@ -98,7 +98,7 @@ public class AppealService {
             "\n\nAppeal Reason" +
             "\nReason: " + otherReason.getTitle() +
             "\nFurther information: " + otherReason.getDescription() +
-            "\nSupporting documents: " + getAttachmentsStr(appeal.getId(), otherReason);
+            "\nSupporting documents: None";
 
         chipsContact.setContactDescription(contactDescription);
 
@@ -128,7 +128,7 @@ public class AppealService {
         return appealRepository.findById(id).map(this.appealMapper::map);
     }
 
-    public Optional<Appeal> getAppealByPenaltyReference(String penaltyReference) {
-        return appealRepository.findByPenaltyReference(penaltyReference).map(this.appealMapper::map);
+    public List<Appeal> getAppealByPenaltyReference(String penaltyReference){
+        return appealRepository.findByPenaltyReference(penaltyReference).stream().map(this.appealMapper::map).collect(Collectors.toList());
     }
 }
