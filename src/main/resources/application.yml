@@ -4,10 +4,10 @@ server:
 spring:
   data:
     mongodb:
-      uri: "mongodb://localhost/test"
+      uri: ${APPEALS_API_MONGODB_URL}
 
 chips:
-  enabled: false
+  enabled: ${CHIPS_FEATURE_ENABLED}
   restservice:
-    url: "http://restservice/appeals"
+    url: ${CHIPS_REST_SERVICE_URL}
 
