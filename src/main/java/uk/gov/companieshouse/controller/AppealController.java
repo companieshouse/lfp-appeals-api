@@ -28,6 +28,7 @@ import uk.gov.companieshouse.service.AppealService;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -103,22 +104,25 @@ public class AppealController {
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @Operation(summary = "Get an appeal by penalty reference", tags = "Appeal")
+    @Operation(summary = "Get appeals by penalty reference", tags = "Appeal")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeal not found"),
+        @ApiResponse(responseCode = "200", description = "Appeals resource retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Appeals not found"),
         @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appeal> getAppealByPenaltyReference(@PathVariable("company-id") final String companyId,
+    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-id") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
-        LOGGER.info("GET /{}/appeals?penaltyReference={}", companyId, penaltyReference);
+        LOGGER.info("GET /companies/{}/appeals?penaltyReference={}", companyId, penaltyReference);
 
-        final Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(penaltyReference);
+        final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(penaltyReference);
 
-        return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        if (appealList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(appealList);
 
     }
 

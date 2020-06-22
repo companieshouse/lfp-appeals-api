@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppealService {
@@ -128,7 +129,7 @@ public class AppealService {
         return appealRepository.findById(id).map(this.appealMapper::map);
     }
 
-    public Optional<Appeal> getAppealByPenaltyReference(String penaltyReference) {
-        return appealRepository.findByPenaltyReference(penaltyReference).map(this.appealMapper::map);
+    public List<Appeal> getAppealsByPenaltyReference(String penaltyReference){
+        return appealRepository.findByPenaltyReference(penaltyReference).stream().map(this.appealMapper::map).collect(Collectors.toList());
     }
 }

@@ -29,10 +29,12 @@ import uk.gov.companieshouse.repository.AppealRepository;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -165,12 +167,15 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealByPenaltyReference_returnsAppeal() {
+    public void testGetAppealsByPenaltyReference_returnsListOfAppeals() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)));
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
 
-        Appeal appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference).orElseThrow();
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference);
+        Appeal appeal = appealList.get(0);
+
+        assertEquals(1, appealList.size());
 
         assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, appeal.getPenaltyIdentifier().getPenaltyReference());
         assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
@@ -184,13 +189,29 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealByPenaltyReference_returnsEmptyAppeal() {
+    public void testGetMultipleAppealByPenaltyReference_returnsListOfAppeals() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(Optional.empty());
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of(
+            createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference),
+            createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)
+        ));
 
-        Optional<Appeal> appeal = appealService.getAppealByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference);
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
 
-        assertFalse(appeal.isPresent());
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference);
+
+        assertEquals(2, appealList.size());
+
+    }
+
+    @Test
+    public void testGetAppealsByPenaltyReference_returnsEmptyListOfAppeals() {
+
+        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of());
+
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.Appeal.PenaltyIdentifier.penaltyReference);
+
+        assertTrue(appealList.isEmpty());
     }
 
     @Test

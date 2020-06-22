@@ -16,6 +16,7 @@ import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -69,9 +70,9 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExistsByPenalty_return200() throws Exception {
 
-        when(appealService.getAppealByPenaltyReference(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of(getValidAppeal()));
 
-        final String validAppeal = asJsonString();
+        final String validAppeal = asJsonArray();
 
         mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
             .queryParam("penaltyReference", TEST_PENALTY_ID)
@@ -83,7 +84,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealDoesNotExistByPenalty_return404() throws Exception {
 
-        when(appealService.getAppealByPenaltyReference(any(String.class))).thenReturn(Optional.empty());
+        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of());
 
         mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
             .queryParam("penaltyReference", TEST_PENALTY_ID)
@@ -96,6 +97,15 @@ public class AppealControllerTest_GET {
         try {
             Appeal appeal = mapper.readValue(new File("src/test/resources/data/validAppeal.json"), Appeal.class);
             return new ObjectMapper().writeValueAsString(appeal);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String asJsonArray() {
+        try {
+            Appeal appeal = mapper.readValue(new File("src/test/resources/data/validAppeal.json"), Appeal.class);
+            return new ObjectMapper().writeValueAsString(List.of(appeal));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
