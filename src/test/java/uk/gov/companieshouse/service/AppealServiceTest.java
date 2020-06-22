@@ -218,8 +218,7 @@ public class AppealServiceTest {
             "\nSupporting documents: " +
             "\n  - " + TestData.Appeal.Reason.Attachment.name +
             "\n    " + TestData.Appeal.Reason.Attachment.url + "&a=" + TestData.Appeal.id +
-            "\n  - " + TestData.Appeal.Reason.Attachment.name +
-            "\n    " + TestData.Appeal.Reason.Attachment.url + "&a=" + TestData.Appeal.id;
+            "\n  - " + TestData.Appeal.Reason.Attachment.name;
     }
 
     @Test
@@ -289,7 +288,7 @@ public class AppealServiceTest {
                         TestData.Appeal.Reason.Attachment.name,
                         TestData.Appeal.Reason.Attachment.contentType,
                         TestData.Appeal.Reason.Attachment.size,
-                        TestData.Appeal.Reason.Attachment.url)
+                        null)
                 )))
         );
     }

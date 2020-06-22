@@ -116,7 +116,9 @@ public class AppealService {
 
         attachmentList.forEach(attachment -> {
             sb.append("\n  - ").append(attachment.getName());
-            sb.append("\n    ").append(attachment.getUrl()).append("&a=").append(appealId);
+
+            Optional.ofNullable(attachment.getUrl()).ifPresent(url ->
+                sb.append("\n    ").append(url).append("&a=").append(appealId));
         });
 
         return sb.toString();
