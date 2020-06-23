@@ -10,3 +10,6 @@ chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
   restservice:
     url: ${CHIPS_REST_SERVICE_URL}
+
+companyNumber:
+  prefixes: ${ALLOWED_COMPANY_PREFIXES}

@@ -7,8 +7,6 @@ import java.util.Objects;
 public class PenaltyIdentifier {
 
     @NotBlank(message = "companyNumber must not be blank")
-    @Pattern(regexp = "((SC|NI)[0-9]{1,6}|[0-9]{1,8})",
-        message = "companyNumber is invalid")
     private String companyNumber;
 
     @NotBlank(message = "penaltyReference must not be blank")
