@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class PenaltyIdentifier {
 
-    @NotBlank(message = "companyNumber must not be blank")
     @ValidCompanyNumber
     private String companyNumber;
 
