@@ -1,10 +1,8 @@
-package uk.gov.companieshouse.service;
+package uk.gov.companieshouse.model.validation;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,22 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import uk.gov.companieshouse.config.CompanyNumberConfiguration;
 import uk.gov.companieshouse.model.validator.CompanyNumberValidator;
 
 @ExtendWith(SpringExtension.class)
-public class CompanyNumberRegexFactoryTest {
+public class CompanyNumberValidatorTest {
 
     @Test
     void shouldThrowAnExceptionWhenInputListIsInWrongFormat() {
 
         List<String> invalidLists = List.of(",", "A,[.", "A.BC.D");
 
-        CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
-
         invalidLists.forEach(prefixList -> {
-            when(config.getPrefixes()).thenReturn(prefixList);
-            assertThrows(IllegalArgumentException.class, () -> new CompanyNumberValidator(config), prefixList);
+            assertThrows(IllegalArgumentException.class, () -> new CompanyNumberValidator(prefixList), prefixList);
         });
 
     }
@@ -37,11 +31,8 @@ public class CompanyNumberRegexFactoryTest {
     @Test
     void shouldCreateFactorySuccessfulyWhenValidListsProvided() {
         List<String> validLists = List.of("NI", "AB,CD,EF", "A,B,C,D,F", "AB,cd,e,F");
-        CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
-
         validLists.forEach(prefixList -> {
-            when(config.getPrefixes()).thenReturn(prefixList);
-            assertDoesNotThrow(() -> new CompanyNumberValidator(config), prefixList);
+            assertDoesNotThrow(() -> new CompanyNumberValidator(prefixList), prefixList);
         });
     }
 
@@ -49,10 +40,7 @@ public class CompanyNumberRegexFactoryTest {
     void shouldReturnFalseWhenPrefixIsNotAllowed() {
         String prefixes = "SC,NI,OC,SO,R,AP";
 
-        CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
-        when(config.getPrefixes()).thenReturn(prefixes);
-
-        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(config);
+        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(prefixes);
 
         List<String> invalidCompanyNumbers = List.of("TY000001", "PTABC0123", "XC999999", "T0000001");
 
@@ -67,10 +55,7 @@ public class CompanyNumberRegexFactoryTest {
     void shouldReturnTrueWhenPrefixesAreAllowed() {
         String prefixes = "SC,NI,OC,SO,R,AP";
 
-        CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
-        when(config.getPrefixes()).thenReturn(prefixes);
-
-        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(config);
+        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(prefixes);
 
         List<String> validUpperCaseCompanyNumbers = List.of("NI000000", "SC123123", "OC123123", "SO123123", "R0000000",
                 "R123", "123", "AP123456");

@@ -7,9 +7,8 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import uk.gov.companieshouse.config.CompanyNumberConfiguration;
 
 @Component
 public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyNumber, String> {
@@ -18,9 +17,7 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
     private final Pattern companyNumberRegex;
 
-    public CompanyNumberValidator(CompanyNumberConfiguration prefixConfig) {
-
-        String prefixString = prefixConfig.getPrefixes();
+    public CompanyNumberValidator(@Value("${companyNumber.prefixes}") String prefixString) {
 
         if (!this.prefixListRegex.matcher(prefixString).matches()) {
             throw new IllegalArgumentException(
@@ -28,6 +25,16 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
                             + prefixString);
         }
 
+        this.companyNumberRegex = Pattern.compile("(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$");
+
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return this.companyNumberRegex.matcher(value).matches();
+    }
+
+    private List<String> generatePrefixList(String prefixString) {
         List<String> prefixesArray = Arrays.asList(prefixString.split(","));
 
         String singleCharacterPrefixRegex = "("
@@ -38,15 +45,7 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
         String onlyNumbersRegex = "[0-9]{1,8}";
 
-        this.companyNumberRegex = Pattern.compile("(?i)^("
-                + String.join("|", List.of(singleCharacterPrefixRegex, doubleCharacterPrefixRegex, onlyNumbersRegex))
-                + ")$");
-
-    }
-
-    @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) {
-        return this.companyNumberRegex.matcher(value).matches();
+        return List.of(singleCharacterPrefixRegex, doubleCharacterPrefixRegex, onlyNumbersRegex);
     }
 
     private String safeSubstring(String value, int startIndex) {
