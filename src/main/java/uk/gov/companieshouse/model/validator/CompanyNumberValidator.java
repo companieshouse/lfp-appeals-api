@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyNumber, String> {
 
-    private final Pattern prefixListRegex = Pattern.compile("(?i)^([A-Z][A-Z]?)\\b(,[A-Z][A-Z]?)*$");
-
     private final Pattern companyNumberRegex;
 
     public CompanyNumberValidator(@Value("${companyNumber.prefixes}") String prefixString) {
 
-        if (!this.prefixListRegex.matcher(prefixString).matches()) {
+        Pattern prefixListRegex = Pattern.compile("(?i)^([A-Z][A-Z]?)\\b(,[A-Z][A-Z]?)*$");
+
+        if (!prefixListRegex.matcher(prefixString).matches()) {
             throw new IllegalArgumentException(
                     "Prefix list formatting error. Make sure list is comma separated e.g. NI,SI,R. Current: "
                             + prefixString);
@@ -31,6 +31,11 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+
+        if (value == null) {
+            return false;
+        }
+
         return this.companyNumberRegex.matcher(value).matches();
     }
 
