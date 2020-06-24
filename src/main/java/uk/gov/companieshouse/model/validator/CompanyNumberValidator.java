@@ -1,21 +1,24 @@
-package uk.gov.companieshouse.service;
-
-import org.springframework.stereotype.Component;
+package uk.gov.companieshouse.model.validator;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.springframework.stereotype.Component;
+
 import uk.gov.companieshouse.config.CompanyNumberConfiguration;
 
 @Component
-public class CompanyNumberRegexFactory {
+public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyNumber, String> {
 
     private final Pattern prefixListRegex = Pattern.compile("(?i)^([A-Z][A-Z]?)\\b(,[A-Z][A-Z]?)*$");
 
     private final Pattern companyNumberRegex;
 
-    public CompanyNumberRegexFactory(CompanyNumberConfiguration prefixConfig) {
+    public CompanyNumberValidator(CompanyNumberConfiguration prefixConfig) {
 
         String prefixString = prefixConfig.getPrefixes();
 
@@ -41,8 +44,9 @@ public class CompanyNumberRegexFactory {
 
     }
 
-    public boolean matchCompanyNumber(String companyNumber) {
-        return this.companyNumberRegex.matcher(companyNumber).matches();
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return this.companyNumberRegex.matcher(value).matches();
     }
 
     private String safeSubstring(String value, int startIndex) {

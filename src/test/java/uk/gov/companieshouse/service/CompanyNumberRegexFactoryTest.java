@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import uk.gov.companieshouse.config.CompanyNumberConfiguration;
+import uk.gov.companieshouse.model.validator.CompanyNumberValidator;
 
 @ExtendWith(SpringExtension.class)
 public class CompanyNumberRegexFactoryTest {
@@ -28,7 +29,7 @@ public class CompanyNumberRegexFactoryTest {
 
         invalidLists.forEach(prefixList -> {
             when(config.getPrefixes()).thenReturn(prefixList);
-            assertThrows(IllegalArgumentException.class, () -> new CompanyNumberRegexFactory(config), prefixList);
+            assertThrows(IllegalArgumentException.class, () -> new CompanyNumberValidator(config), prefixList);
         });
 
     }
@@ -40,7 +41,7 @@ public class CompanyNumberRegexFactoryTest {
 
         validLists.forEach(prefixList -> {
             when(config.getPrefixes()).thenReturn(prefixList);
-            assertDoesNotThrow(() -> new CompanyNumberRegexFactory(config), prefixList);
+            assertDoesNotThrow(() -> new CompanyNumberValidator(config), prefixList);
         });
     }
 
@@ -51,11 +52,11 @@ public class CompanyNumberRegexFactoryTest {
         CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
         when(config.getPrefixes()).thenReturn(prefixes);
 
-        CompanyNumberRegexFactory companyNumberRegexFactory = new CompanyNumberRegexFactory(config);
+        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(config);
 
         List<String> invalidCompanyNumbers = List.of("TY000001", "PTABC0123", "XC999999", "T0000001");
 
-        boolean isAllInvalid = invalidCompanyNumbers.stream().map(companyNumberRegexFactory::matchCompanyNumber)
+        boolean isAllInvalid = invalidCompanyNumbers.stream().map(value -> companyNumberValidator.isValid(value, null))
                 .allMatch(result -> result == false);
 
         assertTrue(isAllInvalid);
@@ -69,7 +70,7 @@ public class CompanyNumberRegexFactoryTest {
         CompanyNumberConfiguration config = mock(CompanyNumberConfiguration.class);
         when(config.getPrefixes()).thenReturn(prefixes);
 
-        CompanyNumberRegexFactory companyNumberRegexFactory = new CompanyNumberRegexFactory(config);
+        CompanyNumberValidator companyNumberValidator = new CompanyNumberValidator(config);
 
         List<String> validUpperCaseCompanyNumbers = List.of("NI000000", "SC123123", "OC123123", "SO123123", "R0000000",
                 "R123", "123", "AP123456");
@@ -78,7 +79,7 @@ public class CompanyNumberRegexFactoryTest {
                 .map(companyNumber -> companyNumber.toLowerCase()).collect(Collectors.toList());
 
         boolean isAllValid = Stream.of(validUpperCaseCompanyNumbers, validLowerCaseCompanyNumbers)
-                .flatMap(x -> x.stream()).map(companyNumberRegexFactory::matchCompanyNumber)
+                .flatMap(x -> x.stream()).map(value -> companyNumberValidator.isValid(value, null))
                 .allMatch(result -> result == true);
 
         assertTrue(isAllValid);

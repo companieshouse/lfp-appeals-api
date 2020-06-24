@@ -2,7 +2,6 @@ package uk.gov.companieshouse.mapper;
 
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.database.entity.AppealEntity;
-import uk.gov.companieshouse.exception.EntityMappingException;
 import uk.gov.companieshouse.mapper.base.Mapper;
 import uk.gov.companieshouse.model.Appeal;
 
@@ -20,7 +19,7 @@ public class AppealMapper implements Mapper<AppealEntity, Appeal> {
     }
 
     @Override
-    public AppealEntity map(Appeal value) throws EntityMappingException {
+    public AppealEntity map(Appeal value) {
         if (value == null) {
             return null;
         }

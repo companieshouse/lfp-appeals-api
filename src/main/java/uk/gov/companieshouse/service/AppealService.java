@@ -8,7 +8,6 @@ import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
-import uk.gov.companieshouse.exception.EntityMappingException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
@@ -42,7 +41,7 @@ public class AppealService {
         this.chipsConfiguration = chipsConfiguration;
     }
 
-    public String saveAppeal(Appeal appeal, String userId) throws EntityMappingException {
+    public String saveAppeal(Appeal appeal, String userId) {
         appeal.setCreatedAt(LocalDateTime.now());
         appeal.getCreatedBy().setId(userId);
 
@@ -58,7 +57,7 @@ public class AppealService {
         return appealId;
     }
 
-    private String createAppealInMongoDB(Appeal appeal, String userId) throws EntityMappingException {
+    private String createAppealInMongoDB(Appeal appeal, String userId) {
         LOGGER.debug("Inserting appeal into mongo db for companyId: {}, penaltyReference: {} and " +
             "userId: {}", appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId);
 

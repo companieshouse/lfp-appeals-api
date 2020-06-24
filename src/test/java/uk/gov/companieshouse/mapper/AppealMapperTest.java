@@ -1,14 +1,11 @@
 package uk.gov.companieshouse.mapper;
 
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.TestData;
-import uk.gov.companieshouse.config.CompanyNumberConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
@@ -20,38 +17,20 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
-import uk.gov.companieshouse.service.CompanyNumberRegexFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 public class AppealMapperTest {
-
-    @Mock
-    private CompanyNumberConfiguration companyNumberConfiguration;
-
-    private CompanyNumberRegexFactory companyNumberRegexFactory;
-
-    private AppealMapper mapper;
-
-    @BeforeEach
-    void beforeEach() {
-        when(companyNumberConfiguration.getPrefixes()).thenReturn("SC,NI,OC,SO,R,AP");
-        this.companyNumberRegexFactory = new CompanyNumberRegexFactory(companyNumberConfiguration);
-        this.mapper = new AppealMapper(new CreatedByMapper(), new PenaltyIdentifierMapper(companyNumberRegexFactory),
-                new ReasonMapper(new OtherReasonMapper(new AttachmentMapper())));
-    }
+    private final AppealMapper mapper = new AppealMapper(
+        new CreatedByMapper(),
+        new PenaltyIdentifierMapper(),
+        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()))
+    );
 
     @Nested
     class ToEntityMappingTest {
-
-        @BeforeEach
-        void beforeEach() {
-            when(companyNumberConfiguration.getPrefixes()).thenReturn("SC,NI,OC,SO,R,AP");
-        }
-
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((Appeal) null));
