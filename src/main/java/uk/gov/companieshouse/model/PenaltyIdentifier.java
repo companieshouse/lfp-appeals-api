@@ -2,13 +2,14 @@ package uk.gov.companieshouse.model;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import uk.gov.companieshouse.model.validator.ValidCompanyNumber;
+
 import java.util.Objects;
 
 public class PenaltyIdentifier {
 
-    @NotBlank(message = "companyNumber must not be blank")
-    @Pattern(regexp = "((SC|NI)[0-9]{1,6}|[0-9]{1,8})",
-        message = "companyNumber is invalid")
+    @ValidCompanyNumber
     private String companyNumber;
 
     @NotBlank(message = "penaltyReference must not be blank")

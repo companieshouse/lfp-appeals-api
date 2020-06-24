@@ -11,3 +11,6 @@ chips:
   restservice:
     url: "http://restservice/appeals"
 
+companyNumber:
+  prefixes: "SC,NI,OC,SO,R,AP"
+
