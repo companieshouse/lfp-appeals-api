@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,11 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
                             + prefixString);
         }
 
-        this.companyNumberRegex = Pattern.compile("(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$");
+        String regexString = "(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$";
+
+        Logger.getLogger(CompanyNumberValidator.class).debug(regexString);
+
+        this.companyNumberRegex = Pattern.compile(regexString);
 
     }
 
@@ -35,7 +40,6 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
         if (value == null) {
             return false;
         }
-
         return this.companyNumberRegex.matcher(value).matches();
     }
 
@@ -53,17 +57,17 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
         return List.of(singleCharacterPrefixRegex, doubleCharacterPrefixRegex, onlyNumbersRegex);
     }
 
-    private String safeSubstring(String value, int startIndex) {
-        if (startIndex > value.length()) {
+    private String removeFirstCharacterOf(String value) {
+        if (value.length() <= 1) {
             return value;
         }
 
-        return value.substring(startIndex);
+        return value.substring(1);
     }
 
     private String createPrefixSubstring(List<String> prefixesArray, int numberOfLetters) {
-        return safeSubstring(prefixesArray.stream().filter(prefix -> prefix.length() == numberOfLetters).reduce("",
-                (p, c) -> p + "|" + c), 1);
+        return removeFirstCharacterOf(prefixesArray.stream().filter(prefix -> prefix.length() == numberOfLetters)
+                .reduce("", (p, c) -> p + "|" + c));
     }
 
 }
