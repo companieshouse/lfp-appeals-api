@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import org.jboss.logging.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
         String regexString = "(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$";
 
-        Logger.getLogger(CompanyNumberValidator.class).debug(regexString);
+        LoggerFactory.getLogger(CompanyNumberValidator.class).debug(regexString);
 
         this.companyNumberRegex = Pattern.compile(regexString);
 
