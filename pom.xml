@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
         <version.spring.boot>2.3.2.RELEASE</version.spring.boot>
-        <version.springdoc.openapi>1.4.4</version.springdoc.openapi>
+        <version.springdoc.openapi>1.4.6</version.springdoc.openapi>
     </properties>
 
     <repositories>
