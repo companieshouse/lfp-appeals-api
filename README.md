@@ -10,7 +10,26 @@
 
 **To run locally, this application is currently dependent on a local instance of MongoDB to be running at localhost:27017**
 
-### Run MongoDB
+## Running Locally With Docker CHS env
+
+1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
+
+2. Enable the `lfp-appeals` module
+
+3. Navigate to `http://api.chs.local:9000`
+
+Development mode is available for this service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
+
+    ./bin/chs-dev development enable lfp-appeals-api
+
+Swagger documentation is available for this service in the the docker CHS development
+
+1. Navigate to `http://api.chs.local/api-docs/lfp-appeals-api/swagger-ui.html`
+## Running locally without docker CHS env
+
+**To run locally, this application is currently dependent on a local instance of MongoDB to be running at localhost:27017**
+
+### Run MongoDB 
            
 1. Deploy an instance of MongoDB in a docker container: 
 
