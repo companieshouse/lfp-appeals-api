@@ -1,9 +1,5 @@
 package uk.gov.companieshouse.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.headers.Header;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,16 +40,6 @@ public class AppealController {
         this.appealService = appealService;
     }
 
-    @Operation(summary = "Create a new appeal", tags = "Appeal")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Appeal resource created", headers = {
-            @Header(name = "location")
-        }),
-        @ApiResponse(responseCode = "400", description = "Bad request"),
-        @ApiResponse(responseCode = "401", description = "Unauthorised request"),
-        @ApiResponse(responseCode = "422", description = "Invalid appeal data"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String userId,
                                                @PathVariable("company-id") final String companyId,
@@ -86,12 +72,6 @@ public class AppealController {
         }
     }
 
-    @Operation(summary = "Get an appeal by ID", tags = "Appeal")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Appeal resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeal not found"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
                                                 @PathVariable("id") final String id) {
@@ -104,12 +84,6 @@ public class AppealController {
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @Operation(summary = "Get appeals by penalty reference", tags = "Appeal")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Appeals resource retrieved successfully"),
-        @ApiResponse(responseCode = "404", description = "Appeals not found"),
-        @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
     @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-id") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
