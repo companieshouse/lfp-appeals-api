@@ -16,6 +16,7 @@
         "parameters": [
           {
             "name": "company-id",
+            "description": "ID of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -24,6 +25,7 @@
           },
           {
             "name": "penaltyReference",
+            "description": "ID Reference of the penalty against the company",
             "in": "query",
             "required": true,
             "schema": {
@@ -46,30 +48,10 @@
             }
           },
           "404": {
-            "description": "Appeals not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Appeal"
-                  }
-                }
-              }
-            }
+            "description": "Appeals not found"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Appeal"
-                  }
-                }
-              }
-            }
+            "description": "Internal server error"
           }
         }
       },
@@ -90,6 +72,7 @@
           },
           {
             "name": "company-id",
+            "description": "ID of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -112,56 +95,22 @@
             "description": "Appeal resource created",
             "headers": {
               "location": {
-                "style": "simple"
+                "description": "URL to get the Appeal"
               }
             },
             "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
+              "description": "ID of the Appeal",
+              "type": "string"
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "Invalid appeal"
           },
           "401": {
-            "description": "Unauthorised request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Invalid appeal data",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "User is not authorised to submit this appeal"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "Internal server error"
           }
         }
       }
@@ -176,6 +125,7 @@
         "parameters": [
           {
             "name": "company-id",
+            "description": "ID of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -184,6 +134,7 @@
           },
           {
             "name": "id",
+            "description": "ID of the appeal in mongoDB",
             "in": "path",
             "required": true,
             "schema": {
@@ -203,24 +154,10 @@
             }
           },
           "404": {
-            "description": "Appeal not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Appeal"
-                }
-              }
-            }
+            "description": "Appeal not found"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Appeal"
-                }
-              }
-            }
+            "description": "Internal server error"
           }
         }
       }
@@ -235,6 +172,16 @@
         ],
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of appeal from mongoDB"
+          },
+          "createdAt": {
+            "description": "Timestamp of appeals creation",
+            "type": "string",
+            "format": "date",
+            "example": "2021-02-01"
+          },
           "createdBy": {
             "$ref": "#/components/schemas/CreatedBy"
           },
@@ -256,21 +203,25 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "ID of attachement"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "description": "name of the attachement file"
           },
           "contentType": {
             "type": "string"
           },
           "size": {
+            "description": "file size of attachement",
             "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
           "url": {
-            "type": "string"
+            "type": "string",
+            "description": "url path to attachment"
           }
         }
       },
@@ -278,10 +229,12 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "id of user creating appeal"
           },
           "emailAddress": {
-            "type": "string"
+            "type": "string",
+            "description": "email address of user creating appeal"
           }
         }
       },
@@ -293,13 +246,16 @@
         "type": "object",
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "title of reason"
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "description": "description of other reason"
           },
           "attachments": {
             "type": "array",
+            "description": "supporting attachments for other reason",
             "items": {
               "$ref": "#/components/schemas/Attachment"
             }
@@ -318,22 +274,32 @@
         "type": "object",
         "properties": {
           "illPerson": {
-            "type": "string"
+            "type": "string",
+            "description": "name of ill person"
           },
           "illnessStartDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date",
+            "description": "the date the illness started",
+            "example": "2021-01-01"
           },
           "continuedIllness": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "marker for if illness is ongoing"
           },
           "illnessEndDate": {
-            "type": "string"
+            "type": "string",
+            "format": "date",
+            "description": "the date the illness ended",
+            "example": "2021-02-01"
           },
           "illnessImpactFurtherInformation": {
-            "type": "string"
+            "type": "string",
+            "description": "further information of how the illness affects filing"
           },
           "attachments": {
             "type": "array",
+            "description": "array of attachements for illness evidence",
             "items": {
               "$ref": "#/components/schemas/Attachment"
             }
@@ -347,11 +313,13 @@
         "type": "object",
         "properties": {
           "companyNumber": {
-            "type": "string"
+            "type": "string",
+            "description": "company number on penalty"
           },
           "penaltyReference": {
             "pattern": "([A-Z0-9/]{8,14})",
-            "type": "string"
+            "type": "string",
+            "description": "reference id for penalty"
           }
         }
       },
