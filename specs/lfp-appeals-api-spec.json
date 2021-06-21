@@ -324,10 +324,7 @@
         }
       },
       "Reason": {
-        "required": [
-          "illnessReason",
-          "other"
-        ],
+        "description": "Only 1 reason type to be used.",
         "type": "object",
         "properties": {
           "illnessReason": {
