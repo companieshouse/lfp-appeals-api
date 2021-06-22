@@ -97,6 +97,7 @@
               "application/json": {
                 "schema": {
                   "type": "string",
+                  "description": "ID of the Appeal",
                   "example": "60d8aa8d8fd5823a2d0108c5"
                 }
               }
@@ -133,7 +134,7 @@
           },
           {
             "name": "id",
-            "description": "ID of the appeal in mongoDB",
+            "description": "ID of the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -173,7 +174,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "ID of appeal from mongoDB"
+            "description": "ID of appeal"
           },
           "createdAt": {
             "description": "Timestamp of appeals creation",
@@ -203,17 +204,17 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "ID of attachement"
+            "description": "ID of attachment"
           },
           "name": {
             "type": "string",
-            "description": "name of the attachement file"
+            "description": "name of the attachment file"
           },
           "contentType": {
             "type": "string"
           },
           "size": {
-            "description": "file size of attachement",
+            "description": "file size of attachment",
             "minimum": 1,
             "type": "integer",
             "format": "int32"
