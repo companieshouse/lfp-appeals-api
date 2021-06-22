@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/companies/{company-id}/appeals": {
+    "/companies/{company_number}/appeals": {
       "get": {
         "tags": [
           "Appeal"
@@ -15,8 +15,8 @@
         "operationId": "getAppealsByPenaltyReference",
         "parameters": [
           {
-            "name": "company-id",
-            "description": "ID of the company filing the appeal",
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -71,8 +71,8 @@
             }
           },
           {
-            "name": "company-id",
-            "description": "ID of the company filing the appeal",
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -93,14 +93,13 @@
         "responses": {
           "201": {
             "description": "Appeal resource created",
-            "headers": {
-              "location": {
-                "description": "URL to get the Appeal"
-              }
-            },
             "content": {
-              "description": "ID of the Appeal",
-              "type": "string"
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "60d8aa8d8fd5823a2d0108c5"
+                }
+              }
             }
           },
           "400": {
@@ -115,7 +114,7 @@
         }
       }
     },
-    "/companies/{company-id}/appeals/{id}": {
+    "/companies/{company_number}/appeals/{id}": {
       "get": {
         "tags": [
           "Appeal"
@@ -124,8 +123,8 @@
         "operationId": "getAppealById",
         "parameters": [
           {
-            "name": "company-id",
-            "description": "ID of the company filing the appeal",
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
             "in": "path",
             "required": true,
             "schema": {
@@ -262,7 +261,7 @@
           }
         }
       },
-      "IllnessReason": {
+      "Illness": {
         "required": [
           "illPerson",
           "illnessStartDate",
@@ -324,11 +323,14 @@
         }
       },
       "Reason": {
-        "description": "Only 1 reason type to be used.",
+        "required": [
+          "illness",
+          "other"
+        ],
         "type": "object",
         "properties": {
           "illnessReason": {
-            "$ref": "#/components/schemas/IllnessReason"
+            "$ref": "#/components/schemas/Illness"
           },
           "other": {
             "$ref": "#/components/schemas/OtherReason"
