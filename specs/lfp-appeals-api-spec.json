@@ -323,10 +323,7 @@
         }
       },
       "Reason": {
-        "required": [
-          "illness",
-          "other"
-        ],
+        "description": "Reason will only contain one reason type",
         "type": "object",
         "properties": {
           "illnessReason": {
