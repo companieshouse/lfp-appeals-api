@@ -20,6 +20,7 @@
         <!-- Versions -->
         <version.spring.boot>2.4.0</version.spring.boot>
         <version.springdoc.openapi>1.5.1</version.springdoc.openapi>
+        <structured-logging.version>1.5.0-rc2</structured-logging.version>
     </properties>
 
     <repositories>
@@ -50,6 +51,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
             <version>${version.spring.boot}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>structured-logging</artifactId>
+            <version>${structured-logging.version}</version>
         </dependency>
 
         <!-- Swagger documentation -->
