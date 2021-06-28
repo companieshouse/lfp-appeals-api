@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
         <version.spring.boot>2.4.0</version.spring.boot>
-        <version.springdoc.openapi>1.5.1</version.springdoc.openapi>
+        <commons-lang3.version>3.10</commons-lang3.version>
         <structured-logging.version>1.5.0-rc2</structured-logging.version>
     </properties>
 
@@ -59,11 +59,10 @@
             <version>${structured-logging.version}</version>
         </dependency>
 
-        <!-- Swagger documentation -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${version.springdoc.openapi}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
         <!-- Testing -->

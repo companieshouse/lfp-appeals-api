@@ -1,0 +1,340 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Appeals API",
+    "description": "LFP Appeals API Documentation",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/companies/{company_number}/appeals": {
+      "get": {
+        "tags": [
+          "Appeal"
+        ],
+        "summary": "Get appeals by penalty reference",
+        "operationId": "getAppealsByPenaltyReference",
+        "parameters": [
+          {
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "penaltyReference",
+            "description": "ID Reference of the penalty against the company",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appeals resource retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appeal"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Appeals not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Appeal"
+        ],
+        "summary": "Create a new appeal",
+        "operationId": "submitAppeal",
+        "parameters": [
+          {
+            "name": "ERIC-identity",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Appeal"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Appeal resource created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "ID of the Appeal",
+                  "example": "60d8aa8d8fd5823a2d0108c5"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid appeal"
+          },
+          "401": {
+            "description": "User is not authorised to submit this appeal"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/companies/{company_number}/appeals/{id}": {
+      "get": {
+        "tags": [
+          "Appeal"
+        ],
+        "summary": "Get an appeal by ID",
+        "operationId": "getAppealById",
+        "parameters": [
+          {
+            "name": "company_number",
+            "description": "number of the company filing the appeal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "description": "ID of the appeal",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Appeal resource retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appeal"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Appeal not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Appeal": {
+        "required": [
+          "penaltyIdentifier",
+          "reasons"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of appeal"
+          },
+          "createdAt": {
+            "description": "Timestamp of appeals creation",
+            "type": "string",
+            "format": "date",
+            "example": "2021-02-01"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/CreatedBy"
+          },
+          "penaltyIdentifier": {
+            "$ref": "#/components/schemas/PenaltyIdentifier"
+          },
+          "reasons": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        }
+      },
+      "Attachment": {
+        "required": [
+          "contentType",
+          "id",
+          "name",
+          "size"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of attachment"
+          },
+          "name": {
+            "type": "string",
+            "description": "name of the attachment file"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "size": {
+            "description": "file size of attachment",
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "url": {
+            "type": "string",
+            "description": "url path to attachment"
+          }
+        }
+      },
+      "CreatedBy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "id of user creating appeal"
+          },
+          "emailAddress": {
+            "type": "string",
+            "description": "email address of user creating appeal"
+          }
+        }
+      },
+      "OtherReason": {
+        "required": [
+          "description",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "title of reason"
+          },
+          "description": {
+            "type": "string",
+            "description": "description of other reason"
+          },
+          "attachments": {
+            "type": "array",
+            "description": "supporting attachments for other reason",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          }
+        }
+      },
+      "Illness": {
+        "required": [
+          "illPerson",
+          "illnessStartDate",
+          "continuedIllness",
+          "illnessEndDate",
+          "illnessImpactFurtherInformation",
+          "attachments"
+        ],
+        "type": "object",
+        "properties": {
+          "illPerson": {
+            "type": "string",
+            "description": "name of ill person"
+          },
+          "illnessStartDate": {
+            "type": "string",
+            "format": "date",
+            "description": "the date the illness started",
+            "example": "2021-01-01"
+          },
+          "continuedIllness": {
+            "type": "boolean",
+            "description": "marker for if illness is ongoing"
+          },
+          "illnessEndDate": {
+            "type": "string",
+            "format": "date",
+            "description": "the date the illness ended",
+            "example": "2021-02-01"
+          },
+          "illnessImpactFurtherInformation": {
+            "type": "string",
+            "description": "further information of how the illness affects filing"
+          },
+          "attachments": {
+            "type": "array",
+            "description": "array of attachements for illness evidence",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            }
+          }
+        }
+      },
+      "PenaltyIdentifier": {
+        "required": [
+          "penaltyReference"
+        ],
+        "type": "object",
+        "properties": {
+          "companyNumber": {
+            "type": "string",
+            "description": "company number on penalty"
+          },
+          "penaltyReference": {
+            "pattern": "([A-Z0-9/]{8,14})",
+            "type": "string",
+            "description": "reference id for penalty"
+          }
+        }
+      },
+      "Reason": {
+        "description": "Reason will only contain one reason type",
+        "type": "object",
+        "properties": {
+          "illnessReason": {
+            "$ref": "#/components/schemas/Illness"
+          },
+          "other": {
+            "$ref": "#/components/schemas/OtherReason"
+          }
+        }
+      }
+    }
+  }
+}
