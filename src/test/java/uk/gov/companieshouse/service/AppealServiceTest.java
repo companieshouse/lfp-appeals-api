@@ -120,9 +120,8 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppealChipsEnabled_throwsExceptionIfChipsReturnsError() {
+    public void testCreateAppeal_throwsExceptionIfChipsReturnsError() {
 
-        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(any(ChipsContact.class), anyString());
