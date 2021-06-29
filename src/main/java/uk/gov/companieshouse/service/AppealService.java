@@ -47,6 +47,7 @@ public class AppealService {
 
         String appealId = createAppealInMongoDB(appeal, userId);
         appeal.setId(appealId);
+        createContactInChips(appeal, userId);
 
         if (chipsConfiguration.isChipsEnabled()) {
             createContactInChips(appeal, userId);
@@ -77,8 +78,7 @@ public class AppealService {
         try {
             chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
         } catch (ChipsServiceException chipsServiceException) {
-            LOGGER.debug("Deleting appeal with id {} from mongodb", appeal.getId());
-            appealRepository.deleteById(appeal.getId());
+            LOGGER.debug("Appeal with id {} has failed to create contact", appeal.getId());
             throw chipsServiceException;
         }
     }
