@@ -47,7 +47,6 @@ public class AppealService {
 
         String appealId = createAppealInMongoDB(appeal, userId);
         appeal.setId(appealId);
-        createContactInChips(appeal, userId);
 
         if (chipsConfiguration.isChipsEnabled()) {
             createContactInChips(appeal, userId);

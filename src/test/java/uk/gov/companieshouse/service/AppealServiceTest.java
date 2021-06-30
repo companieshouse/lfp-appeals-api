@@ -64,7 +64,7 @@ public class AppealServiceTest {
     private ChipsConfiguration chipsConfiguration;
 
     @Test
-    public void testCreateAppeal_returnsResourceId() {
+    void testCreateAppeal_returnsResourceId() {
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
@@ -73,7 +73,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppeal_verify_createdBy_createdAt_setOnAppeal() {
+    void testCreateAppeal_verify_createdBy_createdAt_setOnAppeal() {
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id));
@@ -88,7 +88,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
+    void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(null));
@@ -98,7 +98,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
+    void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
@@ -108,7 +108,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppealChipsEnabled_returnsResourceId() {
+    void testCreateAppealChipsEnabled_returnsResourceId() {
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
@@ -120,8 +120,8 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testCreateAppeal_throwsExceptionIfChipsReturnsError() {
-
+    void testCreateAppeal_throwsExceptionIfChipsReturnsError() {
+        when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(any(ChipsContact.class), anyString());
@@ -135,7 +135,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealById_returnsAppeal() {
+    void testGetAppealById_returnsAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.of(createAppealEntity(TestData.Appeal.id)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
@@ -154,7 +154,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealById_returnsEmptyAppeal() {
+    void testGetAppealById_returnsEmptyAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
@@ -164,7 +164,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealsByPenaltyReference_returnsListOfAppeals() {
+    void testGetAppealsByPenaltyReference_returnsListOfAppeals() {
 
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal());
@@ -186,7 +186,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetMultipleAppealByPenaltyReference_returnsListOfAppeals() {
+    void testGetMultipleAppealByPenaltyReference_returnsListOfAppeals() {
 
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of(
             createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference),
@@ -202,7 +202,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testGetAppealsByPenaltyReference_returnsEmptyListOfAppeals() {
+    void testGetAppealsByPenaltyReference_returnsEmptyListOfAppeals() {
 
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of());
 
@@ -212,7 +212,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testBuildChipsContactWithAttachments() {
+    void testBuildChipsContactWithAttachments() {
 
         Appeal appeal = createAppeal();
         appeal.setId(TestData.Appeal.id);
@@ -240,7 +240,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testBuildChipsContactEmptyAttachments() {
+    void testBuildChipsContactEmptyAttachments() {
 
         Appeal appeal = createAppeal();
         appeal.setId(TestData.Appeal.id);
@@ -255,7 +255,7 @@ public class AppealServiceTest {
     }
 
     @Test
-    public void testBuildChipsContactNullAttachments() {
+    void testBuildChipsContactNullAttachments() {
 
         Appeal appeal = createAppeal();
         appeal.setId(TestData.Appeal.id);
