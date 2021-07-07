@@ -267,15 +267,17 @@
           "illPerson",
           "illnessStartDate",
           "continuedIllness",
-          "illnessEndDate",
           "illnessImpactFurtherInformation",
-          "attachments"
         ],
         "type": "object",
         "properties": {
           "illPerson": {
             "type": "string",
             "description": "name of ill person"
+          },
+          "otherPerson": {
+            "type": "string",
+            "description": "details of other ill person"
           },
           "illnessStartDate": {
             "type": "string",
