@@ -1,6 +1,7 @@
-package uk.gov.companieshouse.database.entity;
+package uk.gov.companieshouse.database;
 
 import org.springframework.data.annotation.AccessType;
+import uk.gov.companieshouse.database.entity.AttachmentEntity;
 
 import java.io.Serializable;
 import java.util.List;
