@@ -2,10 +2,11 @@ package uk.gov.companieshouse.database.entity;
 
 import org.springframework.data.annotation.AccessType;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AccessType(AccessType.Type.PROPERTY)
-public class IllnessReason {
+public class IllnessReason implements Serializable {
 
     private final String illPerson;
     private final String otherPerson;
@@ -26,5 +27,31 @@ public class IllnessReason {
         this.attachments = attachments;
     }
 
+    public String getIllPerson() {
+        return illPerson;
+    }
 
+    public String getOtherPerson() {
+        return otherPerson;
+    }
+
+    public String getIllnessStart() {
+        return illnessStart;
+    }
+
+    public String getContinuedIllness() {
+        return continuedIllness;
+    }
+
+    public String getIllnessEnd() {
+        return illnessEnd;
+    }
+
+    public String getIllnessImpactFurtherInformation() {
+        return illnessImpactFurtherInformation;
+    }
+
+    public List<AttachmentEntity> getAttachments() {
+        return attachments;
+    }
 }
