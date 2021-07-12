@@ -1,7 +1,8 @@
 package uk.gov.companieshouse.database;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.companieshouse.database.entity.AttachmentEntity;
+import uk.gov.companieshouse.model.Attachment;
+import uk.gov.companieshouse.model.IllnessReason;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,10 +13,10 @@ class IllnessReasonTest {
     private static final String illPerson = "Someone";
     private static final String otherPerson = "director";
     private static final String illnessStart = "12/10/2020";
-    private static final String continuedIllness = "yes";
+    private static final boolean continuedIllness = true;
     private static final String illnessEnd = "10/12/2021";
     private static final String illnessImpactFurtherInformation = "some further info";
-    private static final List<AttachmentEntity> attachments = new ArrayList<>();
+    private static final List<Attachment> attachments = new ArrayList<>();
 
     @Test
     void illnessResasonTest() {

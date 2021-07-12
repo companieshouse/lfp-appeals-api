@@ -1,24 +1,19 @@
-package uk.gov.companieshouse.database;
+package uk.gov.companieshouse.model;
 
-import org.springframework.data.annotation.AccessType;
-import uk.gov.companieshouse.database.entity.AttachmentEntity;
-
-import java.io.Serializable;
 import java.util.List;
 
-@AccessType(AccessType.Type.PROPERTY)
-public class IllnessReason implements Serializable {
+public class IllnessReason{
 
     private final String illPerson;
     private final String otherPerson;
     private final String illnessStart;
-    private final String continuedIllness;
+    private final boolean continuedIllness;
     private final String illnessEnd;
     private final String illnessImpactFurtherInformation;
-    private final List<AttachmentEntity> attachments;
+    private final List<Attachment> attachments;
 
-    public IllnessReason(String illPerson, String otherPerson, String illnessStart, String continuedIllness,
-                     String illnessEnd, String illnessImpactFurtherInformation, List<AttachmentEntity> attachments) {
+    public IllnessReason(String illPerson, String otherPerson, String illnessStart, boolean continuedIllness,
+                     String illnessEnd, String illnessImpactFurtherInformation, List<Attachment> attachments) {
         this.illPerson = illPerson;
         this.otherPerson = otherPerson;
         this.illnessStart = illnessStart;
@@ -40,7 +35,7 @@ public class IllnessReason implements Serializable {
         return illnessStart;
     }
 
-    public String getContinuedIllness() {
+    public boolean getContinuedIllness() {
         return continuedIllness;
     }
 
@@ -52,7 +47,7 @@ public class IllnessReason implements Serializable {
         return illnessImpactFurtherInformation;
     }
 
-    public List<AttachmentEntity> getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 }
