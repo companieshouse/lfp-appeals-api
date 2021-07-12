@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @ExtendWith(SpringExtension.class)
-public class IllnessReasonMapperTest {
+    class IllnessReasonMapperTest {
     private final IllnessReasonMapper mapper = new IllnessReasonMapper(new AttachmentMapper());
     private final static String ILL_PERSON = "name";
     private final static String OTHER_PERSON = "otherPersonName";

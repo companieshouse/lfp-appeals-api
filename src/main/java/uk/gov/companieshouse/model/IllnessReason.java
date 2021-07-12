@@ -1,13 +1,8 @@
 package uk.gov.companieshouse.model;
 
-import org.springframework.data.annotation.AccessType;
-import uk.gov.companieshouse.model.Attachment;
-
-import java.io.Serializable;
 import java.util.List;
 
-@AccessType(AccessType.Type.PROPERTY)
-public class IllnessReason implements Serializable {
+public class IllnessReason{
 
     private final String illPerson;
     private final String otherPerson;
