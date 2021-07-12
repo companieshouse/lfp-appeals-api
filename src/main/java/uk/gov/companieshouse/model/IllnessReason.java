@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.database;
+package uk.gov.companieshouse.model;
 
 import org.springframework.data.annotation.AccessType;
 import uk.gov.companieshouse.model.Attachment;

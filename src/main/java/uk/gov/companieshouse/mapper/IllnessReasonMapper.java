@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.mapper;
 
 import org.springframework.stereotype.Component;
-import uk.gov.companieshouse.database.IllnessReason;
+import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.mapper.base.Mapper;
 
