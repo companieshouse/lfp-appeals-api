@@ -15,6 +15,10 @@ public class IllnessReason implements ReasonType {
     private final String illnessImpactFurtherInformation;
     private List<Attachment> attachments;
 
+    public IllnessReason(){
+        this(null,null,null,false,null,null,Collections.emptyList());
+    }
+
     public IllnessReason(String illPerson, String otherPerson, String illnessStart, boolean continuedIllness,
                      String illnessEnd, String illnessImpactFurtherInformation, List<Attachment> attachments) {
         this.illPerson = illPerson;

@@ -118,6 +118,8 @@ public class AppealService {
                     "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
                 );
                 contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
+                LOGGER.debug(illnessReason.getIllnessStart());
+                LOGGER.debug(illnessReason.getIllnessEnd());
                 break;
             default:
                 throw new RuntimeException("could not identify reason type");
