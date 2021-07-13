@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,15 +21,12 @@ import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 @ExtendWith(SpringExtension.class)
 public class AppealMapperTest {
     private final AppealMapper mapper = new AppealMapper(
         new CreatedByMapper(),
         new PenaltyIdentifierMapper(),
-        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()))
+        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),new IllnessReasonMapper(new AttachmentMapper()))
     );
 
     @Nested
@@ -57,7 +57,7 @@ public class AppealMapperTest {
                             TestData.Appeal.Reason.Attachment.size,
                             null
                         ))
-                    )
+                    ), null
                 )
             ));
             assertNull(mapped.getId());
@@ -71,6 +71,7 @@ public class AppealMapperTest {
             assertEquals(TestData.Appeal.Reason.Attachment.name, mapped.getReason().getOther().getAttachments().get(0).getName());
             assertEquals(TestData.Appeal.Reason.Attachment.contentType, mapped.getReason().getOther().getAttachments().get(0).getContentType());
             assertEquals(TestData.Appeal.Reason.Attachment.size, mapped.getReason().getOther().getAttachments().get(0).getSize());
+            assertNull(mapped.getReason().getIllnessReason());
         }
     }
 
@@ -103,7 +104,7 @@ public class AppealMapperTest {
                             TestData.Appeal.Reason.Attachment.contentType,
                             TestData.Appeal.Reason.Attachment.size
                         ))
-                    )
+                    ), null
                 )
             ));
             assertEquals(TestData.Appeal.id, mapped.getId());
