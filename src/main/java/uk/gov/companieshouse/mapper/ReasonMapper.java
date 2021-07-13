@@ -9,9 +9,11 @@ import uk.gov.companieshouse.model.Reason;
 public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
 
     private final OtherReasonMapper otherReasonMapper;
+    private final IllnessReasonMapper illnessReasonMapper;
 
-    public ReasonMapper(OtherReasonMapper otherReasonMapper) {
+    public ReasonMapper(OtherReasonMapper otherReasonMapper, IllnessReasonMapper illnessReasonMapper) {
         this.otherReasonMapper = otherReasonMapper;
+        this.illnessReasonMapper = illnessReasonMapper;
     }
 
     @Override
@@ -19,7 +21,7 @@ public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
         if (value == null) {
             return null;
         }
-        return new ReasonEntity(otherReasonMapper.map(value.getOther()));
+        return new ReasonEntity(otherReasonMapper.map(value.getOther()), illnessReasonMapper.map(value.getIllnessReason()));
     }
 
     @Override
@@ -27,6 +29,6 @@ public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
         if (value == null) {
             return null;
         }
-        return new Reason(otherReasonMapper.map(value.getOther()));
+        return new Reason(otherReasonMapper.map(value.getOther()), illnessReasonMapper.map(value.getIllnessReason()));
     }
 }
