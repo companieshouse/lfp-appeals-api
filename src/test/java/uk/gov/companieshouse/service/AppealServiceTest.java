@@ -469,8 +469,6 @@ public class AppealServiceTest {
         return new Reason(createOtherReason(), null);
     }
 
-    private Reason createNullReason() { return new Reason(null, null);}
-
     private Reason createReasonWithIllness(){
         return new Reason(null, createIllnessReason());
     }
