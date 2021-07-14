@@ -28,7 +28,6 @@ import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
-import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
@@ -463,15 +462,6 @@ public class AppealServiceTest {
             Lists.newArrayList(
                 new AttachmentEntity(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
                     TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size)));
-    }
-
-    private IllnessReasonEntity createIllnessReasonEntity() {
-        return new IllnessReasonEntity(TestData.Appeal.Reason.IllnessReason.illPerson,
-            TestData.Appeal.Reason.IllnessReason.otherPerson, TestData.Appeal.Reason.IllnessReason.illnessStart,
-            TestData.Appeal.Reason.IllnessReason.continuedIllness, TestData.Appeal.Reason.IllnessReason.illnessEnd,
-            TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation, Lists.newArrayList(
-            new AttachmentEntity(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size)));
     }
 
     private Reason createReasonWithOther() {

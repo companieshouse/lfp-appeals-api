@@ -26,7 +26,7 @@ public class AppealMapperTest {
     private final AppealMapper mapper = new AppealMapper(
         new CreatedByMapper(),
         new PenaltyIdentifierMapper(),
-        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),null )
+        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),new IllnessReasonMapper(new AttachmentMapper()))
     );
 
     @Nested
@@ -71,6 +71,7 @@ public class AppealMapperTest {
             assertEquals(TestData.Appeal.Reason.Attachment.name, mapped.getReason().getOther().getAttachments().get(0).getName());
             assertEquals(TestData.Appeal.Reason.Attachment.contentType, mapped.getReason().getOther().getAttachments().get(0).getContentType());
             assertEquals(TestData.Appeal.Reason.Attachment.size, mapped.getReason().getOther().getAttachments().get(0).getSize());
+            assertNull(mapped.getReason().getIllnessReason());
         }
     }
 

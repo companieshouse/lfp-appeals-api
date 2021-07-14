@@ -1,7 +1,5 @@
 package uk.gov.companieshouse.service;
 
-import static java.util.Objects.isNull;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -124,24 +122,7 @@ public class AppealService {
             default:
                 throw new RuntimeException("could not identify reason type");
         }
-
-        if(!isNull(appeal.getReason().getOther())) {
-
-        } else if (illnessReason != null && otherReason == null) {
-
-        }
-        else if (otherReason != null && illnessReason != null) {
-            throw new RuntimeException("both reasons cannot exist");
-        }
-        else if (otherReason == null && illnessReason == null) {
-            throw new RuntimeException("a reason has to exist");
-        }
         chipsContact.setContactDescription(contactDescription);
-
-
-
-
-
         return chipsContact;
     }
 
