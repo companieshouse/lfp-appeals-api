@@ -31,13 +31,11 @@ public class Reason {
 
     public void setIllnessReason(IllnessReason illnessReason) {this.illnessReason = illnessReason; }
 
-    public ReasonType getReasonType() {
+    public ReasonType getReasonType() throws RuntimeException {
         if(getOther() == null ^ getIllnessReason() == null){
             return getOther() == null? getIllnessReason():getOther();
         }
-        else {
-            return null;
-        }
+        else throw new RuntimeException("could not identify reason type");
     }
 
     @Override

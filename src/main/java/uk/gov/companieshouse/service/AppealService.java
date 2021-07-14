@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
-import uk.gov.companieshouse.exception.AppealException;
 import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
@@ -100,7 +99,7 @@ public class AppealService {
             "\nEmail address: " + appeal.getCreatedBy().getEmailAddress() +
             "\n\nAppeal Reason";
 
-        List<Attachment> attachmentList;
+        List<Attachment> attachmentList = null;
 
         switch(reasonType.getReasonType()){
             case ReasonType.OTHER:
@@ -120,8 +119,6 @@ public class AppealService {
                 LOGGER.debug(illnessReason.getIllnessStart());
                 LOGGER.debug(illnessReason.getIllnessEnd());
                 break;
-            default:
-                throw new AppealException("could not identify reason type");
         }
         contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
         chipsContact.setContactDescription(contactDescription);
