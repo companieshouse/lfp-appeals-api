@@ -1,10 +1,10 @@
 package uk.gov.companieshouse.model;
 
-public interface ReasonType {
+public abstract class ReasonType {
 
-    String OTHER = "other";
-    String ILLNESS = "illness";
+    public static final String OTHER = "other";
+    public static final String ILLNESS = "illness";
 
-    String getReasonType();
+    public abstract String getReasonType();
 
 }

@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class OtherReason implements ReasonType {
+public class OtherReason extends ReasonType {
 
     @NotBlank(message = "title must not be blank")
     private String title;

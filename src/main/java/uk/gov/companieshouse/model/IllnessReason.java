@@ -5,7 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 @Valid
-public class IllnessReason implements ReasonType {
+public class IllnessReason extends ReasonType {
 
     private final String illPerson;
     private final String otherPerson;
