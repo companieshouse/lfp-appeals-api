@@ -1,10 +1,12 @@
 package uk.gov.companieshouse.model;
 
 import java.util.Objects;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class Reason {
 
+    @Valid
     private OtherReason other;
     private IllnessReason illnessReason;
 
