@@ -2,7 +2,6 @@ package uk.gov.companieshouse.model;
 
 import java.util.Objects;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 public class Reason {
 
@@ -32,7 +31,6 @@ public class Reason {
 
     public void setIllnessReason(IllnessReason illnessReason) {this.illnessReason = illnessReason; }
 
-    @NotNull
     public ReasonType getReasonType() {
         if(getOther() == null ^ getIllnessReason() == null){
             return getOther() == null? getIllnessReason():getOther();
