@@ -136,7 +136,6 @@ public class AppealServiceTest {
     void testCreateAppeal_throwsExceptionIfChipsReturnsError() {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
-        Appeal appeal = createAppeal(reason);
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
@@ -147,7 +146,7 @@ public class AppealServiceTest {
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
 
         assertThrows(ChipsServiceException.class,
-            () -> appealService.saveAppeal(appeal, TestData.Appeal.CreatedBy.id));
+            () -> appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id));
 
         verify(appealRepository).insert(createAppealEntity(null, reasonEntity));
     }
