@@ -145,8 +145,9 @@ public class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
 
+        Appeal appeal = createAppeal(reason);
         assertThrows(ChipsServiceException.class,
-            () -> appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id));
+            () -> appealService.saveAppeal(appeal, TestData.Appeal.CreatedBy.id));
 
         verify(appealRepository).insert(createAppealEntity(null, reasonEntity));
     }
