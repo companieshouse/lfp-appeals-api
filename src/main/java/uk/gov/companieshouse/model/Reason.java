@@ -7,6 +7,7 @@ public class Reason {
 
     @Valid
     private OtherReason other;
+    @Valid
     private IllnessReason illnessReason;
 
     public Reason() {

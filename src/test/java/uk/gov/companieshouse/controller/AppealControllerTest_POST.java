@@ -147,6 +147,18 @@ public class AppealControllerTest_POST {
     }
 
     @Test
+    void whenInvalidAppealReason_return400() throws Exception {
+        final String invalidAppeal = asJsonString
+            ("src/test/resources/data/invalidAppealReason.json", appeal -> { return appeal; });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidAppeal))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void whenExceptionFromService_return500() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
