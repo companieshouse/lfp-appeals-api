@@ -3,16 +3,28 @@ package uk.gov.companieshouse.model;
 import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Valid
 public class IllnessReason extends ReasonType {
 
+    @NotBlank(message = "illPerson must not be blank")
     private final String illPerson;
-    private final String otherPerson;
+
+    @NotBlank(message = "illnessStart must not be blank")
     private final String illnessStart;
+
+    @NotNull(message = "continuedIllness must not be null")
     private final boolean continuedIllness;
-    private final String illnessEnd;
+
+    @NotBlank(message = "illnessImpactFurtherInformation must not be blank")
     private final String illnessImpactFurtherInformation;
+
+    private final String otherPerson;
+    private final String illnessEnd;
+
+    @Valid
     private List<Attachment> attachments;
 
     public IllnessReason(){
