@@ -10,6 +10,8 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
+import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -34,11 +36,8 @@ import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.model.CreatedBy;
-import uk.gov.companieshouse.model.IllnessReason;
-import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.model.ReasonType;
@@ -434,28 +433,6 @@ public class AppealServiceTest {
             + "\nFurther information: "
             + TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation
             + "\nSupporting documents: None";
-    }
-
-    private OtherReason createOtherReason() {
-        return new OtherReason(TestData.Appeal.Reason.OtherReason.title, TestData.Appeal.Reason.OtherReason.description,
-            Lists.newArrayList(
-                new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size,
-                    TestData.Appeal.Reason.Attachment.url),
-                new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size, null)));
-    }
-
-    private IllnessReason createIllnessReason() {
-        return new IllnessReason(TestData.Appeal.Reason.IllnessReason.illPerson,
-            TestData.Appeal.Reason.IllnessReason.otherPerson, TestData.Appeal.Reason.IllnessReason.illnessStart,
-            TestData.Appeal.Reason.IllnessReason.continuedIllness, TestData.Appeal.Reason.IllnessReason.illnessEnd,
-            TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation, Lists.newArrayList(
-            new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size,
-                TestData.Appeal.Reason.Attachment.url),
-            new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size, null)));
     }
 
     private OtherReasonEntity createOtherReasonEntity() {

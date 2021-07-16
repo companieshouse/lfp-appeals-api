@@ -2,19 +2,16 @@ package uk.gov.companieshouse.model.validator;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
+import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.exception.AppealReasonException;
-import uk.gov.companieshouse.model.Attachment;
-import uk.gov.companieshouse.model.IllnessReason;
-import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(SpringExtension.class)
@@ -47,30 +44,5 @@ class AppealReasonValidatorTest {
     void shouldNotThrowErrorWhenItsOtherReason(){
         mockReason = new Reason(createOtherReason(), null);
         assertDoesNotThrow(() -> appealReasonValidator.validate(mockReason));
-    }
-
-    private IllnessReason createIllnessReason(){
-        return new IllnessReason(
-            TestData.Appeal.Reason.IllnessReason.illPerson,
-            TestData.Appeal.Reason.IllnessReason.otherPerson,
-            TestData.Appeal.Reason.IllnessReason.illnessStart,
-            TestData.Appeal.Reason.IllnessReason.continuedIllness,
-            TestData.Appeal.Reason.IllnessReason.illnessEnd,
-            TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation,
-            Lists.newArrayList(
-                new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size,
-                    TestData.Appeal.Reason.Attachment.url)
-            ));
-    }
-
-    private OtherReason createOtherReason() {
-        return new OtherReason(TestData.Appeal.Reason.OtherReason.title, TestData.Appeal.Reason.OtherReason.description,
-            Lists.newArrayList(
-                new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size,
-                    TestData.Appeal.Reason.Attachment.url),
-                new Attachment(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size, null)));
     }
 }
