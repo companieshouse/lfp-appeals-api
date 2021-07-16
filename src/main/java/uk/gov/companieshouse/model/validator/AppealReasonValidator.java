@@ -12,7 +12,7 @@ public class AppealReasonValidator {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealReasonValidator.class);
 
     public void validate(Reason reason) throws AppealReasonException {
-        if(reason.getOther() == null ^ reason.getIllnessReason() == null){
+        if(reason.getReasonType() != null){
             LOGGER.info("Correctly posted {} appeal reason", reason.getReasonType());
         }
         else {
