@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
         <version.spring.boot>2.4.0</version.spring.boot>
-        <commons-lang3.version>3.10</commons-lang3.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
         <structured-logging.version>1.5.0-rc2</structured-logging.version>
     </properties>
 
