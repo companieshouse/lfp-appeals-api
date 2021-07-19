@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.model.validator;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
 import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
 
@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.companieshouse.exception.AppealReasonException;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(SpringExtension.class)
@@ -24,25 +23,26 @@ class AppealReasonValidatorTest {
     private AppealReasonValidator appealReasonValidator;
 
     @Test
-    void shouldThrowAnExceptionWhenItsNotIllnessOrOtherReason() {
-        assertThrows(AppealReasonException.class, () -> appealReasonValidator.validate(mockReason));
+    void shouldReturnFalseWhenItsNotIllnessOrOtherReason() {
+        mockReason = new Reason(null, null);
+        assertFalse(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
-    void shouldThrowAnExceptionWhenHasBothIllnessAndOtherReason() {
+    void shouldReturnFalseWhenHasBothIllnessAndOtherReason() {
         mockReason = new Reason(createOtherReason(), createIllnessReason());
-        assertThrows(AppealReasonException.class, () -> appealReasonValidator.validate(mockReason));
+        assertFalse(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
-    void shouldNotThrowErrorWhenItsIllnessReason(){
+    void shouldReturnTrueWhenItsIllnessReason(){
         mockReason = new Reason(null, createIllnessReason());
-        assertDoesNotThrow(() -> appealReasonValidator.validate(mockReason));
+        assertTrue(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
-    void shouldNotThrowErrorWhenItsOtherReason(){
+    void shouldReturnTrueWhenWhenItsOtherReason(){
         mockReason = new Reason(createOtherReason(), null);
-        assertDoesNotThrow(() -> appealReasonValidator.validate(mockReason));
+        assertTrue(appealReasonValidator.isValid(mockReason));
     }
 }

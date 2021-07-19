@@ -101,25 +101,23 @@ public class AppealService {
 
         List<Attachment> attachmentList;
 
-        switch(reasonType.getReasonType()){
-            case ReasonType.OTHER:
-                attachmentList = otherReason.getAttachments();
-                contactDescription +=
-                    ("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
-                contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
-                break;
-            case ReasonType.ILLNESS:
-                attachmentList = illnessReason.getAttachments();
-                contactDescription += ("\nIll Person " + illnessReason.getIllPerson() +
-                "\nOther Person: " + illnessReason.getOtherPerson() +
-                    "\nIllness Start Date: " + illnessReason.getIllnessStart() +
-                    "\nContinued Illness" + illnessReason.getContinuedIllness() +
-                    "\nIllness End Date: " + illnessReason.getIllnessEnd() +
-                    "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
-                );
-                contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
-                break;
+        if(reasonType.getReasonType().equals(ReasonType.OTHER)){
+            attachmentList = otherReason.getAttachments();
+            contactDescription +=
+                ("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
+            contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
+        } else if(reasonType.getReasonType().equals(ReasonType.ILLNESS)){
+            attachmentList = illnessReason.getAttachments();
+            contactDescription += ("\nIll Person " + illnessReason.getIllPerson() +
+            "\nOther Person: " + illnessReason.getOtherPerson() +
+                "\nIllness Start Date: " + illnessReason.getIllnessStart() +
+                "\nContinued Illness" + illnessReason.getContinuedIllness() +
+                "\nIllness End Date: " + illnessReason.getIllnessEnd() +
+                "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
+            );
+            contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
         }
+
         chipsContact.setContactDescription(contactDescription);
         return chipsContact;
     }

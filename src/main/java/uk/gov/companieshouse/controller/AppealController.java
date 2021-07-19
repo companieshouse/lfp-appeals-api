@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import uk.gov.companieshouse.exception.AppealReasonException;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
 import uk.gov.companieshouse.service.AppealService;
@@ -60,8 +59,13 @@ public class AppealController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        if (!appealReasonValidator.isValid(appeal.getReason())) {
+            LOGGER.error("Appeal reason not valid with user id {} and penalty reference {}, {}",
+                userId, penaltyReference, appeal.getReason());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         try {
-            appealReasonValidator.validate(appeal.getReason());
             final String id = appealService.saveAppeal(appeal, userId);
 
             final URI location = ServletUriComponentsBuilder
@@ -71,12 +75,6 @@ public class AppealController {
                 .toUri();
 
             return ResponseEntity.created(location).body(id);
-
-        } catch (AppealReasonException appealReasonException) {
-            LOGGER.error(appealReasonException.getMessage() +
-                " for company number {}, penalty reference {} and user id {}",
-                    companyId, penaltyReference, userId, appealReasonException);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (Exception ex) {
             LOGGER.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
                 companyId, penaltyReference, userId, ex);
