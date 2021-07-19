@@ -6,6 +6,6 @@ import uk.gov.companieshouse.model.Reason;
 @Component
 public class AppealReasonValidator {
     public boolean isValid(Reason reason) {
-        return (reason.getReasonType() != null) ? true : false;
+        return reason.getReasonType() != null;
     }
 }
