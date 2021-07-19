@@ -23,7 +23,7 @@ public class ReasonEntity implements Serializable {
     }
 
     public IllnessReasonEntity getIllnessReason() {
-        return illnessReason;
+        return this.illnessReason;
     }
 
     @Override

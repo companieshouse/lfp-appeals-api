@@ -27,9 +27,13 @@ public class Reason {
         this.other = other;
     }
 
-    public IllnessReason getIllnessReason() { return this.illnessReason; }
+    public IllnessReason getIllnessReason() {
+        return this.illnessReason;
+    }
 
-    public void setIllnessReason(IllnessReason illnessReason) {this.illnessReason = illnessReason; }
+    public void setIllnessReason(IllnessReason illnessReason) {
+        this.illnessReason = illnessReason;
+    }
 
     public ReasonType getReasonType() {
         if(getOther() == null ^ getIllnessReason() == null){
