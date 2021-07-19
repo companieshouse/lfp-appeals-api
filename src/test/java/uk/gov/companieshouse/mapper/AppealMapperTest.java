@@ -1,5 +1,8 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,15 +21,12 @@ import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 @ExtendWith(SpringExtension.class)
 public class AppealMapperTest {
     private final AppealMapper mapper = new AppealMapper(
         new CreatedByMapper(),
         new PenaltyIdentifierMapper(),
-        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()))
+        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),new IllnessReasonMapper(new AttachmentMapper()))
     );
 
     @Nested
@@ -38,6 +38,18 @@ public class AppealMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
+            Reason reason = new Reason();
+            reason.setOther(new OtherReason(
+                TestData.Appeal.Reason.OtherReason.title,
+                TestData.Appeal.Reason.OtherReason.description,
+                Lists.newArrayList(new Attachment(
+                    TestData.Appeal.Reason.Attachment.id,
+                    TestData.Appeal.Reason.Attachment.name,
+                    TestData.Appeal.Reason.Attachment.contentType,
+                    TestData.Appeal.Reason.Attachment.size,
+                    null
+                ))
+            ));
             AppealEntity mapped = mapper.map(new Appeal(
                 null,
                 null,
@@ -46,19 +58,7 @@ public class AppealMapperTest {
                     TestData.Appeal.PenaltyIdentifier.companyNumber,
                     TestData.Appeal.PenaltyIdentifier.penaltyReference
                 ),
-                new Reason(
-                    new OtherReason(
-                        TestData.Appeal.Reason.OtherReason.title,
-                        TestData.Appeal.Reason.OtherReason.description,
-                        Lists.newArrayList(new Attachment(
-                            TestData.Appeal.Reason.Attachment.id,
-                            TestData.Appeal.Reason.Attachment.name,
-                            TestData.Appeal.Reason.Attachment.contentType,
-                            TestData.Appeal.Reason.Attachment.size,
-                            null
-                        ))
-                    )
-                )
+                reason
             ));
             assertNull(mapped.getId());
             assertNull(mapped.getCreatedAt());
@@ -71,6 +71,7 @@ public class AppealMapperTest {
             assertEquals(TestData.Appeal.Reason.Attachment.name, mapped.getReason().getOther().getAttachments().get(0).getName());
             assertEquals(TestData.Appeal.Reason.Attachment.contentType, mapped.getReason().getOther().getAttachments().get(0).getContentType());
             assertEquals(TestData.Appeal.Reason.Attachment.size, mapped.getReason().getOther().getAttachments().get(0).getSize());
+            assertNull(mapped.getReason().getIllnessReason());
         }
     }
 
@@ -83,6 +84,18 @@ public class AppealMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
+            ReasonEntity reasonEntity = new ReasonEntity();
+            reasonEntity.setOther(new OtherReasonEntity(
+                TestData.Appeal.Reason.OtherReason.title,
+                TestData.Appeal.Reason.OtherReason.description,
+                Lists.newArrayList(new AttachmentEntity(
+                    TestData.Appeal.Reason.Attachment.id,
+                    TestData.Appeal.Reason.Attachment.name,
+                    TestData.Appeal.Reason.Attachment.contentType,
+                    TestData.Appeal.Reason.Attachment.size
+                ))
+            ));
+
             Appeal mapped = mapper.map(new AppealEntity(
                 TestData.Appeal.id,
                 TestData.Appeal.createdAt,
@@ -93,18 +106,7 @@ public class AppealMapperTest {
                     TestData.Appeal.PenaltyIdentifier.companyNumber,
                     TestData.Appeal.PenaltyIdentifier.penaltyReference
                 ),
-                new ReasonEntity(
-                    new OtherReasonEntity(
-                        TestData.Appeal.Reason.OtherReason.title,
-                        TestData.Appeal.Reason.OtherReason.description,
-                        Lists.newArrayList(new AttachmentEntity(
-                            TestData.Appeal.Reason.Attachment.id,
-                            TestData.Appeal.Reason.Attachment.name,
-                            TestData.Appeal.Reason.Attachment.contentType,
-                            TestData.Appeal.Reason.Attachment.size
-                        ))
-                    )
-                )
+                reasonEntity
             ));
             assertEquals(TestData.Appeal.id, mapped.getId());
             assertEquals(TestData.Appeal.createdAt, mapped.getCreatedAt());

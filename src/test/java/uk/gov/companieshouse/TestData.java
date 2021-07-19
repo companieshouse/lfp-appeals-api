@@ -19,6 +19,14 @@ public interface TestData {
                 String title = "Some title";
                 String description = "Some description";
             }
+            interface IllnessReason {
+                String illPerson = "ill Person";
+                String otherPerson = "other person";
+                String illnessStart= "01/01/2021";
+                boolean continuedIllness = false;
+                String illnessEnd = "01/02/2021";
+                String illnessImpactFurtherInformation = "further information";
+            }
             interface Attachment {
                 String id = "FILE#1";
                 String name = "file.txt";

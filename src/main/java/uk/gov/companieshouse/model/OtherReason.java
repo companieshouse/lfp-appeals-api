@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class OtherReason {
+public class OtherReason extends ReasonType {
 
     @NotBlank(message = "title must not be blank")
     private String title;
@@ -53,6 +53,11 @@ public class OtherReason {
             this.attachments = Collections.emptyList();
         }
         this.attachments = attachments;
+    }
+
+    @Override
+    public String getReasonType() {
+        return ReasonType.OTHER;
     }
 
     @Override

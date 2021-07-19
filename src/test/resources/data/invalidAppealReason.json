@@ -1,0 +1,23 @@
+  {
+    "penaltyIdentifier": {
+      "companyNumber": "12345678",
+      "penaltyReference": "A12345678"
+    },
+    "reasons": {
+      "other": {
+        "title": "This is a title",
+        "description": "This is a description"
+      },
+      "illnessReason": {
+        "illPerson": "ill Person",
+        "otherPerson": "other person",
+        "illnessStart": "01/01/2021",
+        "continuedIllness": false,
+        "illnessEnd": "01/02/2021",
+        "illnessImpactFurtherInformation": "further information"
+      }
+    },
+    "createdBy": {
+      "id": "123abc456"
+    }
+  }
