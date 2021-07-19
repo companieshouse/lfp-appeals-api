@@ -10,13 +10,8 @@ import java.io.Serializable;
 @AccessType(AccessType.Type.PROPERTY)
 public class ReasonEntity implements Serializable {
 
-    private final OtherReasonEntity other;
-    private final IllnessReasonEntity illnessReason;
-
-    public ReasonEntity(OtherReasonEntity other, IllnessReasonEntity illnessReason) {
-        this.other = other;
-        this.illnessReason = illnessReason;
-    }
+    private OtherReasonEntity other;
+    private IllnessReasonEntity illnessReason;
 
     public OtherReasonEntity getOther() {
         return this.other;
@@ -24,6 +19,14 @@ public class ReasonEntity implements Serializable {
 
     public IllnessReasonEntity getIllnessReason() {
         return this.illnessReason;
+    }
+
+    public void setOther(OtherReasonEntity other) {
+        this.other = other;
+    }
+
+    public void setIllnessReason(IllnessReasonEntity illnessReason) {
+        this.illnessReason = illnessReason;
     }
 
     @Override

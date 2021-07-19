@@ -44,7 +44,7 @@ import uk.gov.companieshouse.model.ReasonType;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class AppealServiceTest {
+class AppealServiceTest {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final String TEST_CHIPS_URL = "http://someurl";
@@ -443,15 +443,21 @@ public class AppealServiceTest {
     }
 
     private Reason createReasonWithOther() {
-        return new Reason(createOtherReason(), null);
+        Reason reason = new Reason();
+        reason.setOther(createOtherReason());
+        return reason;
     }
 
     private Reason createReasonWithIllness(){
-        return new Reason(null, createIllnessReason());
+        Reason reason = new Reason();
+        reason.setIllnessReason(createIllnessReason());
+        return reason;
     }
 
     private ReasonEntity createReasonEntityWithOther() {
-        return new ReasonEntity(createOtherReasonEntity(), null);
+        ReasonEntity reasonEntity = new ReasonEntity();
+        reasonEntity.setOther(createOtherReasonEntity());
+        return reasonEntity;
     }
 
     private Appeal createAppeal(Reason reason) {

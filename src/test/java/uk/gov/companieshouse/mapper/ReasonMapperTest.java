@@ -10,6 +10,7 @@ import static uk.gov.companieshouse.TestData.Appeal.Reason.IllnessReason.illness
 import static uk.gov.companieshouse.TestData.Appeal.Reason.IllnessReason.otherPerson;
 import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.description;
 import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.title;
+import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
 
 import java.util.Collections;
 import org.junit.jupiter.api.Nested;
@@ -24,7 +25,7 @@ import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(SpringExtension.class)
-public class ReasonMapperTest {
+class ReasonMapperTest {
     private final ReasonMapper mapper = new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),
         new IllnessReasonMapper(new AttachmentMapper()));
 
@@ -37,9 +38,12 @@ public class ReasonMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            ReasonEntity mapped = mapper.map(new Reason(new OtherReason(title, description, Collections.emptyList()),
-                new IllnessReason(illPerson, otherPerson, illnessStart, continuedIllness, illnessEnd,
-                    illnessImpactFurtherInformation, Collections.emptyList())));
+            Reason reason = new Reason();
+            reason.setIllnessReason(new IllnessReason(illPerson, otherPerson, illnessStart, continuedIllness,
+                illnessEnd, illnessImpactFurtherInformation, Collections.emptyList()));
+            reason.setOther(new OtherReason(title, description, Collections.emptyList()));
+
+            ReasonEntity mapped = mapper.map(reason);
             assertEquals(title, mapped.getOther().getTitle());
             assertEquals(description, mapped.getOther().getDescription());
             assertEquals(illPerson, mapped.getIllnessReason().getIllPerson());
@@ -61,10 +65,12 @@ public class ReasonMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            Reason mapped = mapper.map(
-                new ReasonEntity(new OtherReasonEntity(title, description, Collections.emptyList()),
-                    new IllnessReasonEntity(illPerson, otherPerson, illnessStart, continuedIllness, illnessEnd,
-                        illnessImpactFurtherInformation, Collections.emptyList())));
+            ReasonEntity reasonEntity = new ReasonEntity();
+            reasonEntity.setIllnessReason(new IllnessReasonEntity(illPerson, otherPerson, illnessStart,
+                continuedIllness, illnessEnd, illnessImpactFurtherInformation, Collections.emptyList()));
+            reasonEntity.setOther(new OtherReasonEntity(title, description, Collections.emptyList()));
+
+            Reason mapped = mapper.map(reasonEntity);
             assertEquals(title, mapped.getOther().getTitle());
             assertEquals(description, mapped.getOther().getDescription());
             assertEquals(illPerson, mapped.getIllnessReason().getIllPerson());

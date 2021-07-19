@@ -24,25 +24,29 @@ class AppealReasonValidatorTest {
 
     @Test
     void shouldReturnFalseWhenItsNotIllnessOrOtherReason() {
-        mockReason = new Reason(null, null);
+        mockReason = new Reason();
         assertFalse(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
     void shouldReturnFalseWhenHasBothIllnessAndOtherReason() {
-        mockReason = new Reason(createOtherReason(), createIllnessReason());
+        mockReason = new Reason();
+        mockReason.setIllnessReason(createIllnessReason());
+        mockReason.setOther(createOtherReason());
         assertFalse(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
     void shouldReturnTrueWhenItsIllnessReason(){
-        mockReason = new Reason(null, createIllnessReason());
+        mockReason = new Reason();
+        mockReason.setIllnessReason(createIllnessReason());
         assertTrue(appealReasonValidator.isValid(mockReason));
     }
 
     @Test
     void shouldReturnTrueWhenWhenItsOtherReason(){
-        mockReason = new Reason(createOtherReason(), null);
+        mockReason = new Reason();
+        mockReason.setOther(createOtherReason());
         assertTrue(appealReasonValidator.isValid(mockReason));
     }
 }

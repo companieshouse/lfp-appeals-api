@@ -9,16 +9,6 @@ public class Reason {
     @Valid
     private IllnessReason illnessReason;
 
-    public Reason() {
-        this(null, null);
-    }
-
-    public Reason(OtherReason other, IllnessReason illnessReason) {
-        this.other = other;
-        this.illnessReason = illnessReason;
-
-    }
-
     public OtherReason getOther() {
         return this.other;
     }
