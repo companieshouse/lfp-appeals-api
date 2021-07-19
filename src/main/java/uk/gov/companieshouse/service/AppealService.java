@@ -106,6 +106,7 @@ public class AppealService {
                 attachmentList = otherReason.getAttachments();
                 contactDescription +=
                     ("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
+                contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
                 break;
             case ReasonType.ILLNESS:
                 attachmentList = illnessReason.getAttachments();
@@ -116,13 +117,9 @@ public class AppealService {
                     "\nIllness End Date: " + illnessReason.getIllnessEnd() +
                     "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
                 );
-                LOGGER.debug(illnessReason.getIllnessStart());
-                LOGGER.debug(illnessReason.getIllnessEnd());
+                contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
                 break;
-            default:
-                throw new RuntimeException("could not identify reason type");
         }
-        contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
         chipsContact.setContactDescription(contactDescription);
         return chipsContact;
     }

@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.model;
 
-import java.util.Objects;
 import javax.validation.Valid;
 
 public class Reason {
@@ -39,23 +38,6 @@ public class Reason {
         else {
             return null;
         }
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final Reason reason = (Reason) o;
-        return Objects.equals(other, reason.other) && Objects.equals(illnessReason, reason.illnessReason);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(other, illnessReason);
     }
 
     @Override
