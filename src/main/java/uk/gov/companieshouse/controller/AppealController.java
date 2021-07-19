@@ -60,8 +60,8 @@ public class AppealController {
         }
 
         if (!appealReasonValidator.isValid(appeal.getReason())) {
-            LOGGER.error("Appeal reason not valid with user id {} and penalty reference {}, {}",
-                userId, penaltyReference, appeal.getReason());
+            LOGGER.error("Appeal reason not valid with user id {} and penalty reference {}, not Other or Illness reason",
+                userId, penaltyReference);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
