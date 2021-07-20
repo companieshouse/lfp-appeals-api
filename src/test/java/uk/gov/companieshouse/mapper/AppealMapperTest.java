@@ -2,32 +2,51 @@ package uk.gov.companieshouse.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AppealEntity;
-import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
-import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.model.Appeal;
-import uk.gov.companieshouse.model.Attachment;
-import uk.gov.companieshouse.model.OtherReason;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(SpringExtension.class)
 public class AppealMapperTest {
-    private final AppealMapper mapper = new AppealMapper(
-        new CreatedByMapper(),
-        new PenaltyIdentifierMapper(),
-        new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()),new IllnessReasonMapper(new AttachmentMapper()))
-    );
+    @Mock
+    private ReasonMapper reasonMapper;
+    @Mock
+    private PenaltyIdentifierMapper penaltyIdentifierMapper;
+    @Mock
+    private CreatedByMapper createdByMapper;
+
+    @Mock
+    private ReasonEntity reasonEntity;
+    @Mock
+    private PenaltyIdentifierEntity penaltyIdentifierEntity;
+    @Mock
+    private CreatedByEntity mockCreatedByEntity;
+
+    @Mock
+    private Reason mockReason;
+    @Mock
+    private PenaltyIdentifier mockPenaltyIdentifier;
+    @Mock
+    private CreatedBy mockCreatedBy;
+
+    @InjectMocks
+    private AppealMapper mapper;
 
     @Nested
     class ToEntityMappingTest {
@@ -38,40 +57,27 @@ public class AppealMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            Reason reason = new Reason();
-            reason.setOther(new OtherReason(
-                TestData.Appeal.Reason.OtherReason.title,
-                TestData.Appeal.Reason.OtherReason.description,
-                Lists.newArrayList(new Attachment(
-                    TestData.Appeal.Reason.Attachment.id,
-                    TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType,
-                    TestData.Appeal.Reason.Attachment.size,
-                    null
-                ))
-            ));
+            when(createdByMapper.map(any(CreatedBy.class))).thenReturn(null);
+            when(penaltyIdentifierMapper.map(any(PenaltyIdentifier.class))).thenReturn(penaltyIdentifierEntity);
+            when(reasonMapper.map(any(Reason.class))).thenReturn(reasonEntity);
+
             AppealEntity mapped = mapper.map(new Appeal(
                 null,
                 null,
-                null,
-                new PenaltyIdentifier(
-                    TestData.Appeal.PenaltyIdentifier.companyNumber,
-                    TestData.Appeal.PenaltyIdentifier.penaltyReference
-                ),
-                reason
+                mockCreatedBy,
+                mockPenaltyIdentifier,
+                mockReason
             ));
+
             assertNull(mapped.getId());
             assertNull(mapped.getCreatedAt());
             assertNull(mapped.getCreatedBy());
-            assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, mapped.getPenaltyIdentifier().getCompanyNumber());
-            assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, mapped.getPenaltyIdentifier().getPenaltyReference());
-            assertEquals(TestData.Appeal.Reason.OtherReason.title, mapped.getReason().getOther().getTitle());
-            assertEquals(TestData.Appeal.Reason.OtherReason.description, mapped.getReason().getOther().getDescription());
-            assertEquals(TestData.Appeal.Reason.Attachment.id, mapped.getReason().getOther().getAttachments().get(0).getId());
-            assertEquals(TestData.Appeal.Reason.Attachment.name, mapped.getReason().getOther().getAttachments().get(0).getName());
-            assertEquals(TestData.Appeal.Reason.Attachment.contentType, mapped.getReason().getOther().getAttachments().get(0).getContentType());
-            assertEquals(TestData.Appeal.Reason.Attachment.size, mapped.getReason().getOther().getAttachments().get(0).getSize());
-            assertNull(mapped.getReason().getIllnessReason());
+            assertEquals(penaltyIdentifierEntity, mapped.getPenaltyIdentifier());
+            assertEquals(reasonEntity, mapped.getReason());
+
+            verify(createdByMapper).map(mockCreatedBy);
+            verify(penaltyIdentifierMapper).map(mockPenaltyIdentifier);
+            verify(reasonMapper).map(mockReason);
         }
     }
 
@@ -84,41 +90,28 @@ public class AppealMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            ReasonEntity reasonEntity = new ReasonEntity();
-            reasonEntity.setOther(new OtherReasonEntity(
-                TestData.Appeal.Reason.OtherReason.title,
-                TestData.Appeal.Reason.OtherReason.description,
-                Lists.newArrayList(new AttachmentEntity(
-                    TestData.Appeal.Reason.Attachment.id,
-                    TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType,
-                    TestData.Appeal.Reason.Attachment.size
-                ))
-            ));
+            when(createdByMapper.map(any(CreatedByEntity.class))).thenReturn(mockCreatedBy);
+            when(penaltyIdentifierMapper.map(any(PenaltyIdentifierEntity.class))).thenReturn(mockPenaltyIdentifier);
+            when(reasonMapper.map(any(ReasonEntity.class))).thenReturn(mockReason);
 
             Appeal mapped = mapper.map(new AppealEntity(
                 TestData.Appeal.id,
                 TestData.Appeal.createdAt,
-                new CreatedByEntity(
-                    TestData.Appeal.CreatedBy.id
-                ),
-                new PenaltyIdentifierEntity(
-                    TestData.Appeal.PenaltyIdentifier.companyNumber,
-                    TestData.Appeal.PenaltyIdentifier.penaltyReference
-                ),
+                mockCreatedByEntity,
+                penaltyIdentifierEntity,
                 reasonEntity
             ));
+
             assertEquals(TestData.Appeal.id, mapped.getId());
             assertEquals(TestData.Appeal.createdAt, mapped.getCreatedAt());
-            assertEquals(TestData.Appeal.CreatedBy.id, mapped.getCreatedBy().getId());
-            assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, mapped.getPenaltyIdentifier().getCompanyNumber());
-            assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference, mapped.getPenaltyIdentifier().getPenaltyReference());
-            assertEquals(TestData.Appeal.Reason.OtherReason.title, mapped.getReason().getOther().getTitle());
-            assertEquals(TestData.Appeal.Reason.OtherReason.description, mapped.getReason().getOther().getDescription());
-            assertEquals(TestData.Appeal.Reason.Attachment.id, mapped.getReason().getOther().getAttachments().get(0).getId());
-            assertEquals(TestData.Appeal.Reason.Attachment.name, mapped.getReason().getOther().getAttachments().get(0).getName());
-            assertEquals(TestData.Appeal.Reason.Attachment.contentType, mapped.getReason().getOther().getAttachments().get(0).getContentType());
-            assertEquals(TestData.Appeal.Reason.Attachment.size, mapped.getReason().getOther().getAttachments().get(0).getSize());
+
+            assertEquals(mockCreatedBy, mapped.getCreatedBy());
+            assertEquals(mockPenaltyIdentifier, mapped.getPenaltyIdentifier());
+            assertEquals(mockReason, mapped.getReason());
+
+            verify(createdByMapper).map(mockCreatedByEntity);
+            verify(penaltyIdentifierMapper).map(penaltyIdentifierEntity);
+            verify(reasonMapper).map(reasonEntity);
         }
     }
 }

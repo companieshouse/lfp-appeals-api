@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.mapper.base.Mapper;
@@ -8,13 +9,11 @@ import uk.gov.companieshouse.model.Reason;
 @Component
 public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
 
-    private final OtherReasonMapper otherReasonMapper;
-    private final IllnessReasonMapper illnessReasonMapper;
+    @Autowired
+    private OtherReasonMapper otherReasonMapper;
 
-    public ReasonMapper(OtherReasonMapper otherReasonMapper, IllnessReasonMapper illnessReasonMapper) {
-        this.otherReasonMapper = otherReasonMapper;
-        this.illnessReasonMapper = illnessReasonMapper;
-    }
+    @Autowired
+    private IllnessReasonMapper illnessReasonMapper;
 
     @Override
     public ReasonEntity map(Reason value) {
