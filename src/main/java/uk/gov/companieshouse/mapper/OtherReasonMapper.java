@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.mapper.base.Mapper;
@@ -10,11 +11,8 @@ import java.util.stream.Collectors;
 @Component
 public class OtherReasonMapper implements Mapper<OtherReasonEntity, OtherReason> {
 
-    private final AttachmentMapper attachmentMapper;
-
-    public OtherReasonMapper(AttachmentMapper attachmentMapper) {
-        this.attachmentMapper = attachmentMapper;
-    }
+    @Autowired
+    private AttachmentMapper attachmentMapper;
 
     public OtherReasonEntity map(OtherReason value) {
         if (value == null) {
