@@ -3,6 +3,7 @@ package uk.gov.companieshouse.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Nested;
@@ -59,6 +60,9 @@ class ReasonMapperTest {
 
             assertEquals(illnessReasonEntity, mapped.getIllnessReason());
             assertEquals(otherReasonEntity, mapped.getOther());
+
+            verify(illnessReasonMapper).map(mockIllnessReason);
+            verify(otherReasonMapper).map(mockOtherReason);
         }
     }
 
@@ -83,6 +87,9 @@ class ReasonMapperTest {
 
             assertEquals(mockIllnessReason, mapped.getIllnessReason());
             assertEquals(mockOtherReason, mapped.getOther());
+
+            verify(illnessReasonMapper).map(illnessReasonEntity);
+            verify(otherReasonMapper).map(otherReasonEntity);
         }
     }
 }
