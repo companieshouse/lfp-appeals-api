@@ -16,7 +16,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.description;
 import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.title;
 
@@ -47,11 +49,13 @@ public class OtherReasonMapperTest {
             List<Attachment> attachments = new ArrayList<Attachment>();
             attachments.add(mockAttachment);
 
+            when(attachmentMapper.map(any(Attachment.class))).thenReturn(mockAttachmentEntity);
+
             OtherReasonEntity mapped = mapper.map(new OtherReason(title, description, attachments));
 
             assertEquals(title, mapped.getTitle());
             assertEquals(description, mapped.getDescription());
-            assertEquals(mockAttachment, attachments.get(0));
+            assertEquals(mockAttachmentEntity, mapped.getAttachments().get(0));
 
             verify(attachmentMapper).map(attachments.get(0));
         }
@@ -69,11 +73,13 @@ public class OtherReasonMapperTest {
             List<AttachmentEntity> attachmentEntities = new ArrayList<AttachmentEntity>();
             attachmentEntities.add(mockAttachmentEntity);
 
+            when(attachmentMapper.map(any(AttachmentEntity.class))).thenReturn(mockAttachment);
+
             OtherReason mapped = mapper.map(new OtherReasonEntity(title, description, attachmentEntities));
 
             assertEquals(title, mapped.getTitle());
             assertEquals(description, mapped.getDescription());
-            assertEquals(mockAttachmentEntity, attachmentEntities.get(0));
+            assertEquals(mockAttachment, mapped.getAttachments().get(0));
 
             verify(attachmentMapper).map(attachmentEntities.get(0));
         }
