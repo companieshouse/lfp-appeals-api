@@ -38,7 +38,6 @@ import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
-import uk.gov.companieshouse.model.ReasonType;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -236,7 +235,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionOtherReasonWithAttachments(), contactDescription);
-        assertEquals(ReasonType.OTHER, reason.getReasonType().getReasonType());
     }
 
     private static String expectedContactDescriptionOtherReasonWithAttachments() {
@@ -274,7 +272,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionWithoutAttachments(), contactDescription);
-        assertEquals(ReasonType.OTHER, reason.getReasonType().getReasonType());
     }
 
     @Test
@@ -290,7 +287,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionWithoutAttachments(), contactDescription);
-        assertEquals(ReasonType.OTHER, reason.getReasonType().getReasonType());
     }
 
     private static String expectedContactDescriptionWithoutAttachments() {
@@ -321,7 +317,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionIllnessReasonWithAttachments(), contactDescription);
-        assertEquals(ReasonType.ILLNESS, reason.getReasonType().getReasonType());
     }
 
     private static String expectedContactDescriptionIllnessReasonWithAttachments() {
@@ -367,7 +362,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionIllnessReasonWithoutAttachments(), contactDescription);
-        assertEquals(ReasonType.ILLNESS, reason.getReasonType().getReasonType());
     }
 
     @Test
@@ -383,7 +377,6 @@ class AppealServiceTest {
         assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
         String contactDescription = chipsContact.getContactDescription();
         assertEquals(expectedContactDescriptionIllnessReasonWithoutAttachments(), contactDescription);
-        assertEquals(ReasonType.ILLNESS, reason.getReasonType().getReasonType());
     }
 
     private static String expectedContactDescriptionIllnessReasonWithoutAttachments() {

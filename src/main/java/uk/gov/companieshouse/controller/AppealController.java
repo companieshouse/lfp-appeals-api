@@ -59,10 +59,10 @@ public class AppealController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (!appealReasonValidator.isValid(appeal.getReason())) {
-            LOGGER.error("Appeal reason not valid for company, reason type check error, " +
-                "should be Other or Illness reason");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        String validationError = appealReasonValidator.validate(appeal.getReason());
+        if (validationError != null) {
+            LOGGER.info("Appeal not valid for company {}: {}", companyId, validationError);
+            return new ResponseEntity(validationError, HttpStatus.BAD_REQUEST);
         }
 
         try {

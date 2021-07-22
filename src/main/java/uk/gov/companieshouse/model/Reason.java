@@ -25,15 +25,6 @@ public class Reason {
         this.illnessReason = illnessReason;
     }
 
-    public ReasonType getReasonType() {
-        if(getOther() == null ^ getIllnessReason() == null){
-            return getOther() == null? getIllnessReason():getOther();
-        }
-        else {
-            return null;
-        }
-    }
-
     @Override
     public String toString() {
         return "Reason{" +

@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.model.validator;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
 import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
 
@@ -23,7 +23,7 @@ class AppealReasonValidatorTest {
     @Test
     void shouldReturnFalseWhenItsNotIllnessOrOtherReason() {
         Reason mockReason = new Reason();
-        assertFalse(appealReasonValidator.isValid(mockReason));
+        assertEquals("Other/Illness must be supplied with an Appeal",appealReasonValidator.validate(mockReason));
     }
 
     @DisplayName("Validation failure for more than one Appeal reason")
@@ -32,7 +32,7 @@ class AppealReasonValidatorTest {
         Reason mockReason = new Reason();
         mockReason.setIllnessReason(createIllnessReason());
         mockReason.setOther(createOtherReason());
-        assertFalse(appealReasonValidator.isValid(mockReason));
+        assertEquals("Only one reason type can be supplied with an Appeal",appealReasonValidator.validate(mockReason));
     }
 
     @DisplayName("Validation success for illness Appeal reason only")
@@ -40,7 +40,7 @@ class AppealReasonValidatorTest {
     void shouldReturnTrueWhenItsIllnessReason(){
         Reason mockReason = new Reason();
         mockReason.setIllnessReason(createIllnessReason());
-        assertTrue(appealReasonValidator.isValid(mockReason));
+        assertNull(appealReasonValidator.validate(mockReason));
     }
 
     @DisplayName("Validation success for other Appeal reason only")
@@ -48,6 +48,6 @@ class AppealReasonValidatorTest {
     void shouldReturnTrueWhenWhenItsOtherReason(){
         Reason mockReason = new Reason();
         mockReason.setOther(createOtherReason());
-        assertTrue(appealReasonValidator.isValid(mockReason));
+        assertNull(appealReasonValidator.validate(mockReason));
     }
 }

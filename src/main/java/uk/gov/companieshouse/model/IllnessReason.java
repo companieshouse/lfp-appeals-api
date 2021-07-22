@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Valid
-public class IllnessReason extends ReasonType {
+public class IllnessReason {
 
     @NotBlank(message = "illPerson must not be blank")
     private String illPerson;
@@ -86,8 +86,4 @@ public class IllnessReason extends ReasonType {
         this.attachments = attachments;
     }
 
-    @Override
-    public String getReasonType() {
-        return ReasonType.ILLNESS;
-    }
 }

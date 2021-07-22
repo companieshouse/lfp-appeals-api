@@ -20,7 +20,6 @@ import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
-import uk.gov.companieshouse.model.ReasonType;
 import uk.gov.companieshouse.repository.AppealRepository;
 
 @Service
@@ -91,7 +90,6 @@ public class AppealService {
         final ChipsContact chipsContact = new ChipsContact();
         chipsContact.setCompanyNumber(companyNumber);
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
-        ReasonType reasonType = appeal.getReason().getReasonType();
 
         String contactDescription = "Appeal submitted" +
             "\n\nYour reference number is your company number " + companyNumber +
@@ -101,12 +99,14 @@ public class AppealService {
 
         List<Attachment> attachmentList;
 
-        if(reasonType.getReasonType().equals(ReasonType.OTHER)){
+        if(appeal.getReason().getOther() != null){
             attachmentList = otherReason.getAttachments();
             contactDescription +=
                 ("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
             contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
-        } else if(reasonType.getReasonType().equals(ReasonType.ILLNESS)){
+        }
+
+        if(appeal.getReason().getIllnessReason() != null){
             attachmentList = illnessReason.getAttachments();
             contactDescription += ("\nIll Person " + illnessReason.getIllPerson() +
             "\nOther Person: " + illnessReason.getOtherPerson() +
