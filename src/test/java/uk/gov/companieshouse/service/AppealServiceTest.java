@@ -12,12 +12,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
 import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
+import static uk.gov.companieshouse.util.TestUtil.createOtherReasonEntity;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -28,9 +28,7 @@ import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
-import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
-import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
@@ -69,9 +67,9 @@ class AppealServiceTest {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.ID, reasonEntity));
 
-        assertEquals(TestData.Appeal.id, appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id));
+        assertEquals(TestData.ID, appealService.saveAppeal(createAppeal(reason), TestData.USER_ID));
     }
 
     @Test
@@ -79,14 +77,14 @@ class AppealServiceTest {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.ID, reasonEntity));
 
-        appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id);
+        appealService.saveAppeal(createAppeal(reason), TestData.USER_ID);
 
         ArgumentCaptor<AppealEntity> appealArgumentCaptor = ArgumentCaptor.forClass(AppealEntity.class);
         verify(appealRepository).insert(appealArgumentCaptor.capture());
 
-        assertEquals(TestData.Appeal.CreatedBy.id, appealArgumentCaptor.getValue().getCreatedBy().getId());
+        assertEquals(TestData.USER_ID, appealArgumentCaptor.getValue().getCreatedBy().getId());
         assertNotNull(appealArgumentCaptor.getValue().getCreatedAt());
     }
 
@@ -97,11 +95,8 @@ class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(null, reasonEntity));
 
-        String message = assertThrows(Exception.class,
-            () -> appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id)).getMessage();
-        assertEquals(
-            "Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1",
-            message);
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(reason), TestData.USER_ID)).getMessage();
+        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
@@ -111,11 +106,8 @@ class AppealServiceTest {
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
-        String message = assertThrows(Exception.class,
-            () -> appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id)).getMessage();
-        assertEquals(
-            "Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1",
-            message);
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(createAppeal(reason), TestData.USER_ID)).getMessage();
+        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
@@ -126,9 +118,9 @@ class AppealServiceTest {
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.ID, reasonEntity));
 
-        assertEquals(TestData.Appeal.id, appealService.saveAppeal(createAppeal(reason), TestData.Appeal.CreatedBy.id));
+        assertEquals(TestData.ID, appealService.saveAppeal(createAppeal(reason), TestData.USER_ID));
     }
 
     @Test
@@ -143,10 +135,9 @@ class AppealServiceTest {
             anyString());
 
         when(appealMapper.map(any(Appeal.class))).thenReturn(createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.Appeal.id, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(createAppealEntity(TestData.ID, reasonEntity));
 
-        assertThrows(ChipsServiceException.class,
-            () -> appealService.saveAppeal(appeal, TestData.Appeal.CreatedBy.id));
+        assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TestData.USER_ID));
 
         verify(appealRepository).insert(createAppealEntity(null, reasonEntity));
     }
@@ -156,25 +147,20 @@ class AppealServiceTest {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
         when(appealRepository.findById(any(String.class))).thenReturn(
-            Optional.of(createAppealEntity(TestData.Appeal.id, reasonEntity)));
+            Optional.of(createAppealEntity(TestData.ID, reasonEntity)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal(reason));
 
-        Appeal appeal = appealService.getAppeal(TestData.Appeal.id).orElseThrow();
+        Appeal appeal = appealService.getAppeal(TestData.ID).orElseThrow();
 
-        assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
-        assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference,
-            appeal.getPenaltyIdentifier().getPenaltyReference());
-        assertEquals(TestData.Appeal.Reason.OtherReason.title, appeal.getReason().getOther().getTitle());
-        assertEquals(TestData.Appeal.Reason.OtherReason.description, appeal.getReason().getOther().getDescription());
-        assertEquals(2, appeal.getReason().getOther().getAttachments().size());
-        assertEquals(TestData.Appeal.Reason.Attachment.id,
-            appeal.getReason().getOther().getAttachments().get(0).getId());
-        assertEquals(TestData.Appeal.Reason.Attachment.name,
-            appeal.getReason().getOther().getAttachments().get(0).getName());
-        assertEquals(TestData.Appeal.Reason.Attachment.contentType,
-            appeal.getReason().getOther().getAttachments().get(0).getContentType());
-        assertEquals(TestData.Appeal.Reason.Attachment.size,
-            appeal.getReason().getOther().getAttachments().get(0).getSize());
+        assertEquals(TestData.COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
+        assertEquals(TestData.PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference());
+        assertEquals(TestData.TITLE, appeal.getReason().getOther().getTitle());
+        assertEquals(TestData.DESCRIPTION, appeal.getReason().getOther().getDescription());
+        assertEquals(1, appeal.getReason().getOther().getAttachments().size());
+        assertEquals(TestData.ATTACHMENT_ID, appeal.getReason().getOther().getAttachments().get(0).getId());
+        assertEquals(TestData.ATTACHMENT_NAME, appeal.getReason().getOther().getAttachments().get(0).getName());
+        assertEquals(TestData.CONTENT_TYPE, appeal.getReason().getOther().getAttachments().get(0).getContentType());
+        assertEquals(TestData.ATTACHMENT_SIZE, appeal.getReason().getOther().getAttachments().get(0).getSize());
     }
 
     @Test
@@ -182,7 +168,7 @@ class AppealServiceTest {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        Optional<Appeal> appeal = appealService.getAppeal(TestData.Appeal.id);
+        Optional<Appeal> appeal = appealService.getAppeal(TestData.ID);
 
         assertFalse(appeal.isPresent());
     }
@@ -192,29 +178,24 @@ class AppealServiceTest {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
-            List.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference, reasonEntity)));
+            List.of(createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal(reason));
 
         List<Appeal> appealList = appealService.getAppealsByPenaltyReference(
-            TestData.Appeal.PenaltyIdentifier.penaltyReference);
+            TestData.PENALTY_REFERENCE);
         Appeal appeal = appealList.get(0);
 
         assertEquals(1, appealList.size());
 
-        assertEquals(TestData.Appeal.PenaltyIdentifier.penaltyReference,
-            appeal.getPenaltyIdentifier().getPenaltyReference());
-        assertEquals(TestData.Appeal.PenaltyIdentifier.companyNumber, appeal.getPenaltyIdentifier().getCompanyNumber());
-        assertEquals(TestData.Appeal.Reason.OtherReason.title, appeal.getReason().getOther().getTitle());
-        assertEquals(TestData.Appeal.Reason.OtherReason.description, appeal.getReason().getOther().getDescription());
-        assertEquals(2, appeal.getReason().getOther().getAttachments().size());
-        assertEquals(TestData.Appeal.Reason.Attachment.id,
-            appeal.getReason().getOther().getAttachments().get(0).getId());
-        assertEquals(TestData.Appeal.Reason.Attachment.name,
-            appeal.getReason().getOther().getAttachments().get(0).getName());
-        assertEquals(TestData.Appeal.Reason.Attachment.contentType,
-            appeal.getReason().getOther().getAttachments().get(0).getContentType());
-        assertEquals(TestData.Appeal.Reason.Attachment.size,
-            appeal.getReason().getOther().getAttachments().get(0).getSize());
+        assertEquals(TestData.PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference());
+        assertEquals(TestData.COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
+        assertEquals(TestData.TITLE, appeal.getReason().getOther().getTitle());
+        assertEquals(TestData.DESCRIPTION, appeal.getReason().getOther().getDescription());
+        assertEquals(1, appeal.getReason().getOther().getAttachments().size());
+        assertEquals(TestData.ATTACHMENT_ID, appeal.getReason().getOther().getAttachments().get(0).getId());
+        assertEquals(TestData.ATTACHMENT_NAME, appeal.getReason().getOther().getAttachments().get(0).getName());
+        assertEquals(TestData.CONTENT_TYPE, appeal.getReason().getOther().getAttachments().get(0).getContentType());
+        assertEquals(TestData.ATTACHMENT_SIZE, appeal.getReason().getOther().getAttachments().get(0).getSize());
     }
 
     @Test
@@ -222,13 +203,12 @@ class AppealServiceTest {
         ReasonEntity reasonEntity = createReasonEntityWithOther();
         Reason reason = createReasonWithOther();
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
-            List.of(createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference, reasonEntity),
-                createAppealEntity(TestData.Appeal.PenaltyIdentifier.penaltyReference, reasonEntity)));
+            List.of(createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity),
+                createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity)));
 
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(createAppeal(reason));
 
-        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(
-            TestData.Appeal.PenaltyIdentifier.penaltyReference);
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
 
         assertEquals(2, appealList.size());
 
@@ -239,8 +219,7 @@ class AppealServiceTest {
 
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of());
 
-        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(
-            TestData.Appeal.PenaltyIdentifier.penaltyReference);
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
 
         assertTrue(appealList.isEmpty());
     }
@@ -249,7 +228,7 @@ class AppealServiceTest {
     void testBuildChipsContactOtherReasonWithAttachments() {
         Reason reason = createReasonWithOther();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
 
@@ -263,32 +242,30 @@ class AppealServiceTest {
     private static String expectedContactDescriptionOtherReasonWithAttachments() {
         return "Appeal submitted"
             + "\n\nYour reference number is your company number "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\nEmail address: "
-            + TestData.Appeal.CreatedBy.email
+            + TestData.EMAIL
             + "\n\nAppeal Reason"
             + "\nReason: "
-            + TestData.Appeal.Reason.OtherReason.title
+            + TestData.TITLE
             + "\nFurther information: "
-            + TestData.Appeal.Reason.OtherReason.description
+            + TestData.DESCRIPTION
             + "\nSupporting documents: "
             + "\n  - "
-            + TestData.Appeal.Reason.Attachment.name
+            + TestData.ATTACHMENT_NAME
             + "\n    "
-            + TestData.Appeal.Reason.Attachment.url
+            + TestData.ATTACHMENT_URL
             + "&a="
-            + TestData.Appeal.id
-            + "\n  - "
-            + TestData.Appeal.Reason.Attachment.name;
+            + TestData.ID;
     }
 
     @Test
     void testBuildChipsContactOtherReasonEmptyAttachments() {
         Reason reason = createReasonWithOther();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
         appeal.getReason().getOther().setAttachments(Collections.emptyList());
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
@@ -304,7 +281,7 @@ class AppealServiceTest {
     void testBuildChipsContactOtherReasonsNullAttachments() {
         Reason reason = createReasonWithOther();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
         appeal.getReason().getOther().setAttachments(null);
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
@@ -319,16 +296,16 @@ class AppealServiceTest {
     private static String expectedContactDescriptionWithoutAttachments() {
         return "Appeal submitted"
             + "\n\nYour reference number is your company number "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\nEmail address: "
-            + TestData.Appeal.CreatedBy.email
+            + TestData.EMAIL
             + "\n\nAppeal Reason"
             + "\nReason: "
-            + TestData.Appeal.Reason.OtherReason.title
+            + TestData.TITLE
             + "\nFurther information: "
-            + TestData.Appeal.Reason.OtherReason.description
+            + TestData.DESCRIPTION
             + "\nSupporting documents: None";
     }
 
@@ -336,7 +313,7 @@ class AppealServiceTest {
     void testBuildChipsContactIllnessReasonWithAttachments() {
         Reason reason = createReasonWithIllness();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
 
@@ -350,40 +327,38 @@ class AppealServiceTest {
     private static String expectedContactDescriptionIllnessReasonWithAttachments() {
         return "Appeal submitted"
             + "\n\nYour reference number is your company number "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\nEmail address: "
-            + TestData.Appeal.CreatedBy.email
+            + TestData.EMAIL
             + "\n\nAppeal Reason"
             + "\nIll Person "
-            + TestData.Appeal.Reason.IllnessReason.illPerson
+            + TestData.ILL_PERSON
             + "\nOther Person: "
-            + TestData.Appeal.Reason.IllnessReason.otherPerson
+            + TestData.OTHER_PERSON
             + "\nIllness Start Date: "
-            + TestData.Appeal.Reason.IllnessReason.illnessStart
+            + TestData.ILLNESS_START
             + "\nContinued Illness"
-            + TestData.Appeal.Reason.IllnessReason.continuedIllness
+            + TestData.CONTINUED_ILLNESS
             + "\nIllness End Date: "
-            + TestData.Appeal.Reason.IllnessReason.illnessEnd
+            + TestData.ILLNESS_END
             + "\nFurther information: "
-            + TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation
+            + TestData.ILLNESS_IMPACT_FURTHER_INFORMATION
             + "\nSupporting documents: "
             + "\n  - "
-            + TestData.Appeal.Reason.Attachment.name
+            + TestData.ATTACHMENT_NAME
             + "\n    "
-            + TestData.Appeal.Reason.Attachment.url
+            + TestData.ATTACHMENT_URL
             + "&a="
-            + TestData.Appeal.id
-            + "\n  - "
-            + TestData.Appeal.Reason.Attachment.name;
+            + TestData.ID;
     }
 
     @Test
     void testBuildChipsContactIllnessReasonWithoutAttachments() {
         Reason reason = createReasonWithIllness();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
         appeal.getReason().getIllnessReason().setAttachments(Collections.emptyList());
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
@@ -399,7 +374,7 @@ class AppealServiceTest {
     void testBuildChipsContactIllnessReasonWithNullAttachments() {
         Reason reason = createReasonWithIllness();
         Appeal appeal = createAppeal(reason);
-        appeal.setId(TestData.Appeal.id);
+        appeal.setId(TestData.ID);
         appeal.getReason().getIllnessReason().setAttachments(null);
 
         ChipsContact chipsContact = appealService.buildChipsContact(appeal);
@@ -414,33 +389,27 @@ class AppealServiceTest {
     private static String expectedContactDescriptionIllnessReasonWithoutAttachments() {
         return "Appeal submitted"
             + "\n\nYour reference number is your company number "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
-            + TestData.Appeal.PenaltyIdentifier.companyNumber
+            + TestData.COMPANY_NUMBER
             + "\nEmail address: "
-            + TestData.Appeal.CreatedBy.email
+            + TestData.EMAIL
             + "\n\nAppeal Reason"
             + "\nIll Person "
-            + TestData.Appeal.Reason.IllnessReason.illPerson
+            + TestData.ILL_PERSON
             + "\nOther Person: "
-            + TestData.Appeal.Reason.IllnessReason.otherPerson
+            + TestData.OTHER_PERSON
             + "\nIllness Start Date: "
-            + TestData.Appeal.Reason.IllnessReason.illnessStart
+            + TestData.ILLNESS_START
             + "\nContinued Illness"
-            + TestData.Appeal.Reason.IllnessReason.continuedIllness
+            + TestData.CONTINUED_ILLNESS
             + "\nIllness End Date: "
-            + TestData.Appeal.Reason.IllnessReason.illnessEnd
+            + TestData.ILLNESS_END
             + "\nFurther information: "
-            + TestData.Appeal.Reason.IllnessReason.illnessImpactFurtherInformation
+            + TestData.ILLNESS_IMPACT_FURTHER_INFORMATION
             + "\nSupporting documents: None";
     }
 
-    private OtherReasonEntity createOtherReasonEntity() {
-        return new OtherReasonEntity(TestData.Appeal.Reason.OtherReason.title, TestData.Appeal.Reason.OtherReason.description,
-            Lists.newArrayList(
-                new AttachmentEntity(TestData.Appeal.Reason.Attachment.id, TestData.Appeal.Reason.Attachment.name,
-                    TestData.Appeal.Reason.Attachment.contentType, TestData.Appeal.Reason.Attachment.size)));
-    }
 
     private Reason createReasonWithOther() {
         Reason reason = new Reason();
@@ -461,17 +430,17 @@ class AppealServiceTest {
     }
 
     private Appeal createAppeal(Reason reason) {
-        return new Appeal(null, TestData.Appeal.createdAt,
-            new CreatedBy(TestData.Appeal.CreatedBy.id, TestData.Appeal.CreatedBy.email),
-            new PenaltyIdentifier(TestData.Appeal.PenaltyIdentifier.companyNumber,
-                TestData.Appeal.PenaltyIdentifier.penaltyReference), reason);
+        return new Appeal(null, TestData.CREATED_AT,
+            new CreatedBy(TestData.USER_ID, TestData.EMAIL),
+            new PenaltyIdentifier(TestData.COMPANY_NUMBER,
+                TestData.PENALTY_REFERENCE), reason);
 
     }
 
     private AppealEntity createAppealEntity(String id, ReasonEntity reasonEntity) {
-        return new AppealEntity(id, TestData.Appeal.createdAt, new CreatedByEntity(TestData.Appeal.CreatedBy.id),
-            new PenaltyIdentifierEntity(TestData.Appeal.PenaltyIdentifier.companyNumber,
-                TestData.Appeal.PenaltyIdentifier.penaltyReference), reasonEntity);
+        return new AppealEntity(id, TestData.CREATED_AT, new CreatedByEntity(TestData.USER_ID),
+            new PenaltyIdentifierEntity(TestData.COMPANY_NUMBER,
+                TestData.PENALTY_REFERENCE), reasonEntity);
 
     }
 }

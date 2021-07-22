@@ -10,37 +10,22 @@ import javax.validation.constraints.NotNull;
 public class IllnessReason extends ReasonType {
 
     @NotBlank(message = "illPerson must not be blank")
-    private final String illPerson;
+    private String illPerson;
 
     @NotBlank(message = "illnessStart must not be blank")
-    private final String illnessStart;
+    private String illnessStart;
 
     @NotNull(message = "continuedIllness must not be null")
-    private final boolean continuedIllness;
+    private boolean continuedIllness;
 
     @NotBlank(message = "illnessImpactFurtherInformation must not be blank")
-    private final String illnessImpactFurtherInformation;
+    private String illnessImpactFurtherInformation;
 
-    private final String otherPerson;
-    private final String illnessEnd;
+    private String otherPerson;
+    private String illnessEnd;
 
     @Valid
     private List<Attachment> attachments;
-
-    public IllnessReason(){
-        this(null,null,null,false,null,null,Collections.emptyList());
-    }
-
-    public IllnessReason(String illPerson, String otherPerson, String illnessStart, boolean continuedIllness,
-                     String illnessEnd, String illnessImpactFurtherInformation, List<Attachment> attachments) {
-        this.illPerson = illPerson;
-        this.otherPerson = otherPerson;
-        this.illnessStart = illnessStart;
-        this.continuedIllness = continuedIllness;
-        this.illnessEnd = illnessEnd;
-        this.illnessImpactFurtherInformation = illnessImpactFurtherInformation;
-        this.attachments = attachments;
-    }
 
     public String getIllPerson() {
         return illPerson;
@@ -68,6 +53,30 @@ public class IllnessReason extends ReasonType {
 
     public List<Attachment> getAttachments() {
         return attachments;
+    }
+
+    public void setIllPerson(final String illPerson) {
+        this.illPerson = illPerson;
+    }
+
+    public void setIllnessStart(final String illnessStart) {
+        this.illnessStart = illnessStart;
+    }
+
+    public void setContinuedIllness(final boolean continuedIllness) {
+        this.continuedIllness = continuedIllness;
+    }
+
+    public void setIllnessImpactFurtherInformation(final String illnessImpactFurtherInformation) {
+        this.illnessImpactFurtherInformation = illnessImpactFurtherInformation;
+    }
+
+    public void setOtherPerson(final String otherPerson) {
+        this.otherPerson = otherPerson;
+    }
+
+    public void setIllnessEnd(final String illnessEnd) {
+        this.illnessEnd = illnessEnd;
     }
 
     public void setAttachments(final List<Attachment> attachments) {

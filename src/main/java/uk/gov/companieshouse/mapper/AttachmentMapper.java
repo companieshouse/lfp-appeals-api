@@ -13,12 +13,13 @@ public class AttachmentMapper implements Mapper<AttachmentEntity, Attachment> {
         if (value == null) {
             return null;
         }
-        return new AttachmentEntity(
-            value.getId(),
-            value.getName(),
-            value.getContentType(),
-            value.getSize()
-        );
+
+        AttachmentEntity attachmentEntity = new AttachmentEntity();
+        attachmentEntity.setId(value.getId());
+        attachmentEntity.setName(value.getName());
+        attachmentEntity.setContentType(value.getContentType());
+        attachmentEntity.setSize(value.getSize());
+        return attachmentEntity;
     }
 
     @Override
@@ -26,12 +27,12 @@ public class AttachmentMapper implements Mapper<AttachmentEntity, Attachment> {
         if (value == null) {
             return null;
         }
-        return new Attachment(
-            value.getId(),
-            value.getName(),
-            value.getContentType(),
-            value.getSize(),
-            null
-        );
+
+        Attachment attachment = new Attachment();
+        attachment.setId(value.getId());
+        attachment.setName(value.getName());
+        attachment.setContentType(value.getContentType());
+        attachment.setSize(value.getSize());
+        return attachment;
     }
 }

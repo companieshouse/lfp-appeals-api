@@ -18,26 +18,29 @@ public class OtherReasonMapper implements Mapper<OtherReasonEntity, OtherReason>
         if (value == null) {
             return null;
         }
-        return new OtherReasonEntity(
-            value.getTitle(),
-            value.getDescription(),
-            value.getAttachments() != null ? value.getAttachments().stream()
-                .map(attachmentMapper::map)
-                .collect(Collectors.toList()) : null
-        );
+        OtherReasonEntity otherReason = new OtherReasonEntity();
+        otherReason.setTitle(value.getTitle());
+        otherReason.setDescription(value.getDescription());
+        otherReason.setAttachments(value.getAttachments() != null ? value.getAttachments().stream()
+            .map(attachmentMapper::map)
+            .collect(Collectors.toList()) : null);
+
+        return otherReason;
     }
 
     public OtherReason map(OtherReasonEntity value) {
         if (value == null) {
             return null;
         }
-        return new OtherReason(
-            value.getTitle(),
-            value.getDescription(),
-            value.getAttachments() != null ? value.getAttachments().stream()
-                .map(attachmentMapper::map)
-                .collect(Collectors.toList()) : null
-        );
+
+        OtherReason otherReason = new OtherReason();
+        otherReason.setTitle(value.getTitle());
+        otherReason.setDescription(value.getDescription());
+        otherReason.setAttachments(value.getAttachments() != null ? value.getAttachments().stream()
+            .map(attachmentMapper::map)
+            .collect(Collectors.toList()) : null);
+
+        return otherReason;
     }
 
 }

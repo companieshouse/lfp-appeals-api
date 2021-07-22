@@ -18,34 +18,34 @@ public class IllnessReasonMapper implements Mapper<IllnessReasonEntity, IllnessR
         if (value == null) {
             return null;
         }
-        return new IllnessReasonEntity(
-            value.getIllPerson(),
-            value.getOtherPerson(),
-            value.getIllnessStart(),
-            value.getContinuedIllness(),
-            value.getIllnessEnd(),
-            value.getIllnessImpactFurtherInformation(),
-            value.getAttachments() != null ? value.getAttachments().stream()
-                .map(attachmentMapper::map)
-                .collect(Collectors.toList()) : null
-        );
+        IllnessReasonEntity illnessReasonEntity = new IllnessReasonEntity();
+        illnessReasonEntity.setIllPerson(value.getIllPerson());
+        illnessReasonEntity.setOtherPerson(value.getOtherPerson());
+        illnessReasonEntity.setIllnessStartDate(value.getIllnessStart());
+        illnessReasonEntity.setContinuedIllness(value.getContinuedIllness());
+        illnessReasonEntity.setIllnessEndDate(value.getIllnessEnd());
+        illnessReasonEntity.setIllnessImpactFurtherInformation(value.getIllnessImpactFurtherInformation());
+        illnessReasonEntity.setAttachments(value.getAttachments() != null ? value.getAttachments().stream()
+            .map(attachmentMapper::map)
+            .collect(Collectors.toList()) : null);
+        return illnessReasonEntity;
     }
 
     public IllnessReason map(IllnessReasonEntity value) {
         if (value == null) {
             return null;
         }
-        return new IllnessReason(
-            value.getIllPerson(),
-            value.getOtherPerson(),
-            value.getIllnessStartDate(),
-            value.getContinuedIllness(),
-            value.getIllnessEndDate(),
-            value.getIllnessImpactFurtherInformation(),
-            value.getAttachments() != null ? value.getAttachments().stream()
-                .map(attachmentMapper::map)
-                .collect(Collectors.toList()) : null
-        );
+        IllnessReason illnessReason = new IllnessReason();
+        illnessReason.setIllPerson(value.getIllPerson());
+        illnessReason.setOtherPerson(value.getOtherPerson());
+        illnessReason.setIllnessStart(value.getIllnessStartDate());
+        illnessReason.setContinuedIllness(value.getContinuedIllness());
+        illnessReason.setIllnessEnd(value.getIllnessEndDate());
+        illnessReason.setIllnessImpactFurtherInformation(value.getIllnessImpactFurtherInformation());
+        illnessReason.setAttachments(value.getAttachments() != null ? value.getAttachments().stream()
+            .map(attachmentMapper::map)
+            .collect(Collectors.toList()) : null);
+        return illnessReason;
     }
 
 }

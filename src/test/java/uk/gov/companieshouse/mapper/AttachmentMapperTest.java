@@ -1,18 +1,16 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.model.Attachment;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.Attachment.contentType;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.Attachment.id;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.Attachment.name;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.Attachment.size;
+import uk.gov.companieshouse.util.TestUtil;
 
 @ExtendWith(SpringExtension.class)
 public class AttachmentMapperTest {
@@ -27,11 +25,12 @@ public class AttachmentMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            AttachmentEntity mapped = mapper.map(new Attachment(id, name, contentType, size, null));
-            assertEquals(id, mapped.getId());
-            assertEquals(name, mapped.getName());
-            assertEquals(contentType, mapped.getContentType());
-            assertEquals(size, mapped.getSize());
+            AttachmentEntity mapped = mapper.map(TestUtil.createAttachment());
+
+            assertEquals(TestData.ATTACHMENT_ID, mapped.getId());
+            assertEquals(TestData.ATTACHMENT_NAME, mapped.getName());
+            assertEquals(TestData.CONTENT_TYPE, mapped.getContentType());
+            assertEquals(TestData.ATTACHMENT_SIZE, mapped.getSize());
         }
     }
 
@@ -44,11 +43,11 @@ public class AttachmentMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            Attachment mapped = mapper.map(new AttachmentEntity(id, name, contentType, size));
-            assertEquals(id, mapped.getId());
-            assertEquals(name, mapped.getName());
-            assertEquals(contentType, mapped.getContentType());
-            assertEquals(size, mapped.getSize());
+            Attachment mapped = mapper.map(TestUtil.createAttachmentEntity());
+            assertEquals(TestData.ATTACHMENT_ID, mapped.getId());
+            assertEquals(TestData.ATTACHMENT_NAME, mapped.getName());
+            assertEquals(TestData.CONTENT_TYPE, mapped.getContentType());
+            assertEquals(TestData.ATTACHMENT_SIZE, mapped.getSize());
             assertNull(mapped.getUrl());
         }
     }

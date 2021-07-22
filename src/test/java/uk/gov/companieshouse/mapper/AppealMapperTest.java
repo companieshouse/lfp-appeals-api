@@ -95,15 +95,15 @@ public class AppealMapperTest {
             when(reasonMapper.map(any(ReasonEntity.class))).thenReturn(mockReason);
 
             Appeal mapped = mapper.map(new AppealEntity(
-                TestData.Appeal.id,
-                TestData.Appeal.createdAt,
+                TestData.ID,
+                TestData.CREATED_AT,
                 mockCreatedByEntity,
                 penaltyIdentifierEntity,
                 reasonEntity
             ));
 
-            assertEquals(TestData.Appeal.id, mapped.getId());
-            assertEquals(TestData.Appeal.createdAt, mapped.getCreatedAt());
+            assertEquals(TestData.ID, mapped.getId());
+            assertEquals(TestData.CREATED_AT, mapped.getCreatedAt());
 
             assertEquals(mockCreatedBy, mapped.getCreatedBy());
             assertEquals(mockPenaltyIdentifier, mapped.getPenaltyIdentifier());
