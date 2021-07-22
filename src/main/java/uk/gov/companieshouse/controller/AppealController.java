@@ -61,7 +61,7 @@ public class AppealController {
 
         String validationError = appealReasonValidator.validate(appeal.getReason());
         if (validationError != null) {
-            LOGGER.info("Appeal not valid for company {}: {}", companyId, validationError);
+            LOGGER.info("Appeal not valid for company {}: {}", appeal.getPenaltyIdentifier().getCompanyNumber(), validationError);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);
         }
 
