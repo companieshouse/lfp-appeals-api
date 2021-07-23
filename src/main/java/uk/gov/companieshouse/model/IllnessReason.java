@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.model;
 
-import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -24,7 +23,6 @@ public class IllnessReason {
     private String otherPerson;
     private String illnessEnd;
 
-    @Valid
     private List<Attachment> attachments;
 
     public String getIllPerson() {
@@ -80,10 +78,6 @@ public class IllnessReason {
     }
 
     public void setAttachments(final List<Attachment> attachments) {
-        if (attachments == null) {
-            this.attachments = Collections.emptyList();
-        }
         this.attachments = attachments;
     }
-
 }

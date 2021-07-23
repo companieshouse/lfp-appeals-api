@@ -35,4 +35,3 @@ public class OtherReasonEntity implements Serializable {
         this.attachments = attachments;
     }
 }
-
