@@ -2,6 +2,7 @@ package uk.gov.companieshouse.model;
 
 import java.util.Collections;
 import java.util.List;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 public class OtherReason {
@@ -12,6 +13,7 @@ public class OtherReason {
     @NotBlank(message = "description must not be blank")
     private String description;
 
+    @Valid
     private List<Attachment> attachments;
 
     public String getTitle() {

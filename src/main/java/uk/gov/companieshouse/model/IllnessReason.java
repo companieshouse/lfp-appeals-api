@@ -23,6 +23,7 @@ public class IllnessReason {
     private String otherPerson;
     private String illnessEnd;
 
+    @Valid
     private List<Attachment> attachments;
 
     public String getIllPerson() {
