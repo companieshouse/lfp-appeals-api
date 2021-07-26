@@ -147,6 +147,50 @@ public class AppealControllerTest_POST {
     }
 
     @Test
+    public void whenMultipleInvalidAttachments_return422() throws Exception {
+
+        final String invalidAppeal = asJsonString
+            ("src/test/resources/data/validAppeal.json", appeal -> {
+                final Attachment invalidAttachment = attachments.get(0);
+                final Attachment invalidAttachment2 = attachments.get(1);
+                invalidAttachment.setName("");
+                invalidAttachment2.setId("");
+                appeal.getReason().getOther().setAttachments(List.of(invalidAttachment, invalidAttachment2));
+                return appeal;
+            });
+
+        final String errMsg = "{'reason.other.attachments[0].name':'attachment name must not be blank'," +
+            "'reason.other.attachments[1].id':'attachment id must not be blank'}";
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidAppeal))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(content().json(errMsg));
+    }
+
+    @Test
+    public void whenMultipleMixInvalidAndValidAttachments_return422() throws Exception {
+
+        final String invalidAppeal = asJsonString
+            ("src/test/resources/data/validAppeal.json", appeal -> {
+                final Attachment validAttachment = attachments.get(0);
+                final Attachment invalidAttachment = attachments.get(1);
+                invalidAttachment.setId("");
+                appeal.getReason().getOther().setAttachments(List.of(validAttachment, invalidAttachment));
+                return appeal;
+            });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidAppeal))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(content().json("{'reason.other.attachments[1].id':'attachment id must not be blank'}"));
+    }
+
+    @Test
     void whenInvalidAppealReason_return400() throws Exception {
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/invalidAppealReason.json", appeal -> { return appeal; });
