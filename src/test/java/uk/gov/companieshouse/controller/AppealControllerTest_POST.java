@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AppealControllerTest_POST {
+class AppealControllerTest_POST {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
     private static final String IDENTITY_HEADER = "ERIC-identity";
@@ -48,7 +48,7 @@ public class AppealControllerTest_POST {
     private List<Attachment> attachments;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    void setUp() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class))).thenReturn(TEST_RESOURCE_ID);
 
@@ -60,7 +60,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenValidInput_return201() throws Exception {
+    void whenValidInput_return201() throws Exception {
 
         String validAppealWithAttachments = asJsonString("src/test/resources/data/validAppeal.json", appeal -> {        
             appeal.getReason().getOther().setAttachments(attachments);
@@ -85,7 +85,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenNullEricIdentityHeader_return400() throws Exception {
+    void whenNullEricIdentityHeader_return400() throws Exception {
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -95,7 +95,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenBlankEricIdentityHeader_return401() throws Exception {
+    void whenBlankEricIdentityHeader_return401() throws Exception {
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -105,7 +105,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenNullRequestBody_return400() throws Exception {
+    void whenNullRequestBody_return400() throws Exception {
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -114,7 +114,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenInvalidInput_return422() throws Exception {
+    void whenInvalidInput_return422() throws Exception {
 
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/invalidAppeal_penaltyIdentifierNull.json");
@@ -128,7 +128,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenInvalidAttachment_return422() throws Exception {
+    void whenInvalidAttachment_return422() throws Exception {
 
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/validAppeal.json", appeal -> {
@@ -147,7 +147,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenMultipleInvalidAttachments_return422() throws Exception {
+    void whenMultipleInvalidAttachments_return422() throws Exception {
 
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/validAppeal.json", appeal -> {
@@ -171,7 +171,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenMultipleMixInvalidAndValidAttachments_return422() throws Exception {
+    void whenMultipleMixInvalidAndValidAttachments_return422() throws Exception {
 
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/validAppeal.json", appeal -> {
@@ -203,7 +203,7 @@ public class AppealControllerTest_POST {
     }
 
     @Test
-    public void whenExceptionFromService_return500() throws Exception {
+    void whenExceptionFromService_return500() throws Exception {
 
         when(appealService.saveAppeal(any(Appeal.class), any(String.class)))
             .thenThrow(RuntimeException.class);
