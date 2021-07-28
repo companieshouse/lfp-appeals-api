@@ -23,18 +23,6 @@ public class Attachment {
 
     private String url;
 
-    public Attachment() {
-        this(null, null, null, null, null);
-    }
-
-    public Attachment(String id, String name, String contentType, Integer size, String url) {
-        this.id = id;
-        this.name = name;
-        this.contentType = contentType;
-        this.size = size;
-        this.url = url;
-    }
-
     public String getId() {
         return id;
     }

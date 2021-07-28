@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.mapper.base.Mapper;
@@ -8,18 +9,23 @@ import uk.gov.companieshouse.model.Reason;
 @Component
 public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
 
-    private final OtherReasonMapper otherReasonMapper;
+    @Autowired
+    private OtherReasonMapper otherReasonMapper;
 
-    public ReasonMapper(OtherReasonMapper otherReasonMapper) {
-        this.otherReasonMapper = otherReasonMapper;
-    }
+    @Autowired
+    private IllnessReasonMapper illnessReasonMapper;
 
     @Override
     public ReasonEntity map(Reason value) {
         if (value == null) {
             return null;
         }
-        return new ReasonEntity(otherReasonMapper.map(value.getOther()));
+
+        ReasonEntity reasonEntity = new ReasonEntity();
+        reasonEntity.setIllnessReason(illnessReasonMapper.map(value.getIllnessReason()));
+        reasonEntity.setOther(otherReasonMapper.map(value.getOther()));
+
+        return reasonEntity;
     }
 
     @Override
@@ -27,6 +33,11 @@ public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
         if (value == null) {
             return null;
         }
-        return new Reason(otherReasonMapper.map(value.getOther()));
+
+        Reason reason = new Reason();
+        reason.setIllnessReason(illnessReasonMapper.map(value.getIllnessReason()));
+        reason.setOther(otherReasonMapper.map(value.getOther()));
+
+        return reason;
     }
 }

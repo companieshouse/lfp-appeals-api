@@ -1,6 +1,16 @@
 package uk.gov.companieshouse.controller;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,22 +19,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
-import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.service.AppealService;
-
-import java.io.File;
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,7 +45,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExistsById_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidAppeal()));
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
 
         final String validAppeal = asJsonString();
 
@@ -70,7 +69,7 @@ public class AppealControllerTest_GET {
     @Test
     public void whenAppealExistsByPenalty_return200() throws Exception {
 
-        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of(getValidAppeal()));
+        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of(getValidOtherAppeal()));
 
         final String validAppeal = asJsonArray();
 
@@ -111,7 +110,7 @@ public class AppealControllerTest_GET {
         }
     }
 
-    private Appeal getValidAppeal() {
+    private Appeal getValidOtherAppeal() {
 
         PenaltyIdentifier penaltyIdentifier = new PenaltyIdentifier();
         String TEST_PENALTY_REFERENCE = "A12345678";

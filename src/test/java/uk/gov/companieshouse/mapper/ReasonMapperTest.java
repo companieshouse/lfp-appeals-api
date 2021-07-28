@@ -1,24 +1,44 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
+import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.Reason;
 
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.description;
-import static uk.gov.companieshouse.TestData.Appeal.Reason.OtherReason.title;
-
 @ExtendWith(SpringExtension.class)
-public class ReasonMapperTest {
-    private final ReasonMapper mapper = new ReasonMapper(new OtherReasonMapper(new AttachmentMapper()));
+class ReasonMapperTest {
+
+    @Mock
+    private OtherReasonMapper otherReasonMapper;
+    @Mock
+    private OtherReasonEntity otherReasonEntity;
+
+    @Mock
+    private IllnessReasonMapper illnessReasonMapper;
+    @Mock
+    private IllnessReasonEntity illnessReasonEntity;
+
+    @InjectMocks
+    private ReasonMapper mapper;
+
+    @Mock
+    private IllnessReason mockIllnessReason;
+    @Mock
+    private OtherReason mockOtherReason;
 
     @Nested
     class ToEntityMappingTest {
@@ -29,9 +49,20 @@ public class ReasonMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            ReasonEntity mapped = mapper.map(new Reason(new OtherReason(title, description, Collections.emptyList())));
-            assertEquals(title, mapped.getOther().getTitle());
-            assertEquals(description, mapped.getOther().getDescription());
+            when(illnessReasonMapper.map(any(IllnessReason.class))).thenReturn(illnessReasonEntity);
+            when(otherReasonMapper.map(any(OtherReason.class))).thenReturn(otherReasonEntity);
+
+            Reason reason = new Reason();
+            reason.setOther(mockOtherReason);
+            reason.setIllnessReason(mockIllnessReason);
+
+            ReasonEntity mapped = mapper.map(reason);
+
+            assertEquals(illnessReasonEntity, mapped.getIllnessReason());
+            assertEquals(otherReasonEntity, mapped.getOther());
+
+            verify(illnessReasonMapper).map(mockIllnessReason);
+            verify(otherReasonMapper).map(mockOtherReason);
         }
     }
 
@@ -44,9 +75,21 @@ public class ReasonMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            Reason mapped = mapper.map(new ReasonEntity(new OtherReasonEntity(title, description, Collections.emptyList())));
-            assertEquals(title, mapped.getOther().getTitle());
-            assertEquals(description, mapped.getOther().getDescription());
+            when(illnessReasonMapper.map(any(IllnessReasonEntity.class))).thenReturn(mockIllnessReason);
+            when(otherReasonMapper.map(any(OtherReasonEntity.class))).thenReturn(mockOtherReason);
+
+            ReasonEntity reasonEntity = new ReasonEntity();
+
+            reasonEntity.setIllnessReason(illnessReasonEntity);
+            reasonEntity.setOther(otherReasonEntity);
+
+            Reason mapped = mapper.map(reasonEntity);
+
+            assertEquals(mockIllnessReason, mapped.getIllnessReason());
+            assertEquals(mockOtherReason, mapped.getOther());
+
+            verify(illnessReasonMapper).map(illnessReasonEntity);
+            verify(otherReasonMapper).map(otherReasonEntity);
         }
     }
 }

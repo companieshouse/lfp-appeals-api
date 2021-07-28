@@ -1,5 +1,10 @@
 package uk.gov.companieshouse.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +17,10 @@ import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.repository.AppealRepository;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AppealService {
@@ -83,44 +83,55 @@ public class AppealService {
     }
 
     protected ChipsContact buildChipsContact(Appeal appeal) {
-
         final String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
         final OtherReason otherReason = appeal.getReason().getOther();
+        final IllnessReason illnessReason = appeal.getReason().getIllnessReason();
 
         final ChipsContact chipsContact = new ChipsContact();
         chipsContact.setCompanyNumber(companyNumber);
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
 
-        final String contactDescription = "Appeal submitted" +
+        String contactDescription = "Appeal submitted" +
             "\n\nYour reference number is your company number " + companyNumber +
             "\n\nCompany Number: " + companyNumber +
             "\nEmail address: " + appeal.getCreatedBy().getEmailAddress() +
-            "\n\nAppeal Reason" +
-            "\nReason: " + otherReason.getTitle() +
-            "\nFurther information: " + otherReason.getDescription() +
-            "\nSupporting documents: " + getAttachmentsStr(appeal.getId(), otherReason);
+            "\n\nAppeal Reason";
+
+        List<Attachment> attachmentList;
+
+        if(appeal.getReason().getOther() != null){
+            attachmentList = otherReason.getAttachments();
+            contactDescription +=
+                ("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
+            contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
+        }
+
+        if(appeal.getReason().getIllnessReason() != null){
+            attachmentList = illnessReason.getAttachments();
+            contactDescription += ("\nIll Person " + illnessReason.getIllPerson() +
+            "\nOther Person: " + illnessReason.getOtherPerson() +
+                "\nIllness Start Date: " + illnessReason.getIllnessStart() +
+                "\nContinued Illness" + illnessReason.getContinuedIllness() +
+                "\nIllness End Date: " + illnessReason.getIllnessEnd() +
+                "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
+            );
+            contactDescription += ("\nSupporting documents: " + getAttachmentsStr(appeal.getId(), attachmentList));
+        }
 
         chipsContact.setContactDescription(contactDescription);
-
         return chipsContact;
     }
 
-    private String getAttachmentsStr(String appealId, OtherReason otherReason) {
-
-        final List<Attachment> attachmentList = otherReason.getAttachments();
-
+    private String getAttachmentsStr(String appealId, List<Attachment> attachmentList) {
         if (attachmentList == null || attachmentList.isEmpty()) {
             return "None";
         }
         final StringBuilder sb = new StringBuilder();
-
         attachmentList.forEach(attachment -> {
             sb.append("\n  - ").append(attachment.getName());
-
             Optional.ofNullable(attachment.getUrl()).ifPresent(url ->
                 sb.append("\n    ").append(url).append("&a=").append(appealId));
         });
-
         return sb.toString();
     }
 

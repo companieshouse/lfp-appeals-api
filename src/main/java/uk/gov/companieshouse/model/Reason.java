@@ -1,22 +1,13 @@
 package uk.gov.companieshouse.model;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 public class Reason {
 
     @Valid
-    @NotNull(message = "other must not be null")
     private OtherReason other;
-
-    public Reason() {
-        this(null);
-    }
-
-    public Reason(OtherReason other) {
-        this.other = other;
-    }
+    @Valid
+    private IllnessReason illnessReason;
 
     public OtherReason getOther() {
         return this.other;
@@ -26,23 +17,19 @@ public class Reason {
         this.other = other;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Reason reason = (Reason) o;
-        return Objects.equals(other, reason.other);
+    public IllnessReason getIllnessReason() {
+        return this.illnessReason;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(other);
+    public void setIllnessReason(IllnessReason illnessReason) {
+        this.illnessReason = illnessReason;
     }
 
     @Override
     public String toString() {
         return "Reason{" +
             "other=" + other +
+            "illnessReason=" + illnessReason +
             '}';
     }
 }

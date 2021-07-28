@@ -1,16 +1,15 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.model.CreatedBy;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.companieshouse.TestData.Appeal.CreatedBy.email;
-import static uk.gov.companieshouse.TestData.Appeal.CreatedBy.id;
 
 @ExtendWith(SpringExtension.class)
 public class CreatedByMapperTest {
@@ -25,8 +24,8 @@ public class CreatedByMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            CreatedByEntity mapped = mapper.map(new CreatedBy(id, email));
-            assertEquals(id, mapped.getId());
+            CreatedByEntity mapped = mapper.map(new CreatedBy(TestData.USER_ID, TestData.EMAIL));
+            assertEquals(TestData.USER_ID, mapped.getId());
         }
     }
 
@@ -39,8 +38,8 @@ public class CreatedByMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            CreatedBy mapped = mapper.map(new CreatedByEntity(id));
-            assertEquals(id, mapped.getId());
+            CreatedBy mapped = mapper.map(new CreatedByEntity(TestData.USER_ID));
+            assertEquals(TestData.USER_ID, mapped.getId());
             assertNull(mapped.getEmailAddress());
         }
     }

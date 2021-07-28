@@ -1,61 +1,73 @@
 package uk.gov.companieshouse.mapper;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import uk.gov.companieshouse.model.IllnessReason;
-import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
-
-
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
+import uk.gov.companieshouse.model.IllnessReason;
+import uk.gov.companieshouse.util.TestUtil;
 
 
 @ExtendWith(SpringExtension.class)
-    class IllnessReasonMapperTest {
-    private final IllnessReasonMapper mapper = new IllnessReasonMapper(new AttachmentMapper());
-    private final static String ILL_PERSON = "name";
-    private final static String OTHER_PERSON = "otherPersonName";
-    private final static String ILLNESS_START = "01/01/2021";
-    private final static boolean CONTINUED_ILLNESS = true;
-    private final static String ILLNESS_END ="02/02/2021";
-    private final static String FURTHER_INFORMATION ="furtherInformation";
+class IllnessReasonMapperTest {
 
+    @Spy
+    private AttachmentMapper attachmentMapper;
 
-        @Test
-        void shouldReturnNullWhenValueIsNullReasonToEntity() {
-            assertNull(mapper.map((IllnessReason) null));
-        }
+    @InjectMocks
+    private IllnessReasonMapper mapper;
 
-        @Test
-        void shouldMapValueWhenValueIsNotNullReasonToEntity() {
-            IllnessReasonEntity mapped = mapper.map(new IllnessReason(ILL_PERSON, OTHER_PERSON, ILLNESS_START, CONTINUED_ILLNESS, ILLNESS_END, FURTHER_INFORMATION, Collections.emptyList()));
-            assertEquals(ILL_PERSON, mapped.getIllPerson());
-            assertEquals(OTHER_PERSON, mapped.getOtherPerson());
-            assertEquals(ILLNESS_START, mapped.getIllnessStartDate());
-            assertEquals(CONTINUED_ILLNESS, mapped.getContinuedIllness());
-            assertEquals(ILLNESS_END, mapped.getIllnessEndDate());
-            assertEquals(FURTHER_INFORMATION, mapped.getIllnessImpactFurtherInformation());
-            assertTrue(mapped.getAttachments().isEmpty());
-        }
-        @Test
-        void shouldReturnNullWhenValueIsNullEntityToReason() {
-            assertNull(mapper.map((IllnessReasonEntity) null));
-        }
+    @Test
+    void shouldReturnNullWhenValueIsNullReasonToEntity() {
+        assertNull(mapper.map((IllnessReason) null));
+    }
 
-        @Test
-        void shouldMapValueWhenValueIsNotNullEntityToReason() {
-            IllnessReason mapped = mapper.map(new IllnessReasonEntity(ILL_PERSON, OTHER_PERSON, ILLNESS_START, CONTINUED_ILLNESS, ILLNESS_END, FURTHER_INFORMATION, Collections.emptyList()));
-            assertEquals(ILL_PERSON, mapped.getIllPerson());
-            assertEquals(OTHER_PERSON, mapped.getOtherPerson());
-            assertEquals(ILLNESS_START, mapped.getIllnessStart());
-            assertEquals(CONTINUED_ILLNESS, mapped.getContinuedIllness());
-            assertEquals(ILLNESS_END, mapped.getIllnessEnd());
-            assertEquals(FURTHER_INFORMATION, mapped.getIllnessImpactFurtherInformation());
-            assertTrue(mapped.getAttachments().isEmpty());
-        }
+    @Test
+    void shouldMapValueWhenValueIsNotNullReasonToEntity() {
+
+        IllnessReasonEntity mapped = mapper.map(TestUtil.createIllnessReason());
+        assertEquals(TestData.ILL_PERSON, mapped.getIllPerson());
+        assertEquals(TestData.OTHER_PERSON, mapped.getOtherPerson());
+        assertEquals(TestData.ILLNESS_START, mapped.getIllnessStartDate());
+        assertEquals(TestData.CONTINUED_ILLNESS, mapped.getContinuedIllness());
+        assertEquals(TestData.ILLNESS_END, mapped.getIllnessEndDate());
+        assertEquals(TestData.ILLNESS_IMPACT_FURTHER_INFORMATION, mapped.getIllnessImpactFurtherInformation());
+
+        assertEquals(1, mapped.getAttachments().size());
+        assertEquals(TestData.ATTACHMENT_ID, mapped.getAttachments().get(0).getId());
+        assertEquals(TestData.ATTACHMENT_NAME, mapped.getAttachments().get(0).getName());
+        assertEquals(TestData.ATTACHMENT_SIZE, mapped.getAttachments().get(0).getSize());
+        assertEquals(TestData.CONTENT_TYPE, mapped.getAttachments().get(0).getContentType());
+
+    }
+
+    @Test
+    void shouldReturnNullWhenValueIsNullEntityToReason() {
+        assertNull(mapper.map((IllnessReasonEntity) null));
+    }
+
+    @Test
+    void shouldMapValueWhenValueIsNotNullEntityToReason() {
+        IllnessReason mapped = mapper.map(TestUtil.createIllnessReasonEntity());
+        assertEquals(TestData.ILL_PERSON, mapped.getIllPerson());
+        assertEquals(TestData.OTHER_PERSON, mapped.getOtherPerson());
+        assertEquals(TestData.ILLNESS_START, mapped.getIllnessStart());
+        assertEquals(TestData.CONTINUED_ILLNESS, mapped.getContinuedIllness());
+        assertEquals(TestData.ILLNESS_END, mapped.getIllnessEnd());
+        assertEquals(TestData.ILLNESS_IMPACT_FURTHER_INFORMATION, mapped.getIllnessImpactFurtherInformation());
+
+        assertEquals(1, mapped.getAttachments().size());
+        assertEquals(TestData.ATTACHMENT_ID, mapped.getAttachments().get(0).getId());
+        assertEquals(TestData.ATTACHMENT_NAME, mapped.getAttachments().get(0).getName());
+        assertEquals(TestData.ATTACHMENT_SIZE, mapped.getAttachments().get(0).getSize());
+        assertEquals(TestData.CONTENT_TYPE, mapped.getAttachments().get(0).getContentType());
+
+    }
 }
 

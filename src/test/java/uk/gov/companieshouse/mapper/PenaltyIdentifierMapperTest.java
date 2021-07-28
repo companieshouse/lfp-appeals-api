@@ -1,16 +1,15 @@
 package uk.gov.companieshouse.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.companieshouse.TestData.Appeal.PenaltyIdentifier.companyNumber;
-import static uk.gov.companieshouse.TestData.Appeal.PenaltyIdentifier.penaltyReference;
 
 @ExtendWith(SpringExtension.class)
 public class PenaltyIdentifierMapperTest {
@@ -25,9 +24,9 @@ public class PenaltyIdentifierMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            PenaltyIdentifierEntity mapped = mapper.map(new PenaltyIdentifier(companyNumber, penaltyReference));
-            assertEquals(companyNumber, mapped.getCompanyNumber());
-            assertEquals(penaltyReference, mapped.getPenaltyReference());
+            PenaltyIdentifierEntity mapped = mapper.map(new PenaltyIdentifier(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE));
+            assertEquals(TestData.COMPANY_NUMBER, mapped.getCompanyNumber());
+            assertEquals(TestData.PENALTY_REFERENCE, mapped.getPenaltyReference());
         }
     }
 
@@ -40,9 +39,9 @@ public class PenaltyIdentifierMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            PenaltyIdentifier mapped = mapper.map(new PenaltyIdentifierEntity(companyNumber, penaltyReference));
-            assertEquals(companyNumber, mapped.getCompanyNumber());
-            assertEquals(penaltyReference, mapped.getPenaltyReference());
+            PenaltyIdentifier mapped = mapper.map(new PenaltyIdentifierEntity(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE));
+            assertEquals(TestData.COMPANY_NUMBER, mapped.getCompanyNumber());
+            assertEquals(TestData.PENALTY_REFERENCE, mapped.getPenaltyReference());
         }
     }
 }

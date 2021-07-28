@@ -3,6 +3,7 @@ package uk.gov.companieshouse.controller;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.validator.AppealReasonValidator;
 import uk.gov.companieshouse.service.AppealService;
 
 import javax.validation.Valid;
@@ -35,6 +37,9 @@ public class AppealController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealController.class);
 
     private final AppealService appealService;
+
+    @Autowired
+    private AppealReasonValidator appealReasonValidator;
 
     public AppealController(AppealService appealService) {
         this.appealService = appealService;
@@ -54,6 +59,12 @@ public class AppealController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        String validationError = appealReasonValidator.validate(appeal.getReason());
+        if (validationError != null) {
+            LOGGER.info("Appeal not valid for company {}: {}", appeal.getPenaltyIdentifier().getCompanyNumber(), validationError);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);
+        }
+
         try {
             final String id = appealService.saveAppeal(appeal, userId);
 
@@ -64,7 +75,6 @@ public class AppealController {
                 .toUri();
 
             return ResponseEntity.created(location).body(id);
-
         } catch (Exception ex) {
             LOGGER.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
                 companyId, penaltyReference, userId, ex);
