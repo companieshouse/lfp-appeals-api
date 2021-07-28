@@ -328,13 +328,13 @@ class AppealServiceTest {
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
-            + "\nIll Person "
+            + "\nIll Person: "
             + TestData.ILL_PERSON
             + "\nOther Person: "
             + TestData.OTHER_PERSON
             + "\nIllness Start Date: "
             + TestData.ILLNESS_START
-            + "\nContinued Illness"
+            + "\nContinued Illness: "
             + TestData.CONTINUED_ILLNESS
             + "\nIllness End Date: "
             + TestData.ILLNESS_END
@@ -388,13 +388,13 @@ class AppealServiceTest {
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
-            + "\nIll Person "
+            + "\nIll Person: "
             + TestData.ILL_PERSON
             + "\nOther Person: "
             + TestData.OTHER_PERSON
             + "\nIllness Start Date: "
             + TestData.ILLNESS_START
-            + "\nContinued Illness"
+            + "\nContinued Illness: "
             + TestData.CONTINUED_ILLNESS
             + "\nIllness End Date: "
             + TestData.ILLNESS_END

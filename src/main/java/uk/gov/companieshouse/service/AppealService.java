@@ -108,10 +108,10 @@ public class AppealService {
 
         if(appeal.getReason().getIllnessReason() != null){
             attachmentList = illnessReason.getAttachments();
-            contactDescription += ("\nIll Person " + illnessReason.getIllPerson() +
+            contactDescription += ("\nIll Person: " + illnessReason.getIllPerson() +
             "\nOther Person: " + illnessReason.getOtherPerson() +
                 "\nIllness Start Date: " + illnessReason.getIllnessStart() +
-                "\nContinued Illness" + illnessReason.getContinuedIllness() +
+                "\nContinued Illness: " + illnessReason.getContinuedIllness() +
                 "\nIllness End Date: " + illnessReason.getIllnessEnd() +
                 "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
             );
