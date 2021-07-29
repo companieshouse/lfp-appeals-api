@@ -1,13 +1,21 @@
-package uk.gov.companieshouse.util;
+package uk.gov.companieshouse;
 
 import java.util.List;
 import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
+import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
+import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
+import uk.gov.companieshouse.database.entity.ReasonEntity;
+import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.model.OtherReason;
+import uk.gov.companieshouse.model.PenaltyIdentifier;
+import uk.gov.companieshouse.model.Reason;
 
 public class TestUtil {
     public static IllnessReason createIllnessReason() {
@@ -87,5 +95,29 @@ public class TestUtil {
         return attachment;
     }
 
+    public static Reason createReasonWithOther() {
+        Reason reason = new Reason();
+        reason.setOther(createOtherReason());
+        return reason;
+    }
 
+    public static ReasonEntity createReasonEntityWithOther() {
+        ReasonEntity reasonEntity = new ReasonEntity();
+        reasonEntity.setOther(createOtherReasonEntity());
+        return reasonEntity;
+    }
+
+    public static Appeal createAppeal(Reason reason) {
+        return new Appeal(null, TestData.CREATED_AT,
+            new CreatedBy(TestData.USER_ID, TestData.EMAIL),
+            new PenaltyIdentifier(TestData.COMPANY_NUMBER,
+                TestData.PENALTY_REFERENCE), reason);
+
+    }
+
+    public static AppealEntity createAppealEntity(String id, ReasonEntity reasonEntity) {
+        return new AppealEntity(id, TestData.CREATED_AT, new CreatedByEntity(TestData.USER_ID),
+            new PenaltyIdentifierEntity(TestData.COMPANY_NUMBER,
+                TestData.PENALTY_REFERENCE), reasonEntity);
+    }
 }
