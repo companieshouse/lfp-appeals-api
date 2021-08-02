@@ -11,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.model.IllnessReason;
-import uk.gov.companieshouse.util.TestUtil;
+import uk.gov.companieshouse.TestUtil;
 
 
 @ExtendWith(SpringExtension.class)

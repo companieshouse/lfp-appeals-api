@@ -16,7 +16,7 @@ import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
-import uk.gov.companieshouse.util.TestUtil;
+import uk.gov.companieshouse.TestUtil;
 
 @ExtendWith(SpringExtension.class)
 public class OtherReasonMapperTest {

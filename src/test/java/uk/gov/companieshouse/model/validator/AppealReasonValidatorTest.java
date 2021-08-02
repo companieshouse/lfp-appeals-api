@@ -2,8 +2,8 @@ package uk.gov.companieshouse.model.validator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static uk.gov.companieshouse.util.TestUtil.createIllnessReason;
-import static uk.gov.companieshouse.util.TestUtil.createOtherReason;
+import static uk.gov.companieshouse.TestUtil.createIllnessReason;
+import static uk.gov.companieshouse.TestUtil.createOtherReason;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
