@@ -1,7 +1,6 @@
 package uk.gov.companieshouse;
 
 import java.util.List;
-import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
@@ -26,7 +25,6 @@ public class TestUtil {
         illnessReason.setContinuedIllness(TestData.CONTINUED_ILLNESS);
         illnessReason.setIllnessEnd(TestData.ILLNESS_END);
         illnessReason.setIllnessImpactFurtherInformation(TestData.ILLNESS_IMPACT_FURTHER_INFORMATION);
-
 
         Attachment attachment = createAttachment();
 
@@ -107,17 +105,32 @@ public class TestUtil {
         return reasonEntity;
     }
 
-    public static Appeal createAppeal(Reason reason) {
+    public static Appeal createAppeal(CreatedBy createdBy,Reason reason) {
         return new Appeal(null, TestData.CREATED_AT,
-            new CreatedBy(TestData.USER_ID, TestData.EMAIL),
+            createdBy,
             new PenaltyIdentifier(TestData.COMPANY_NUMBER,
                 TestData.PENALTY_REFERENCE), reason);
 
     }
 
-    public static AppealEntity createAppealEntity(String id, ReasonEntity reasonEntity) {
-        return new AppealEntity(id, TestData.CREATED_AT, new CreatedByEntity(TestData.USER_ID),
+    public static AppealEntity createAppealEntity(String id, CreatedByEntity createdByEntity,  ReasonEntity reasonEntity) {
+        return new AppealEntity(id, TestData.CREATED_AT, createdByEntity,
             new PenaltyIdentifierEntity(TestData.COMPANY_NUMBER,
                 TestData.PENALTY_REFERENCE), reasonEntity);
     }
+
+    public static CreatedBy buildCreatedBy(){
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setId(TestData.USER_ID);
+        createdBy.setYourName(TestData.YOUR_NAME);
+        createdBy.setEmailAddress(TestData.EMAIL);
+        return createdBy;
+    }
+
+    public static CreatedByEntity buildCreatedByEntity(){
+        CreatedByEntity createdByEntity = new CreatedByEntity();
+        createdByEntity.setId(TestData.USER_ID);
+        return createdByEntity;
+    }
+
 }

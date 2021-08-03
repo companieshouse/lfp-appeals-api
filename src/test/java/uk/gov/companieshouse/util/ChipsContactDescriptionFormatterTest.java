@@ -1,17 +1,17 @@
 package uk.gov.companieshouse.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.Reason;
-
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ChipsContactDescriptionFormatterTest {
 
@@ -20,14 +20,15 @@ class ChipsContactDescriptionFormatterTest {
     private ChipsContactDescriptionFormatter formatter;
 
     @BeforeEach
-    void setUps(){
+    void setUp(){
         formatter = new ChipsContactDescriptionFormatter();
     }
 
     @Test
     void testBuildChipsContactOtherReasonWithAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = TestUtil.createReasonWithOther();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
 
         ChipsContact chipsContact = formatter.buildChipsContact(appeal);
@@ -40,8 +41,9 @@ class ChipsContactDescriptionFormatterTest {
 
     @Test
     void testBuildChipsContactOtherReasonEmptyAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = TestUtil.createReasonWithOther();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
         appeal.getReason().getOther().setAttachments(Collections.emptyList());
 
@@ -55,8 +57,9 @@ class ChipsContactDescriptionFormatterTest {
 
     @Test
     void testBuildChipsContactOtherReasonsNullAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = TestUtil.createReasonWithOther();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
         appeal.getReason().getOther().setAttachments(null);
 
@@ -70,8 +73,9 @@ class ChipsContactDescriptionFormatterTest {
 
     @Test
     void testBuildChipsContactIllnessReasonWithAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = createReasonWithIllness();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
 
         ChipsContact chipsContact = formatter.buildChipsContact(appeal);
@@ -84,8 +88,9 @@ class ChipsContactDescriptionFormatterTest {
 
     @Test
     void testBuildChipsContactIllnessReasonWithoutAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = createReasonWithIllness();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
         appeal.getReason().getIllnessReason().setAttachments(Collections.emptyList());
 
@@ -99,8 +104,9 @@ class ChipsContactDescriptionFormatterTest {
 
     @Test
     void testBuildChipsContactIllnessReasonWithNullAttachments() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = createReasonWithIllness();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
         appeal.getReason().getIllnessReason().setAttachments(null);
 
@@ -124,6 +130,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
             + TestData.COMPANY_NUMBER
+            + "\nName of User: "
+            + TestData.YOUR_NAME
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
@@ -154,6 +162,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
             + TestData.COMPANY_NUMBER
+            + "\nName of User: "
+            + TestData.YOUR_NAME
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
@@ -170,6 +180,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
             + TestData.COMPANY_NUMBER
+            + "\nName of User: "
+            + TestData.YOUR_NAME
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
@@ -192,6 +204,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\n\nCompany Number: "
             + TestData.COMPANY_NUMBER
+            + "\nName of User: "
+            + TestData.YOUR_NAME
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.model.CreatedBy;
 
@@ -24,7 +25,8 @@ public class CreatedByMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            CreatedByEntity mapped = mapper.map(new CreatedBy(TestData.USER_ID, TestData.EMAIL));
+            CreatedBy createdBy = TestUtil.buildCreatedBy();
+            CreatedByEntity mapped = mapper.map(createdBy);
             assertEquals(TestData.USER_ID, mapped.getId());
         }
     }
@@ -38,7 +40,9 @@ public class CreatedByMapperTest {
 
         @Test
         void shouldMapValueWhenValueIsNotNull() {
-            CreatedBy mapped = mapper.map(new CreatedByEntity(TestData.USER_ID));
+            CreatedByEntity createdByEntity = new CreatedByEntity();
+            createdByEntity.setId(TestData.USER_ID);
+            CreatedBy mapped = mapper.map(createdByEntity);
             assertEquals(TestData.USER_ID, mapped.getId());
             assertNull(mapped.getEmailAddress());
         }

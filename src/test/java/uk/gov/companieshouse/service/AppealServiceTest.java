@@ -23,11 +23,13 @@ import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
+import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
 import uk.gov.companieshouse.mapper.AppealMapper;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.ChipsContact;
+import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.repository.AppealRepository;
 import uk.gov.companieshouse.util.ChipsContactDescriptionFormatter;
@@ -59,22 +61,26 @@ class AppealServiceTest {
 
     @Test
     void testCreateAppeal_returnsResourceId() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity));
 
-        assertEquals(TestData.ID, appealService.saveAppeal(TestUtil.createAppeal(reason), TestData.USER_ID));
+        assertEquals(TestData.ID, appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID));
     }
 
     @Test
     void testCreateAppeal_verify_createdBy_createdAt_setOnAppeal() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity));
 
-        appealService.saveAppeal(TestUtil.createAppeal(reason), TestData.USER_ID);
+        appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID);
 
         ArgumentCaptor<AppealEntity> appealArgumentCaptor = ArgumentCaptor.forClass(AppealEntity.class);
         verify(appealRepository).insert(appealArgumentCaptor.capture());
@@ -85,45 +91,53 @@ class AppealServiceTest {
 
     @Test
     void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
 
-        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(reason), TestData.USER_ID)).getMessage();
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
         assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
     void testCreateAppeal_throwsExceptionIfUnableToInsertData() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
-        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(reason), TestData.USER_ID)).getMessage();
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
         assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
     }
 
     @Test
     void testCreateAppealChipsEnabled_returnsResourceId() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
         when(chipsContactDescriptionFormatter.buildChipsContact(any(Appeal.class))).thenReturn(CONTACT);
 
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity));
 
-        assertEquals(TestData.ID, appealService.saveAppeal(TestUtil.createAppeal(reason), TestData.USER_ID));
+        assertEquals(TestData.ID, appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID));
     }
 
     @Test
     void testCreateAppeal_throwsExceptionIfChipsReturnsError() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        Appeal appeal = TestUtil.createAppeal(reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
 
         when(chipsConfiguration.isChipsEnabled()).thenReturn(true);
         when(chipsConfiguration.getChipsRestServiceUrl()).thenReturn(TEST_CHIPS_URL);
@@ -131,21 +145,23 @@ class AppealServiceTest {
 
         doThrow(ChipsServiceException.class).when(chipsRestClient).createContactInChips(CONTACT, TEST_CHIPS_URL);
 
-        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, reasonEntity));
-        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, reasonEntity));
+        when(appealMapper.map(any(Appeal.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
+        when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity));
 
         assertThrows(ChipsServiceException.class, () -> appealService.saveAppeal(appeal, TestData.USER_ID));
 
-        verify(appealRepository).insert(TestUtil.createAppealEntity(null, reasonEntity));
+        verify(appealRepository).insert(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
     }
 
     @Test
     void testGetAppealById_returnsAppeal() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
         when(appealRepository.findById(any(String.class))).thenReturn(
-            Optional.of(TestUtil.createAppealEntity(TestData.ID, reasonEntity)));
-        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(reason));
+            Optional.of(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity)));
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy, reason));
 
         Appeal appeal = appealService.getAppeal(TestData.ID).orElseThrow();
 
@@ -172,11 +188,13 @@ class AppealServiceTest {
 
     @Test
     void testGetAppealsByPenaltyReference_returnsListOfAppeals() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
-            List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity)));
-        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(reason));
+            List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity)));
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy, reason));
 
         List<Appeal> appealList = appealService.getAppealsByPenaltyReference(
             TestData.PENALTY_REFERENCE);
@@ -197,13 +215,15 @@ class AppealServiceTest {
 
     @Test
     void testGetMultipleAppealByPenaltyReference_returnsListOfAppeals() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
         when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
-            List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity),
-                TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, reasonEntity)));
+            List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity),
+                TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity)));
 
-        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(reason));
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy,reason));
 
         List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
 

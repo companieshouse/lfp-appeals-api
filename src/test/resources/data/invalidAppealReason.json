@@ -18,6 +18,8 @@
       }
     },
     "createdBy": {
-      "id": "123abc456"
+      "id": "123abc456",
+      "yourName": "User Userson",
+      "emailAddress": "user@user.com"
     }
   }
