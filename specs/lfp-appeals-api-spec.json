@@ -226,6 +226,11 @@
         }
       },
       "CreatedBy": {
+        "required": [
+          "id",
+          "yourName",
+          "emailAddress"
+        ],
         "type": "object",
         "properties": {
           "id": {

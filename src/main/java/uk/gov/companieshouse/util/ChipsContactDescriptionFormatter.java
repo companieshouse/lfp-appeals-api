@@ -26,7 +26,7 @@ public class ChipsContactDescriptionFormatter {
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
 
         StringBuilder contactDescription = new StringBuilder();
-        formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getEmailAddress());
+        formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getYourName(), appeal.getCreatedBy().getEmailAddress());
 
         if(otherReason != null){
             formatOtherReasonContactDescription(contactDescription, otherReason, appeal.getId());
@@ -40,9 +40,9 @@ public class ChipsContactDescriptionFormatter {
         return chipsContact;
     }
 
-    private void formatAppealDescription(StringBuilder contactDescription, String companyNumber, String emailAddress){
+    private void formatAppealDescription(StringBuilder contactDescription, String companyNumber, String yourName, String emailAddress){
         contactDescription.append("Appeal submitted" + "\n\nYour reference number is your company number " + companyNumber);
-        contactDescription.append("\n\nCompany Number: " + companyNumber + "\nEmail address: " + emailAddress + "\n\nAppeal Reason");
+        contactDescription.append("\n\nCompany Number: " + companyNumber + "\nName of User: " + yourName +"\nEmail address: " + emailAddress + "\n\nAppeal Reason");
     }
 
     private void formatOtherReasonContactDescription(StringBuilder contactDescription, OtherReason otherReason, String appealId){

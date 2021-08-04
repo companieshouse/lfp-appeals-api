@@ -13,7 +13,9 @@ public class CreatedByMapper implements Mapper<CreatedByEntity, CreatedBy> {
         if (value == null) {
             return null;
         }
-        return new CreatedByEntity(value.getId());
+        CreatedByEntity createdByEntity = new CreatedByEntity();
+        createdByEntity.setId(value.getId());
+        return createdByEntity;
     }
 
     @Override
@@ -21,6 +23,8 @@ public class CreatedByMapper implements Mapper<CreatedByEntity, CreatedBy> {
         if (value == null) {
             return null;
         }
-        return new CreatedBy(value.getId(), null);
+        CreatedBy createdBy = new CreatedBy();
+        createdBy.setId(value.getId());
+        return createdBy;
     }
 }
