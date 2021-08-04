@@ -7,7 +7,7 @@ public class CreatedBy {
     @NotBlank(message = "createdBy.id must not be blank")
     private String id;
 
-    @NotBlank(message = "createdBy.yourName must not be blank")
+    //@NotBlank(message = "createdBy.yourName must not be blank")
     private String yourName;
 
     @NotBlank(message = "createdBy.emailAddress must not be blank")
