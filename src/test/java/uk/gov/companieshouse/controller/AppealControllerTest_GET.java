@@ -128,7 +128,7 @@ public class AppealControllerTest_GET {
 
         CreatedBy createdBy = new CreatedBy();
         createdBy.setId("123abc456");
-        createdBy.setYourName("User Userson");
+        createdBy.setName("User Userson");
         createdBy.setEmailAddress("user@example.com");
 
         Appeal appeal = new Appeal();

@@ -26,7 +26,7 @@ public class ChipsContactDescriptionFormatter {
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
 
         StringBuilder contactDescription = new StringBuilder();
-        formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getYourName(), appeal.getCreatedBy().getEmailAddress());
+        formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(), appeal.getCreatedBy().getEmailAddress());
 
         if(otherReason != null){
             formatOtherReasonContactDescription(contactDescription, otherReason, appeal.getId());

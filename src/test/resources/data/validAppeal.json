@@ -11,7 +11,7 @@
   },
   "createdBy": {
     "id": "123abc456",
-    "yourName": "User Userson",
+    "name": "User Userson",
     "emailAddress": "user@example.com"
   }
 }
