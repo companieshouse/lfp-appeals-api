@@ -7,8 +7,8 @@ public class CreatedBy {
     @NotBlank(message = "createdBy.id must not be blank")
     private String id;
 
-    @NotBlank(message = "createdBy.yourName must not be blank")
-    private String yourName;
+    @NotBlank(message = "createdBy.name must not be blank")
+    private String name;
 
     @NotBlank(message = "createdBy.emailAddress must not be blank")
     private String emailAddress;
@@ -21,12 +21,12 @@ public class CreatedBy {
         this.id = id;
     }
 
-    public String getYourName() {
-        return yourName;
+    public String getName() {
+        return name;
     }
 
-    public void setYourName(final String yourName) {
-        this.yourName = yourName;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public String getEmailAddress() {

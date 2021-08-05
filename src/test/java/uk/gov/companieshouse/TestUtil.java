@@ -122,7 +122,7 @@ public class TestUtil {
     public static CreatedBy buildCreatedBy(){
         CreatedBy createdBy = new CreatedBy();
         createdBy.setId(TestData.USER_ID);
-        createdBy.setYourName(TestData.YOUR_NAME);
+        createdBy.setName(TestData.YOUR_NAME);
         createdBy.setEmailAddress(TestData.EMAIL);
         return createdBy;
     }
