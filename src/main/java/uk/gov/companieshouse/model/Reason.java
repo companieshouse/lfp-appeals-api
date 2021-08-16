@@ -7,7 +7,7 @@ public class Reason {
     @Valid
     private OtherReason other;
     @Valid
-    private IllnessReason illnessReason;
+    private IllnessReason illness;
 
     public OtherReason getOther() {
         return this.other;
@@ -17,19 +17,19 @@ public class Reason {
         this.other = other;
     }
 
-    public IllnessReason getIllnessReason() {
-        return this.illnessReason;
+    public IllnessReason getIllness() {
+        return this.illness;
     }
 
-    public void setIllnessReason(IllnessReason illnessReason) {
-        this.illnessReason = illnessReason;
+    public void setIllness(IllnessReason illnessReason) {
+        this.illness = illnessReason;
     }
 
     @Override
     public String toString() {
         return "Reason{" +
             "other=" + other +
-            "illnessReason=" + illnessReason +
+            "illnessReason=" + illness +
             '}';
     }
 }

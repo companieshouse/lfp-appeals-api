@@ -54,7 +54,7 @@ class ReasonMapperTest {
 
             Reason reason = new Reason();
             reason.setOther(mockOtherReason);
-            reason.setIllnessReason(mockIllnessReason);
+            reason.setIllness(mockIllnessReason);
 
             ReasonEntity mapped = mapper.map(reason);
 
@@ -85,7 +85,7 @@ class ReasonMapperTest {
 
             Reason mapped = mapper.map(reasonEntity);
 
-            assertEquals(mockIllnessReason, mapped.getIllnessReason());
+            assertEquals(mockIllnessReason, mapped.getIllness());
             assertEquals(mockOtherReason, mapped.getOther());
 
             verify(illnessReasonMapper).map(illnessReasonEntity);

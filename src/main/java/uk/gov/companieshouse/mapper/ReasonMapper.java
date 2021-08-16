@@ -22,7 +22,7 @@ public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
         }
 
         ReasonEntity reasonEntity = new ReasonEntity();
-        reasonEntity.setIllnessReason(illnessReasonMapper.map(value.getIllnessReason()));
+        reasonEntity.setIllnessReason(illnessReasonMapper.map(value.getIllness()));
         reasonEntity.setOther(otherReasonMapper.map(value.getOther()));
 
         return reasonEntity;
@@ -35,7 +35,7 @@ public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
         }
 
         Reason reason = new Reason();
-        reason.setIllnessReason(illnessReasonMapper.map(value.getIllnessReason()));
+        reason.setIllness(illnessReasonMapper.map(value.getIllnessReason()));
         reason.setOther(otherReasonMapper.map(value.getOther()));
 
         return reason;

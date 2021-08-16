@@ -8,7 +8,7 @@
         "title": "This is a title",
         "description": "This is a description"
       },
-      "illnessReason": {
+      "illness": {
         "illPerson": "ill Person",
         "otherPerson": "other person",
         "illnessStart": "01/01/2021",
