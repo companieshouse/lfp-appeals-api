@@ -30,7 +30,7 @@ class AppealReasonValidatorTest {
     @Test
     void shouldReturnFalseWhenHasBothIllnessAndOtherReason() {
         Reason mockReason = new Reason();
-        mockReason.setIllnessReason(createIllnessReason());
+        mockReason.setIllness(createIllnessReason());
         mockReason.setOther(createOtherReason());
         assertEquals("Only one reason type can be supplied with an Appeal",appealReasonValidator.validate(mockReason));
     }
@@ -39,7 +39,7 @@ class AppealReasonValidatorTest {
     @Test
     void shouldReturnTrueWhenItsIllnessReason(){
         Reason mockReason = new Reason();
-        mockReason.setIllnessReason(createIllnessReason());
+        mockReason.setIllness(createIllnessReason());
         assertNull(appealReasonValidator.validate(mockReason));
     }
 

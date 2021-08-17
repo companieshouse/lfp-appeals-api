@@ -92,7 +92,7 @@ class ChipsContactDescriptionFormatterTest {
         Reason reason = createReasonWithIllness();
         Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
-        appeal.getReason().getIllnessReason().setAttachments(Collections.emptyList());
+        appeal.getReason().getIllness().setAttachments(Collections.emptyList());
 
         ChipsContact chipsContact = formatter.buildChipsContact(appeal);
 
@@ -108,7 +108,7 @@ class ChipsContactDescriptionFormatterTest {
         Reason reason = createReasonWithIllness();
         Appeal appeal = TestUtil.createAppeal(createdBy, reason);
         appeal.setId(TestData.ID);
-        appeal.getReason().getIllnessReason().setAttachments(null);
+        appeal.getReason().getIllness().setAttachments(null);
 
         ChipsContact chipsContact = formatter.buildChipsContact(appeal);
 
@@ -120,7 +120,7 @@ class ChipsContactDescriptionFormatterTest {
 
     private Reason createReasonWithIllness(){
         Reason reason = new Reason();
-        reason.setIllnessReason(TestUtil.createIllnessReason());
+        reason.setIllness(TestUtil.createIllnessReason());
         return reason;
     }
 

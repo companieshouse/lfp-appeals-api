@@ -19,7 +19,7 @@ public class ChipsContactDescriptionFormatter {
     public ChipsContact buildChipsContact(Appeal appeal) {
         String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
         OtherReason otherReason = appeal.getReason().getOther();
-        IllnessReason illnessReason = appeal.getReason().getIllnessReason();
+        IllnessReason illnessReason = appeal.getReason().getIllness();
 
         ChipsContact chipsContact = new ChipsContact();
         chipsContact.setCompanyNumber(companyNumber);

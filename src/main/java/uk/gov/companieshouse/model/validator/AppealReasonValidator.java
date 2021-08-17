@@ -14,11 +14,11 @@ public class AppealReasonValidator {
      */
     public String validate(Reason reason) {
 
-        if (reason.getOther() != null ^ reason.getIllnessReason() != null) {
+        if (reason.getOther() != null ^ reason.getIllness() != null) {
             return null;
         }
 
-        if (reason.getOther() == null && reason.getIllnessReason() == null) {
+        if (reason.getOther() == null && reason.getIllness() == null) {
             return "Other/Illness must be supplied with an Appeal";
         }
 
