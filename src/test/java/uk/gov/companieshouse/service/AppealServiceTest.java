@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,10 @@ class AppealServiceTest {
     private static final String TEST_CHIPS_URL = "http://someurl";
 
     private static final ChipsContact CONTACT = new ChipsContact();
+
+    private static final String USER_ID = "user_id";
+    private static final String APPEAL_ID = "appeal_id";
+    private static final String PENALTY_REF = "penalty_reference";
 
     @Mock
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
@@ -239,6 +244,22 @@ class AppealServiceTest {
         List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
 
         assertTrue(appealList.isEmpty());
+    }
+
+    @Test
+    void testCreateDebugMapWithAppeal_returnsMapWithAppealDetails() {
+        Map<String, Object> returnedMap = appealService.createAppealDebugMap(TestData.USER_ID,
+            TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithOther()));
+        assertEquals(3, returnedMap.size());
+        assertEquals(TestData.ID, returnedMap.get(APPEAL_ID));
+        assertEquals(TestData.USER_ID, returnedMap.get(USER_ID));
+        assertEquals(TestData.PENALTY_REFERENCE, returnedMap.get(PENALTY_REF));
+    }
+
+    @Test
+    void testCreateDebugMapWithoutAppeal_retursnMapWithID(){
+        Map<String, Object> returnedMap = appealService.createDebugMapWithoutAppeal(TestData.ID);
+        assertEquals(TestData.ID, returnedMap.get(APPEAL_ID));
     }
 
 }

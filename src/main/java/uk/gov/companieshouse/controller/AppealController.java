@@ -1,8 +1,6 @@
 package uk.gov.companieshouse.controller;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import uk.gov.companieshouse.AppealApplication;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
 import uk.gov.companieshouse.service.AppealService;
@@ -34,8 +35,7 @@ import java.util.Optional;
 @RequestMapping("/companies")
 public class AppealController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealController.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
     private final AppealService appealService;
 
     @Autowired
@@ -50,23 +50,20 @@ public class AppealController {
                                                @PathVariable("company-id") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
 
-        final String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
-
-        LOGGER.info("POST /companies/{}/appeals with user id {} and penalty reference {}",
-            companyId, userId, penaltyReference);
-
         if (StringUtils.isBlank(userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         String validationError = appealReasonValidator.validate(appeal.getReason());
         if (validationError != null) {
-            LOGGER.info("Appeal not valid for company {}: {}", appeal.getPenaltyIdentifier().getCompanyNumber(), validationError);
+            LOGGER.info("Appeal not valid for company " +  appeal.getPenaltyIdentifier().getCompanyNumber() + " : "  + validationError);
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);
         }
 
         try {
             final String id = appealService.saveAppeal(appeal, userId);
+            LOGGER.infoContext(id, "Create an Appeal for an Late Filing Penalty", appealService.createAppealDebugMap(userId, appeal));
 
             final URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -76,8 +73,8 @@ public class AppealController {
 
             return ResponseEntity.created(location).body(id);
         } catch (Exception ex) {
-            LOGGER.error("Unable to create appeal for company number {}, penalty reference {} and user id {}",
-                companyId, penaltyReference, userId, ex);
+            final Map<String, Object> debugMap = appealService.createAppealDebugMap(userId, appeal);
+            LOGGER.error("Unable to create appeal", ex, debugMap);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -86,8 +83,7 @@ public class AppealController {
     public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
                                                 @PathVariable("id") final String id) {
 
-        LOGGER.info("GET /companies/{}/appeals/{}", companyId, id);
-
+        LOGGER.infoContext("Getting Appeal by ID", companyId, appealService.createDebugMapWithoutAppeal(id));
         final Optional<Appeal> appeal = appealService.getAppeal(id);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
@@ -98,8 +94,7 @@ public class AppealController {
     public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-id") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
-        LOGGER.info("GET /companies/{}/appeals?penaltyReference={}", companyId, penaltyReference);
-
+        LOGGER.info("Getting Appeal by PenaltyReference" +  companyId + " with reference: " + penaltyReference);
         final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(penaltyReference);
 
         if (appealList.isEmpty()){
