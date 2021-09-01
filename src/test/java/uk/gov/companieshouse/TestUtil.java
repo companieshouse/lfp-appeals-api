@@ -106,7 +106,7 @@ public class TestUtil {
     }
 
     public static Appeal createAppeal(CreatedBy createdBy,Reason reason) {
-        return new Appeal(null, TestData.CREATED_AT,
+        return new Appeal(TestData.ID, TestData.CREATED_AT,
             createdBy,
             new PenaltyIdentifier(TestData.COMPANY_NUMBER,
                 TestData.PENALTY_REFERENCE), reason);
