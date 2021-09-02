@@ -229,6 +229,7 @@
         "required": [
           "id",
           "yourName",
+          "relationshipToCompany",
           "emailAddress"
         ],
         "type": "object",
@@ -240,6 +241,10 @@
           "yourName": {
             "type": "string",
             "description": "name of user creating appeal"
+          },
+          "relationshipToCompany": {
+            "type": "string",
+            "description": "details of relationship to company. Required for otherReason"
           },
           "emailAddress": {
             "type": "string",
