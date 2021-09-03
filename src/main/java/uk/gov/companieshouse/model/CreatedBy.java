@@ -10,6 +10,8 @@ public class CreatedBy {
     @NotBlank(message = "createdBy.name must not be blank")
     private String name;
 
+    private String relationshipToCompany;
+
     @NotBlank(message = "createdBy.emailAddress must not be blank")
     private String emailAddress;
 
@@ -27,6 +29,14 @@ public class CreatedBy {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public String getRelationshipToCompany() {
+        return relationshipToCompany;
+    }
+
+    public void setRelationshipToCompany(final String relationshipToCompany) {
+        this.relationshipToCompany = relationshipToCompany;
     }
 
     public String getEmailAddress() {

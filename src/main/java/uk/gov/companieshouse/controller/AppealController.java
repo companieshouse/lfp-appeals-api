@@ -22,6 +22,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
+import uk.gov.companieshouse.model.validator.RelationshipValidator;
 import uk.gov.companieshouse.service.AppealService;
 
 import javax.validation.Valid;
@@ -40,6 +41,8 @@ public class AppealController {
 
     @Autowired
     private AppealReasonValidator appealReasonValidator;
+    @Autowired
+    private RelationshipValidator relationshipValidator;
 
     public AppealController(AppealService appealService) {
         this.appealService = appealService;
@@ -59,6 +62,14 @@ public class AppealController {
             LOGGER.info("Appeal not valid for company " +  appeal.getPenaltyIdentifier().getCompanyNumber() + " : "  + validationError);
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);
+        }
+
+        String relationshipError = relationshipValidator.validateRelationship(appeal);
+        if (relationshipError != null) {
+            LOGGER.infoContext("Appeal not valid for company " +  appeal.getPenaltyIdentifier().getCompanyNumber(),
+                relationshipError, appealService.createAppealDebugMap(userId, appeal));
+
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(relationshipError);
         }
 
         try {

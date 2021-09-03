@@ -12,7 +12,6 @@
   "createdBy": {
     "id": "123abc456",
     "name": "User Userson",
-    "relationshipToCompany": "relationship",
     "emailAddress": "user@example.com"
   }
 }
