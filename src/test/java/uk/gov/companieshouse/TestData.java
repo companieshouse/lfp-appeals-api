@@ -25,5 +25,6 @@ public class TestData {
     public static final String CONTENT_TYPE = "plain/text";
     public static final int ATTACHMENT_SIZE = 100;
     public static final String ATTACHMENT_URL = "http://localhost/appeal-a-penalty/download/prompt/1?c=00345567";
+    public static final String RELATIONSHIP_ERROR_MESSAGE = "Createdby.RelationshipToCompany must not be null when supplying Other Reason";
 
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
@@ -44,10 +45,10 @@ public class RelationshipValidatorTest {
     }
 
     @Test
-    void shouldReturnStringifRelationshipIsNullWithOtherReason(){
+    void shouldReturnStringIfRelationshipIsNullWithOtherReason(){
         Appeal mockAppeal = createTestOtherAppeal();
         mockAppeal.getCreatedBy().setRelationshipToCompany(null);
-        assertEquals("Createdby.RelationshipToCompany must not be null when supplying Other Reason",
+        assertEquals(TestData.RELATIONSHIP_ERROR_MESSAGE,
             relationshipValidator.validateRelationship(mockAppeal));
     }
 
@@ -58,7 +59,7 @@ public class RelationshipValidatorTest {
     }
 
     @Test
-    void shouldReturnNullIfRelationshipIsNullwithIllnessReason(){
+    void shouldReturnNullIfRelationshipIsNullWithIllnessReason(){
         Appeal mockAppeal = createTestIllnessAppeal();
         assertNull(relationshipValidator.validateRelationship(mockAppeal));
     }
