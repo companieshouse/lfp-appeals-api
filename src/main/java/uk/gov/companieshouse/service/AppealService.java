@@ -28,6 +28,7 @@ public class AppealService {
     private static final String USER_ID = "user_id";
     private static final String APPEAL_ID = "appeal_id";
     private static final String PENALTY_REF = "penalty_reference";
+    private static final String COMPANY_NUMBER = "company_number";
 
     @Autowired
     private AppealMapper appealMapper;
@@ -75,7 +76,7 @@ public class AppealService {
         try {
             chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
         } catch (ChipsServiceException chipsServiceException) {
-            LOGGER.debug("Appeal with id {} has failed to create contact", createAppealDebugMap(userId, appeal));
+            LOGGER.debug("Appeal with id: " + appeal.getId() + " has failed to create contact", createAppealDebugMap(userId, appeal));
             throw chipsServiceException;
         }
     }
@@ -93,6 +94,7 @@ public class AppealService {
         debugMap.put(USER_ID, userId);
         debugMap.put(APPEAL_ID, appeal.getId());
         debugMap.put(PENALTY_REF, appeal.getPenaltyIdentifier().getPenaltyReference());
+        debugMap.put(COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
         return debugMap;
     }
 
