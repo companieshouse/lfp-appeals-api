@@ -14,7 +14,7 @@ import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(SpringExtension.class)
-public class RelationshipValidatorTest {
+class RelationshipValidatorTest {
 
     @InjectMocks
     RelationshipValidator relationshipValidator;
