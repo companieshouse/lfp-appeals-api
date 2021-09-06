@@ -8,6 +8,7 @@ public class TestData {
     public static final LocalDateTime CREATED_AT = LocalDateTime.of(2010, 12, 31, 23, 59);
     public static final String USER_ID = "USER#1";
     public static final String YOUR_NAME = "User Userson";
+    public static final String RELATIONSHIP = "relationship";
     public static final String EMAIL = "user@example.com";
     public static final String COMPANY_NUMBER = "12345678";
     public static final String PENALTY_REFERENCE = "A12345678";
@@ -24,5 +25,6 @@ public class TestData {
     public static final String CONTENT_TYPE = "plain/text";
     public static final int ATTACHMENT_SIZE = 100;
     public static final String ATTACHMENT_URL = "http://localhost/appeal-a-penalty/download/prompt/1?c=00345567";
+    public static final String RELATIONSHIP_ERROR_MESSAGE = "Createdby.RelationshipToCompany must not be null when supplying Other Reason";
 
 }

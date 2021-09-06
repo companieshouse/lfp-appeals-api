@@ -130,6 +130,7 @@ public class AppealControllerTest_GET {
         createdBy.setId("123abc456");
         createdBy.setName("User Userson");
         createdBy.setEmailAddress("user@example.com");
+        createdBy.setRelationshipToCompany("relationship");
 
         Appeal appeal = new Appeal();
         appeal.setPenaltyIdentifier(penaltyIdentifier);

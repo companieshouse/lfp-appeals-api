@@ -123,6 +123,7 @@ public class TestUtil {
         CreatedBy createdBy = new CreatedBy();
         createdBy.setId(TestData.USER_ID);
         createdBy.setName(TestData.YOUR_NAME);
+        createdBy.setRelationshipToCompany(TestData.RELATIONSHIP);
         createdBy.setEmailAddress(TestData.EMAIL);
         return createdBy;
     }
