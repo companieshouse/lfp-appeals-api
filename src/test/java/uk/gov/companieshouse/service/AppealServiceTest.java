@@ -45,6 +45,7 @@ class AppealServiceTest {
     private static final String USER_ID = "user_id";
     private static final String APPEAL_ID = "appeal_id";
     private static final String PENALTY_REF = "penalty_reference";
+    private static final String COMPANY_NUMBER = "company_number";
 
     @Mock
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
@@ -250,10 +251,11 @@ class AppealServiceTest {
     void testCreateDebugMapWithAppeal_returnsMapWithAppealDetails() {
         Map<String, Object> returnedMap = appealService.createAppealDebugMap(TestData.USER_ID,
             TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithOther()));
-        assertEquals(3, returnedMap.size());
+        assertEquals(4, returnedMap.size());
         assertEquals(TestData.ID, returnedMap.get(APPEAL_ID));
         assertEquals(TestData.USER_ID, returnedMap.get(USER_ID));
         assertEquals(TestData.PENALTY_REFERENCE, returnedMap.get(PENALTY_REF));
+        assertEquals(TestData.COMPANY_NUMBER, returnedMap.get(COMPANY_NUMBER));
     }
 
     @Test
