@@ -5,12 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
@@ -18,8 +19,8 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.TestUtil;
 
-@ExtendWith(SpringExtension.class)
-public class OtherReasonMapperTest {
+@ExtendWith(MockitoExtension.class)
+class OtherReasonMapperTest {
 
     @Mock
     private AttachmentMapper attachmentMapper;
@@ -35,11 +36,14 @@ public class OtherReasonMapperTest {
 
     @Nested
     class ToEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((OtherReason) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
 
@@ -59,11 +63,14 @@ public class OtherReasonMapperTest {
 
     @Nested
     class FromEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((OtherReasonEntity) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
 

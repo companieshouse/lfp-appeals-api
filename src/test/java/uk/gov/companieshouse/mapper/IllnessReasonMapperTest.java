@@ -3,18 +3,19 @@ package uk.gov.companieshouse.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.TestUtil;
 
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class IllnessReasonMapperTest {
 
     @Spy
@@ -23,11 +24,13 @@ class IllnessReasonMapperTest {
     @InjectMocks
     private IllnessReasonMapper mapper;
 
+    @DisplayName("Should return null when value is null reason to entity")
     @Test
     void shouldReturnNullWhenValueIsNullReasonToEntity() {
         assertNull(mapper.map((IllnessReason) null));
     }
 
+    @DisplayName("Should map value when value is not null reason to entity")
     @Test
     void shouldMapValueWhenValueIsNotNullReasonToEntity() {
 
@@ -47,11 +50,13 @@ class IllnessReasonMapperTest {
 
     }
 
+    @DisplayName("Should return null when valuse is null entity to reason")
     @Test
     void shouldReturnNullWhenValueIsNullEntityToReason() {
         assertNull(mapper.map((IllnessReasonEntity) null));
     }
 
+    @DisplayName("Should map value when value is not null entity to reason")
     @Test
     void shouldMapValueWhenValueIsNotNullEntityToReason() {
         IllnessReason mapped = mapper.map(TestUtil.createIllnessReasonEntity());

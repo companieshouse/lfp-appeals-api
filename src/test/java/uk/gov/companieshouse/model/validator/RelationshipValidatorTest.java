@@ -3,65 +3,63 @@ package uk.gov.companieshouse.model.validator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.Reason;
 
-@ExtendWith(SpringExtension.class)
 class RelationshipValidatorTest {
 
-    @InjectMocks
-    RelationshipValidator relationshipValidator;
+    private RelationshipValidator relationshipValidator;
+
+    @BeforeEach
+    private void setup() {
+        relationshipValidator = new RelationshipValidator();
+    }
 
     private Appeal createTestIllnessAppeal() {
-        CreatedBy mockCreated = TestUtil.buildCreatedBy();
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = new Reason();
         reason.setIllness(TestUtil.createIllnessReason());
-        Appeal mockAppeal = TestUtil.createAppeal(mockCreated, reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
 
-        return mockAppeal;
+        return appeal;
     }
 
     private Appeal createTestOtherAppeal() {
-        CreatedBy mockCreated = TestUtil.buildCreatedBy();
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
         Reason reason = new Reason();
         reason.setOther(TestUtil.createOtherReason());
-        Appeal mockAppeal = TestUtil.createAppeal(mockCreated, reason);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
 
-        return mockAppeal;
+        return appeal;
     }
 
-    @Test
-    void shouldMakeRelationshipNullWhenRelationshipAndIllnessExist(){
-        Appeal mockAppeal = createTestIllnessAppeal();
-        relationshipValidator.validateRelationship(mockAppeal);
-        assertNull(mockAppeal.getCreatedBy().getRelationshipToCompany());
-    }
-
+    @DisplayName("Should return string if relationship is null with other reason")
     @Test
     void shouldReturnStringIfRelationshipIsNullWithOtherReason(){
-        Appeal mockAppeal = createTestOtherAppeal();
-        mockAppeal.getCreatedBy().setRelationshipToCompany(null);
+        Appeal appeal = createTestOtherAppeal();
+        appeal.getCreatedBy().setRelationshipToCompany(null);
         assertEquals(TestData.RELATIONSHIP_ERROR_MESSAGE,
-            relationshipValidator.validateRelationship(mockAppeal));
+            relationshipValidator.validateRelationship(appeal));
     }
 
+    @DisplayName("Should return null if relationship is not null with other reason")
     @Test
     void shouldReturnNullIfRelationshipIsNotNullWithOtherReason(){
-        Appeal mockAppeal = createTestOtherAppeal();
-        assertNull(relationshipValidator.validateRelationship(mockAppeal));
+        Appeal appeal = createTestOtherAppeal();
+        assertNull(relationshipValidator.validateRelationship(appeal));
     }
 
+    @DisplayName("Should return null if relationship is null with illness reason")
     @Test
     void shouldReturnNullIfRelationshipIsNullWithIllnessReason(){
-        Appeal mockAppeal = createTestIllnessAppeal();
-        assertNull(relationshipValidator.validateRelationship(mockAppeal));
+        Appeal appeal = createTestIllnessAppeal();
+        assertNull(relationshipValidator.validateRelationship(appeal));
     }
 
 }
