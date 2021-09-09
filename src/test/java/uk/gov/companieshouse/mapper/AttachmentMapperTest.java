@@ -6,13 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.TestUtil;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class AttachmentMapperTest {
     private final AttachmentMapper mapper = new AttachmentMapper();
 

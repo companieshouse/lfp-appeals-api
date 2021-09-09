@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
@@ -18,7 +18,7 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.TestUtil;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 public class OtherReasonMapperTest {
 
     @Mock
