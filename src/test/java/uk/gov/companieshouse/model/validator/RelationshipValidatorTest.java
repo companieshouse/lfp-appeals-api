@@ -3,6 +3,7 @@ package uk.gov.companieshouse.model.validator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.TestData;
@@ -13,7 +14,12 @@ import uk.gov.companieshouse.model.Reason;
 
 class RelationshipValidatorTest {
 
-    private RelationshipValidator relationshipValidator = new RelationshipValidator();
+    private RelationshipValidator relationshipValidator;
+
+    @BeforeEach
+    private void setup() {
+        relationshipValidator = new RelationshipValidator();
+    }
 
     private Appeal createTestIllnessAppeal() {
         CreatedBy createdBy = TestUtil.buildCreatedBy();

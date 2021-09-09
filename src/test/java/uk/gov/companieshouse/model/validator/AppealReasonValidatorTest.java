@@ -5,13 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static uk.gov.companieshouse.TestUtil.createIllnessReason;
 import static uk.gov.companieshouse.TestUtil.createOtherReason;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.model.Reason;
 
 class AppealReasonValidatorTest {
 
-    private AppealReasonValidator appealReasonValidator = new AppealReasonValidator();;
+    private AppealReasonValidator appealReasonValidator;
+
+    @BeforeEach
+    private void setup() {
+        appealReasonValidator = new AppealReasonValidator();
+    }
 
     @DisplayName("Validation failure for no Appeal reasons")
     @Test
