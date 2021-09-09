@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CompanyNumberValidatorTest {
 
+    @DisplayName("Throw an exception when input list is in wrong format")
     @Test
     void shouldThrowAnExceptionWhenInputListIsInWrongFormat() {
 
@@ -24,12 +26,14 @@ class CompanyNumberValidatorTest {
 
     }
 
+    @DisplayName("Create factory successfully when valid lists are provided")
     @Test
-    void shouldCreateFactorySuccessfulyWhenValidListsProvided() {
+    void shouldCreateFactorySuccessfullyWhenValidListsProvided() {
         List<String> validLists = List.of("NI", "AB,CD,EF", "A,B,C,D,F", "AB,cd,e,F");
         validLists.forEach(prefixList -> assertDoesNotThrow(() -> new CompanyNumberValidator(prefixList), prefixList));
     }
 
+    @DisplayName("Return false when prefix is not allowed")
     @Test
     void shouldReturnFalseWhenPrefixIsNotAllowed() {
         String prefixes = "SC,NI,OC,SO,R,AP";
@@ -45,6 +49,7 @@ class CompanyNumberValidatorTest {
 
     }
 
+    @DisplayName("Return true when prefixes are allowed")
     @Test
     void shouldReturnTrueWhenPrefixesAreAllowed() {
         String prefixes = "SC,NI,OC,SO,R,AP";
@@ -64,6 +69,7 @@ class CompanyNumberValidatorTest {
 
     }
 
+    @DisplayName("Return false when value is null")
     @Test
     void shouldReturnFalseWhenValueIsNull() {
         assertFalse(new CompanyNumberValidator("A,B,C").isValid(null, null));

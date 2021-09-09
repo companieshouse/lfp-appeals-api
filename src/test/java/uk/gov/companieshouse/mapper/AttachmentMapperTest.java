@@ -3,6 +3,7 @@ package uk.gov.companieshouse.mapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,11 +19,14 @@ class AttachmentMapperTest {
 
     @Nested
     class ToEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((Attachment) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
             AttachmentEntity mapped = mapper.map(TestUtil.createAttachment());
@@ -36,11 +40,14 @@ class AttachmentMapperTest {
 
     @Nested
     class FromEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((AttachmentEntity) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
             Attachment mapped = mapper.map(TestUtil.createAttachmentEntity());

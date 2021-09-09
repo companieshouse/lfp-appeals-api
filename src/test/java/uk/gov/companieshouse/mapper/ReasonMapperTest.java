@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,11 +43,14 @@ class ReasonMapperTest {
 
     @Nested
     class ToEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((Reason) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
             when(illnessReasonMapper.map(any(IllnessReason.class))).thenReturn(illnessReasonEntity);
@@ -68,11 +72,14 @@ class ReasonMapperTest {
 
     @Nested
     class FromEntityMappingTest {
+
+        @DisplayName("Should return null when value is null")
         @Test
         void shouldReturnNullWhenValueIsNull() {
             assertNull(mapper.map((ReasonEntity) null));
         }
 
+        @DisplayName("Should map value when value is not null")
         @Test
         void shouldMapValueWhenValueIsNotNull() {
             when(illnessReasonMapper.map(any(IllnessReasonEntity.class))).thenReturn(mockIllnessReason);
