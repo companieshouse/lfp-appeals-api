@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Service;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.model.Appeal;
