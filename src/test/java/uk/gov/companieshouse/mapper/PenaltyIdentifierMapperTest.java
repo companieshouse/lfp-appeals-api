@@ -12,7 +12,7 @@ import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 
 @ExtendWith(MockitoExtension.class)
-public class PenaltyIdentifierMapperTest {
+class PenaltyIdentifierMapperTest {
     private final PenaltyIdentifierMapper mapper = new PenaltyIdentifierMapper();
 
     @Nested

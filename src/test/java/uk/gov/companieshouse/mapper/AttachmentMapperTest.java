@@ -13,7 +13,7 @@ import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.TestUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class AttachmentMapperTest {
+class AttachmentMapperTest {
     private final AttachmentMapper mapper = new AttachmentMapper();
 
     @Nested

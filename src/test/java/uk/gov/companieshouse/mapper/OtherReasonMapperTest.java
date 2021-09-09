@@ -19,7 +19,7 @@ import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.TestUtil;
 
 @ExtendWith(MockitoExtension.class)
-public class OtherReasonMapperTest {
+class OtherReasonMapperTest {
 
     @Mock
     private AttachmentMapper attachmentMapper;

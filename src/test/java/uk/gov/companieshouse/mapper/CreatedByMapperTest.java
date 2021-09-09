@@ -13,7 +13,7 @@ import uk.gov.companieshouse.database.entity.CreatedByEntity;
 import uk.gov.companieshouse.model.CreatedBy;
 
 @ExtendWith(MockitoExtension.class)
-public class CreatedByMapperTest {
+class CreatedByMapperTest {
     private final CreatedByMapper mapper = new CreatedByMapper();
 
     @Nested

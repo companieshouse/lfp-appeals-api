@@ -23,7 +23,7 @@ import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 
 @ExtendWith(MockitoExtension.class)
-public class AppealMapperTest {
+class AppealMapperTest {
     @Mock
     private ReasonMapper reasonMapper;
     @Mock

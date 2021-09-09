@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-public class CompanyNumberValidatorTest {
+class CompanyNumberValidatorTest {
 
     @Test
     void shouldThrowAnExceptionWhenInputListIsInWrongFormat() {
