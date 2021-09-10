@@ -26,13 +26,16 @@ public class ChipsContactDescriptionFormatter {
         chipsContact.setDateReceived(appeal.getCreatedAt().format(DATE_TIME_FORMATTER));
 
         StringBuilder contactDescription = new StringBuilder();
-        formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(), appeal.getCreatedBy().getEmailAddress());
+
 
         if(otherReason != null){
+            formatAppealWithRelationshipDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(),
+                appeal.getCreatedBy().getRelationshipToCompany(), appeal.getCreatedBy().getEmailAddress());
             formatOtherReasonContactDescription(contactDescription, otherReason, appeal.getId());
         }
 
         if(illnessReason != null){
+            formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(), appeal.getCreatedBy().getEmailAddress());
             formatIllnessReasonContactDescription(contactDescription, illnessReason, appeal.getId());
         }
 
@@ -40,9 +43,16 @@ public class ChipsContactDescriptionFormatter {
         return chipsContact;
     }
 
+    private void formatAppealWithRelationshipDescription(StringBuilder contactDescription, String companyNumber, String yourName, String relationship, String emailAddress){
+        contactDescription.append("Appeal submitted" + "\n\nYour reference number is your company number " + companyNumber);
+        contactDescription.append("\n\nCompany Number: " + companyNumber + "\nName of User: " + yourName +
+            "\nRelationship to Company: " + relationship + "\nEmail address: " + emailAddress + "\n\nAppeal Reason");
+    }
+
     private void formatAppealDescription(StringBuilder contactDescription, String companyNumber, String yourName, String emailAddress){
         contactDescription.append("Appeal submitted" + "\n\nYour reference number is your company number " + companyNumber);
-        contactDescription.append("\n\nCompany Number: " + companyNumber + "\nName of User: " + yourName +"\nEmail address: " + emailAddress + "\n\nAppeal Reason");
+        contactDescription.append("\n\nCompany Number: " + companyNumber + "\nName of User: " + yourName +"\nEmail address: "
+            + emailAddress + "\n\nAppeal Reason");
     }
 
     private void formatOtherReasonContactDescription(StringBuilder contactDescription, OtherReason otherReason, String appealId){

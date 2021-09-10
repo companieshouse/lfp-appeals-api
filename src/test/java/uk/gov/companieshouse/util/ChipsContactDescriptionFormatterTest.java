@@ -164,6 +164,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\nName of User: "
             + TestData.YOUR_NAME
+            + "\nRelationship to Company: "
+            + TestData.RELATIONSHIP
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
@@ -182,6 +184,8 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.COMPANY_NUMBER
             + "\nName of User: "
             + TestData.YOUR_NAME
+            + "\nRelationship to Company: "
+            + TestData.RELATIONSHIP
             + "\nEmail address: "
             + TestData.EMAIL
             + "\n\nAppeal Reason"
