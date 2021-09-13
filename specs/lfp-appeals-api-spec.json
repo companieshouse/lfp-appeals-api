@@ -228,7 +228,7 @@
       "CreatedBy": {
         "required": [
           "id",
-          "yourName",
+          "name",
           "relationshipToCompany",
           "emailAddress"
         ],
@@ -238,7 +238,7 @@
             "type": "string",
             "description": "id of user creating appeal"
           },
-          "yourName": {
+          "name": {
             "type": "string",
             "description": "name of user creating appeal"
           },
