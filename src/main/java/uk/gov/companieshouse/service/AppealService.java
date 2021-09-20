@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class AppealService {
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
 
     public String saveAppeal(Appeal appeal, String userId) {
+        appeal.setCreatedAt(LocalDateTime.now());
         appeal.getCreatedBy().setId(userId);
 
         String appealId = createAppealInMongoDB(appeal, userId);
