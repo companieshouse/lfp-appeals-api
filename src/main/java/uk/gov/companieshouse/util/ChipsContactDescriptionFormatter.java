@@ -15,6 +15,8 @@ import java.util.Optional;
 public class ChipsContactDescriptionFormatter {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final String FURTHER_INFORMATION = "\nFurther information: ";
+    private static final String SUPPORTING_DOCUMENTS = "\nSupporting documents: ";
 
     public ChipsContact buildChipsContact(Appeal appeal) {
         String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
@@ -36,7 +38,10 @@ public class ChipsContactDescriptionFormatter {
 
         if(illnessReason != null){
             formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(), appeal.getCreatedBy().getEmailAddress());
-            formatIllnessReasonContactDescription(contactDescription, illnessReason, appeal.getId());
+            if(illnessReason.getContinuedIllness()) {
+                formatIllnessReasonContacDescriptionContinuedIllness(contactDescription, illnessReason, appeal.getId());
+            }
+            else formatIllnessReasonContactDescriptionIllnessEnd(contactDescription, illnessReason, appeal.getId());
         }
 
         chipsContact.setContactDescription(contactDescription.toString());
@@ -57,11 +62,11 @@ public class ChipsContactDescriptionFormatter {
 
     private void formatOtherReasonContactDescription(StringBuilder contactDescription, OtherReason otherReason, String appealId){
         List<Attachment> attachmentList = otherReason.getAttachments();
-        contactDescription.append("\nReason: " + otherReason.getTitle() + "\nFurther information: " + otherReason.getDescription());
-        contactDescription.append("\nSupporting documents: " + getAttachmentsStr(appealId, attachmentList));
+        contactDescription.append("\nReason: " + otherReason.getTitle() + FURTHER_INFORMATION + otherReason.getDescription());
+        contactDescription.append(SUPPORTING_DOCUMENTS + getAttachmentsStr(appealId, attachmentList));
     }
 
-    private void formatIllnessReasonContactDescription(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
+    private void formatIllnessReasonContactDescriptionIllnessEnd(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
         List<Attachment> attachmentList = illnessReason.getAttachments();
         contactDescription.append(
             "\nIll Person: " + illnessReason.getIllPerson() +
@@ -69,9 +74,21 @@ public class ChipsContactDescriptionFormatter {
             "\nIllness Start Date: " + illnessReason.getIllnessStart() +
             "\nContinued Illness: " + illnessReason.getContinuedIllness() +
             "\nIllness End Date: " + illnessReason.getIllnessEnd() +
-            "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
+            FURTHER_INFORMATION + illnessReason.getIllnessImpactFurtherInformation()
         );
-        contactDescription.append("\nSupporting documents: " + getAttachmentsStr(appealId, attachmentList));
+        contactDescription.append(SUPPORTING_DOCUMENTS + getAttachmentsStr(appealId, attachmentList));
+    }
+
+    private void formatIllnessReasonContacDescriptionContinuedIllness(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
+        List<Attachment> attachmentList = illnessReason.getAttachments();
+        contactDescription.append(
+            "\nIll Person: " + illnessReason.getIllPerson() +
+                "\nOther Person: " + illnessReason.getOtherPerson() +
+                "\nIllness Start Date: " + illnessReason.getIllnessStart() +
+                "\nContinued Illness: " + illnessReason.getContinuedIllness() +
+                FURTHER_INFORMATION + illnessReason.getIllnessImpactFurtherInformation()
+        );
+        contactDescription.append(SUPPORTING_DOCUMENTS + getAttachmentsStr(appealId, attachmentList));
     }
 
     private String getAttachmentsStr(String appealId, List<Attachment> attachmentList) {

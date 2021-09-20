@@ -1,0 +1,22 @@
+{
+  "createdBy": {
+    "id": "fM9TnwI-ZkwrL8WfUdb5kaKTJI8",
+    "name": null,
+    "emailAddress": "email@email.com"
+  },
+  "penaltyIdentifier": {
+    "companyNumber": "SC005863",
+    "penaltyReference": "002766679"
+  },
+  "reasons": {
+    "illness": {
+      "illPerson": "Test",
+      "otherPerson": "",
+      "illnessStart": "01/01/2021",
+      "continuedIllness": false,
+      "illnessEnd": "20/09/2022",
+      "illnessImpactFurtherInformation": "further information",
+      "attachments": []
+    }
+  }
+}
