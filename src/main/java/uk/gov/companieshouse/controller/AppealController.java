@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.controller;
 
+import java.time.LocalDateTime;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
+import uk.gov.companieshouse.model.validator.EndDateValidator;
 import uk.gov.companieshouse.model.validator.RelationshipValidator;
 import uk.gov.companieshouse.service.AppealService;
 
@@ -43,6 +45,8 @@ public class AppealController {
     private AppealReasonValidator appealReasonValidator;
     @Autowired
     private RelationshipValidator relationshipValidator;
+    @Autowired
+    private EndDateValidator endDateValidator;
 
     public AppealController(AppealService appealService) {
         this.appealService = appealService;
@@ -52,6 +56,8 @@ public class AppealController {
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String userId,
                                                @PathVariable("company-id") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
+
+        appeal.setCreatedAt(LocalDateTime.now());
 
         if (StringUtils.isBlank(userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -70,6 +76,16 @@ public class AppealController {
                 relationshipError, appealService.createAppealDebugMap(userId, appeal));
 
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(relationshipError);
+        }
+
+        if (appeal.getReason().getIllness() != null) {
+            String illnessDateError = endDateValidator.validateEndDate(appeal);
+            if (illnessDateError != null) {
+                LOGGER.infoContext(" Appeal not valid for company " + appeal.getPenaltyIdentifier().getCompanyNumber(),
+                    illnessDateError, appealService.createAppealDebugMap(userId, appeal));
+
+                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(illnessDateError);
+            }
         }
 
         try {

@@ -306,7 +306,7 @@
           "illnessEndDate": {
             "type": "string",
             "format": "date",
-            "description": "the date the illness ended",
+            "description": "the date the illness ended, Required if continuedIllness is false",
             "example": "2021-02-01"
           },
           "illnessImpactFurtherInformation": {
