@@ -118,6 +118,23 @@ class ChipsContactDescriptionFormatterTest {
         assertEquals(expectedContactDescriptionIllnessReasonWithoutAttachments(), contactDescription);
     }
 
+    @Test
+    void testBuildChipsContactIllnessReasonWithoutEndDate() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        Reason reason = createReasonWithIllness();
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
+        appeal.setId(TestData.ID);
+        appeal.getReason().getIllness().setAttachments(null);
+        appeal.getReason().getIllness().setContinuedIllness(true);
+
+        ChipsContact chipsContact = formatter.buildChipsContact(appeal);
+
+        assertEquals(appeal.getPenaltyIdentifier().getCompanyNumber(), chipsContact.getCompanyNumber());
+        assertEquals(appeal.getCreatedAt().format(DATE_TIME_FORMATTER), chipsContact.getDateReceived());
+        String contactDescription = chipsContact.getContactDescription();
+        assertEquals(expectedContactDescriptionIllnessReasonWithContinuedIllness(), contactDescription);
+    }
+
     private Reason createReasonWithIllness(){
         Reason reason = new Reason();
         reason.setIllness(TestUtil.createIllnessReason());
@@ -223,6 +240,30 @@ class ChipsContactDescriptionFormatterTest {
             + TestData.CONTINUED_ILLNESS
             + "\nIllness End Date: "
             + TestData.ILLNESS_END
+            + "\nFurther information: "
+            + TestData.ILLNESS_IMPACT_FURTHER_INFORMATION
+            + "\nSupporting documents: None";
+    }
+
+    private String expectedContactDescriptionIllnessReasonWithContinuedIllness() {
+        return "Appeal submitted"
+            + "\n\nYour reference number is your company number "
+            + TestData.COMPANY_NUMBER
+            + "\n\nCompany Number: "
+            + TestData.COMPANY_NUMBER
+            + "\nName of User: "
+            + TestData.YOUR_NAME
+            + "\nEmail address: "
+            + TestData.EMAIL
+            + "\n\nAppeal Reason"
+            + "\nIll Person: "
+            + TestData.ILL_PERSON
+            + "\nOther Person: "
+            + TestData.OTHER_PERSON
+            + "\nIllness Start Date: "
+            + TestData.ILLNESS_START
+            + "\nContinued Illness: "
+            + true
             + "\nFurther information: "
             + TestData.ILLNESS_IMPACT_FURTHER_INFORMATION
             + "\nSupporting documents: None";

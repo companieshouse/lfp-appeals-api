@@ -43,7 +43,6 @@ public class EndDateValidator {
         catch (DateTimeParseException dte) {
             return "Unable to Parse Date. Wrong format";
         }
-
         return null;
     }
 }

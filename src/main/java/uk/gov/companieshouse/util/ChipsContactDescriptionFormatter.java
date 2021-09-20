@@ -36,7 +36,10 @@ public class ChipsContactDescriptionFormatter {
 
         if(illnessReason != null){
             formatAppealDescription(contactDescription, companyNumber, appeal.getCreatedBy().getName(), appeal.getCreatedBy().getEmailAddress());
-            formatIllnessReasonContactDescription(contactDescription, illnessReason, appeal.getId());
+            if(illnessReason.getContinuedIllness()) {
+                formatIllnessReasonContacDescriptionContinuedIllness(contactDescription, illnessReason, appeal.getId());
+            }
+            else formatIllnessReasonContactDescriptionIllnessEnd(contactDescription, illnessReason, appeal.getId());
         }
 
         chipsContact.setContactDescription(contactDescription.toString());
@@ -61,7 +64,7 @@ public class ChipsContactDescriptionFormatter {
         contactDescription.append("\nSupporting documents: " + getAttachmentsStr(appealId, attachmentList));
     }
 
-    private void formatIllnessReasonContactDescription(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
+    private void formatIllnessReasonContactDescriptionIllnessEnd(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
         List<Attachment> attachmentList = illnessReason.getAttachments();
         contactDescription.append(
             "\nIll Person: " + illnessReason.getIllPerson() +
@@ -70,6 +73,18 @@ public class ChipsContactDescriptionFormatter {
             "\nContinued Illness: " + illnessReason.getContinuedIllness() +
             "\nIllness End Date: " + illnessReason.getIllnessEnd() +
             "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
+        );
+        contactDescription.append("\nSupporting documents: " + getAttachmentsStr(appealId, attachmentList));
+    }
+
+    private void formatIllnessReasonContacDescriptionContinuedIllness(StringBuilder contactDescription, IllnessReason illnessReason, String appealId){
+        List<Attachment> attachmentList = illnessReason.getAttachments();
+        contactDescription.append(
+            "\nIll Person: " + illnessReason.getIllPerson() +
+                "\nOther Person: " + illnessReason.getOtherPerson() +
+                "\nIllness Start Date: " + illnessReason.getIllnessStart() +
+                "\nContinued Illness: " + illnessReason.getContinuedIllness() +
+                "\nFurther information: " + illnessReason.getIllnessImpactFurtherInformation()
         );
         contactDescription.append("\nSupporting documents: " + getAttachmentsStr(appealId, attachmentList));
     }

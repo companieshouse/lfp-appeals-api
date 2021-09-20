@@ -99,6 +99,12 @@ public class TestUtil {
         return reason;
     }
 
+    public static Reason createReasonWithIllness(){
+        Reason reason = new Reason();
+        reason.setIllness(createIllnessReason());
+        return reason;
+    }
+
     public static ReasonEntity createReasonEntityWithOther() {
         ReasonEntity reasonEntity = new ReasonEntity();
         reasonEntity.setOther(createOtherReasonEntity());

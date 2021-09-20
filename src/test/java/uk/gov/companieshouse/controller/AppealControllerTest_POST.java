@@ -224,6 +224,17 @@ class AppealControllerTest_POST {
             .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    void whenIllnessReasonEndDateIsInvalid_return422() throws Exception {
+        final String invalidEndDateAppeal = asJsonString("src/test/resources/data/invalidIllnessEndDate.json", appeal -> { return appeal; });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidEndDateAppeal))
+            .andExpect(status().isUnprocessableEntity());
+    }
+
     private String asJsonString(final String pathname, final Function<Appeal, Appeal> appealModifier) {
         try {
             final Appeal appeal = mapper.readValue(new File(pathname), Appeal.class);
