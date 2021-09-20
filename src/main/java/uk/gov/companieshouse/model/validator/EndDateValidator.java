@@ -10,38 +10,39 @@ import uk.gov.companieshouse.model.Appeal;
 @Component
 public class EndDateValidator {
 
+    public static final String EMPTY_END_DATE = "Unable to validate. End date is empty";
+    public static final String END_DATE_CONTINUED_TRUE = "Unable to validate. End Date can't exist if continued illness is true";
+    public static final String END_DATE_AFTER_CREATED = "Unable to validate. End date is after date of creation";
+    public static final String END_DATE_BEFORE_START_DATE = "Unable to validate. Illness End Date is before Start Date";
+    public static final String WRONG_FORMAT = "Unable to Parse Date. Wrong format";
+
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.UK);
 
     public String validateEndDate(Appeal appeal) {
         String rawStartDate = appeal.getReason().getIllness().getIllnessStart();
         String rawEndDate = appeal.getReason().getIllness().getIllnessEnd();
+        boolean continued = appeal.getReason().getIllness().getContinuedIllness();
 
-        if (!appeal.getReason().getIllness().getContinuedIllness()
-            && appeal.getReason().getIllness().getIllnessEnd() == null) {
-            return "Unable to validate. End date is empty";
+        if (!continued && rawEndDate == null) {
+            return EMPTY_END_DATE;
         }
-        if (!appeal.getReason().getIllness().getIllnessEnd().isEmpty() && appeal.getReason().getIllness()
-            .getContinuedIllness()) {
-            return "Unable to validate. End Date can't exist if continued illness is true";
+        if (!rawEndDate.isEmpty() && continued) {
+            return END_DATE_CONTINUED_TRUE;
         }
 
         try {
             LocalDate endDate = LocalDate.parse(rawEndDate, dtf);
             LocalDate startDate = LocalDate.parse(rawStartDate, dtf);
 
-            if (endDate.isEqual(startDate) || endDate.isAfter(startDate)) {
-                if (endDate.isAfter(appeal.getCreatedAt().toLocalDate())) {
-                    return "Unable to validate. End date is after date of creation";
-                }
-                return null;
-            }
             if (endDate.isBefore(startDate)) {
-                return "Unable to validate. Illness End Date is before Start Date";
+                return END_DATE_BEFORE_START_DATE;
             }
-
+            else if (endDate.isAfter(LocalDate.now())) {
+                return END_DATE_AFTER_CREATED;
+            }
         }
         catch (DateTimeParseException dte) {
-            return "Unable to Parse Date. Wrong format";
+            return WRONG_FORMAT;
         }
         return null;
     }

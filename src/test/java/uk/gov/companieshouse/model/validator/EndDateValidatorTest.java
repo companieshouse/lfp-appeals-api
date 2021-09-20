@@ -3,8 +3,8 @@ package uk.gov.companieshouse.model.validator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
@@ -19,54 +19,53 @@ class EndDateValidatorTest
     @BeforeEach
     private void setup() {
         endDateValidator = new EndDateValidator();
-        appeal = TestUtil.createAppeal(TestUtil.buildCreatedBy(),
-            TestUtil.createReasonWithIllness());
-        appeal.setCreatedAt(LocalDateTime.now());
+        appeal = TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithIllness());
     }
 
+    @DisplayName("Validation failure for empty end date")
     @Test
     void shouldReturnStringIfEndDateIsEmpty(){
         appeal.getReason().getIllness().setIllnessEnd(null);
         appeal.getReason().getIllness().setContinuedIllness(false);
-        assertEquals("Unable to validate. End date is empty",
-            endDateValidator.validateEndDate(appeal));
+        assertEquals(EndDateValidator.EMPTY_END_DATE, endDateValidator.validateEndDate(appeal));
     }
 
+    @DisplayName("Validation failure for end date existing while continued illness is true")
     @Test
     void shouldReturnStringIfEndDateExistsWhileContinuedIsTrue() {
         appeal.getReason().getIllness().setIllnessEnd(TestData.ILLNESS_END);
         appeal.getReason().getIllness().setContinuedIllness(true);
-        assertEquals("Unable to validate. End Date can't exist if continued illness is true",
-            endDateValidator.validateEndDate(appeal));
+        assertEquals(EndDateValidator.END_DATE_CONTINUED_TRUE, endDateValidator.validateEndDate(appeal));
     }
 
+    @DisplayName("Validation failure for end date after creation date")
     @Test
     void shouldReturnStringIfEndDateIsAfterCreationDate() {
         appeal.getReason().getIllness().setIllnessEnd("01/01/9999");
         appeal.getReason().getIllness().setContinuedIllness(false);
         appeal.getReason().getIllness().setIllnessStart(TestData.ILLNESS_START);
-        assertEquals("Unable to validate. End date is after date of creation",
-            endDateValidator.validateEndDate(appeal));
+        assertEquals(EndDateValidator.END_DATE_AFTER_CREATED, endDateValidator.validateEndDate(appeal));
     }
 
+    @DisplayName("Validation failure for end date before start date")
     @Test
     void shouldReturnStringIfEndDateIsBeforeStartDate() {
         appeal.getReason().getIllness().setIllnessEnd("01/01/2020");
         appeal.getReason().getIllness().setContinuedIllness(false);
         appeal.getReason().getIllness().setIllnessStart(TestData.ILLNESS_START);
-        assertEquals("Unable to validate. Illness End Date is before Start Date",
-            endDateValidator.validateEndDate(appeal));
+        assertEquals(EndDateValidator.END_DATE_BEFORE_START_DATE, endDateValidator.validateEndDate(appeal));
     }
 
+    @DisplayName("Validation failure for wrong date format")
     @Test
     void shouldReturnStringIfDateIsInWrongFormat() {
         appeal.getReason().getIllness().setIllnessEnd("01/JAN/2020");
         appeal.getReason().getIllness().setContinuedIllness(false);
         appeal.getReason().getIllness().setIllnessStart(TestData.ILLNESS_START);
-        assertEquals("Unable to Parse Date. Wrong format",
-            endDateValidator.validateEndDate(appeal));
+        assertEquals(EndDateValidator.WRONG_FORMAT, endDateValidator.validateEndDate(appeal));
     }
 
+    @DisplayName("Validation success if end date is correct")
     @Test
     void shouldReturnNullIfEndDateIsCorrect() {
         appeal.getReason().getIllness().setIllnessEnd(TestData.ILLNESS_END);
