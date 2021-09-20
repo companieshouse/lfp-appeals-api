@@ -10,7 +10,7 @@ import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.model.Appeal;
 
-public class EndDateValidatorTest
+class EndDateValidatorTest
 {
 
     private EndDateValidator endDateValidator;
