@@ -11,9 +11,9 @@
       "illness": {
         "illPerson": "ill Person",
         "otherPerson": "other person",
-        "illnessStart": "01/01/2021",
+        "illnessStart": "2021-01-01",
         "continuedIllness": false,
-        "illnessEnd": "01/02/2021",
+        "illnessEnd": "2021-02-01",
         "illnessImpactFurtherInformation": "further information"
       }
     },

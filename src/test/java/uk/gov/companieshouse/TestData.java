@@ -16,9 +16,9 @@ public class TestData {
     public static final String DESCRIPTION = "Some description";
     public static final String ILL_PERSON = "ill Person";
     public static final String OTHER_PERSON = "other person";
-    public static final String ILLNESS_START = "01/01/2021";
+    public static final String ILLNESS_START = "2021-01-01";
     public static final boolean CONTINUED_ILLNESS = false;
-    public static final String ILLNESS_END = "01/02/2021";
+    public static final String ILLNESS_END = "2021-02-01";
     public static final String ILLNESS_IMPACT_FURTHER_INFORMATION = "further information";
     public static final String ATTACHMENT_ID = "FILE#1";
     public static final String ATTACHMENT_NAME = "file.txt";

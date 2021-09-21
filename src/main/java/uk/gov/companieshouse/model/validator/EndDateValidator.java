@@ -16,7 +16,7 @@ public class EndDateValidator {
     public static final String END_DATE_BEFORE_START_DATE = "Unable to validate. Illness End Date is before Start Date";
     public static final String WRONG_FORMAT = "Unable to Parse Date. Wrong format";
 
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.UK);
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.UK);
 
     public String validateEndDate(Appeal appeal) {
         String rawStartDate = appeal.getReason().getIllness().getIllnessStart();
@@ -26,8 +26,11 @@ public class EndDateValidator {
         if (!continued && rawEndDate == null) {
             return EMPTY_END_DATE;
         }
-        if (!rawEndDate.isEmpty() && continued) {
+        if (rawEndDate != null  && continued) {
             return END_DATE_CONTINUED_TRUE;
+        }
+        if (rawEndDate == null && continued) {
+            return null;
         }
 
         try {

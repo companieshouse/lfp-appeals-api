@@ -12,9 +12,9 @@
     "illness": {
       "illPerson": "Test",
       "otherPerson": "",
-      "illnessStart": "01/01/2021",
+      "illnessStart": "2021-01-01",
       "continuedIllness": false,
-      "illnessEnd": "20/09/2022",
+      "illnessEnd": "2022-01-01",
       "illnessImpactFurtherInformation": "further information",
       "attachments": []
     }
