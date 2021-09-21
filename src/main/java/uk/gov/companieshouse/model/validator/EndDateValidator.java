@@ -30,7 +30,7 @@ public class EndDateValidator {
         if (rawEndDate != null  && continued) {
             return END_DATE_CONTINUED_TRUE;
         }
-        if (rawEndDate == null && continued) {
+        if (rawEndDate == null) {
             return null;
         }
 
