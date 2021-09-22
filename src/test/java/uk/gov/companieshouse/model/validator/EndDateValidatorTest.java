@@ -25,9 +25,17 @@ class EndDateValidatorTest
     @DisplayName("Validation failure for empty end date")
     @Test
     void shouldReturnStringIfEndDateIsEmpty(){
-        appeal.getReason().getIllness().setIllnessEnd(null);
+        appeal.getReason().getIllness().setIllnessEnd("");
         appeal.getReason().getIllness().setContinuedIllness(false);
         assertEquals(EndDateValidator.EMPTY_END_DATE, endDateValidator.validateEndDate(appeal));
+    }
+
+    @DisplayName("Validation success if end date is null and continued is true")
+    @Test
+    void shouldReturnNullIfEndDateIsNullAndContinuedTrue() {
+        appeal.getReason().getIllness().setIllnessEnd(null);
+        appeal.getReason().getIllness().setContinuedIllness(true);
+        assertNull(endDateValidator.validateEndDate(appeal));
     }
 
     @DisplayName("Validation failure for end date existing while continued illness is true")
@@ -41,7 +49,7 @@ class EndDateValidatorTest
     @DisplayName("Validation failure for end date after creation date")
     @Test
     void shouldReturnStringIfEndDateIsAfterCreationDate() {
-        appeal.getReason().getIllness().setIllnessEnd("01/01/9999");
+        appeal.getReason().getIllness().setIllnessEnd("9999-01-01");
         appeal.getReason().getIllness().setContinuedIllness(false);
         appeal.getReason().getIllness().setIllnessStart(TestData.ILLNESS_START);
         assertEquals(EndDateValidator.END_DATE_AFTER_CREATED, endDateValidator.validateEndDate(appeal));
@@ -50,7 +58,7 @@ class EndDateValidatorTest
     @DisplayName("Validation failure for end date before start date")
     @Test
     void shouldReturnStringIfEndDateIsBeforeStartDate() {
-        appeal.getReason().getIllness().setIllnessEnd("01/01/2020");
+        appeal.getReason().getIllness().setIllnessEnd("2020-01-01");
         appeal.getReason().getIllness().setContinuedIllness(false);
         appeal.getReason().getIllness().setIllnessStart(TestData.ILLNESS_START);
         assertEquals(EndDateValidator.END_DATE_BEFORE_START_DATE, endDateValidator.validateEndDate(appeal));
