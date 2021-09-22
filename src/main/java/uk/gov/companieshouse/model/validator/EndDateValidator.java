@@ -10,11 +10,11 @@ import uk.gov.companieshouse.model.Appeal;
 @Component
 public class EndDateValidator {
 
-    public static final String EMPTY_END_DATE = "Unable to validate. End date is empty";
-    public static final String END_DATE_CONTINUED_TRUE = "Unable to validate. End Date can't exist if continued illness is true";
-    public static final String END_DATE_AFTER_CREATED = "Unable to validate. End date is after date of creation";
-    public static final String END_DATE_BEFORE_START_DATE = "Unable to validate. Illness End Date is before Start Date";
-    public static final String WRONG_FORMAT = "Unable to Parse Date. Wrong format";
+    static final String EMPTY_END_DATE = "Unable to validate. End date is empty";
+    static final String END_DATE_CONTINUED_TRUE = "Unable to validate. End Date can't exist if continued illness is true";
+    static final String END_DATE_AFTER_CREATED = "Unable to validate. End date is after date of creation";
+    static final String END_DATE_BEFORE_START_DATE = "Unable to validate. Illness End Date is before Start Date";
+    static final String WRONG_FORMAT = "Unable to Parse Date. Wrong format";
 
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.UK);
 
@@ -23,14 +23,13 @@ public class EndDateValidator {
         String rawEndDate = appeal.getReason().getIllness().getIllnessEnd();
         boolean continued = appeal.getReason().getIllness().getContinuedIllness();
 
-        if (!continued && rawEndDate == null) {
+        if ((rawEndDate == null || rawEndDate.isEmpty()) && !continued) {
             return EMPTY_END_DATE;
         }
 
-        if (rawEndDate != null  && continued) {
+        if (rawEndDate != null && !rawEndDate.isEmpty() && continued ) {
             return END_DATE_CONTINUED_TRUE;
-        }
-        if (rawEndDate == null) {
+        } else if (rawEndDate == null) {
             return null;
         }
 

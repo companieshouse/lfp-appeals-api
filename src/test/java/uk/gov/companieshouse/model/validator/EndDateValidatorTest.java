@@ -25,7 +25,7 @@ class EndDateValidatorTest
     @DisplayName("Validation failure for empty end date")
     @Test
     void shouldReturnStringIfEndDateIsEmpty(){
-        appeal.getReason().getIllness().setIllnessEnd(null);
+        appeal.getReason().getIllness().setIllnessEnd("");
         appeal.getReason().getIllness().setContinuedIllness(false);
         assertEquals(EndDateValidator.EMPTY_END_DATE, endDateValidator.validateEndDate(appeal));
     }
