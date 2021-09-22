@@ -32,7 +32,7 @@ public class EndDateValidator {
             return END_DATE_CONTINUED_TRUE;
         }
 
-        if (rawEndDate != null) {
+        if (rawEndDate != null && !rawEndDate.isEmpty()) {
             try {
                 LocalDate endDate = LocalDate.parse(rawEndDate, dtf);
                 LocalDate startDate = LocalDate.parse(rawStartDate, dtf);
