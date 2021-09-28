@@ -50,9 +50,9 @@ public class AppealController {
         this.appealService = appealService;
     }
 
-    @PostMapping(value = "/{company-id}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{company-number}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String userId,
-                                               @PathVariable("company-id") final String companyId,
+                                               @PathVariable("company-number") final String companyId,
                                                @Valid @RequestBody final Appeal appeal) {
 
         if (StringUtils.isBlank(userId)) {
@@ -102,8 +102,8 @@ public class AppealController {
         }
     }
 
-    @GetMapping(value = "/{company-id}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-id") final String companyId,
+    @GetMapping(value = "/{company-number}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-number") final String companyId,
                                                 @PathVariable("id") final String id) {
 
         LOGGER.infoContext("Getting Appeal by ID", companyId, appealService.createDebugMapWithoutAppeal(id));
@@ -113,8 +113,8 @@ public class AppealController {
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @GetMapping(value = "/{company-id}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-id") final String companyId,
+    @GetMapping(value = "/{company-number}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-number") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
         LOGGER.info("Getting Appeal by PenaltyReference" +  companyId + " with reference: " + penaltyReference);
