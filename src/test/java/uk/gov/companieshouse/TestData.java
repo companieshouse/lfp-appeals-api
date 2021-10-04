@@ -14,7 +14,7 @@ public class TestData {
     public static final String PENALTY_REFERENCE = "A12345678";
     public static final String TITLE = "Some title";
     public static final String DESCRIPTION = "Some description";
-    public static final String ILL_PERSON = "ill Person";
+    public static final String ILL_PERSON = "someoneElse";
     public static final String OTHER_PERSON = "other person";
     public static final String ILLNESS_START = "2021-01-01";
     public static final boolean CONTINUED_ILLNESS = false;

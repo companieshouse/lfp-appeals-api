@@ -225,6 +225,29 @@ class AppealControllerTest_POST {
     }
 
     @Test
+    void whenIllnessReasonHasInvalidCreateByAppeal_return422() throws Exception {
+        final String invalidCreateByAppeal = asJsonString("src/test/resources/data/invalidCreateByAppeal.json", appeal -> { return appeal; });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidCreateByAppeal))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(content().json("{\"createdBy.name\":\"createdBy.name must not be blank\"}"));
+    }
+
+    @Test
+    void whenIllnessReasonHasInvalidIllPerson_return422() throws Exception {
+        final String invalidIllPersonAppeal = asJsonString("src/test/resources/data/invalidIllPersonAppeal.json", appeal -> { return appeal; });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidIllPersonAppeal))
+            .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void whenIllnessReasonEndDateIsInvalid_return422() throws Exception {
         final String invalidEndDateAppeal = asJsonString("src/test/resources/data/invalidIllnessEndDate.json", appeal -> { return appeal; });
 

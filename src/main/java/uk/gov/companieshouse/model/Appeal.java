@@ -16,7 +16,7 @@ public class Appeal {
     @JsonIgnore
     private LocalDateTime createdAt;
 
-    // @Valid
+    @Valid
     @NotNull(message = "CreatedBy must not be null")
     private CreatedBy createdBy;
 
