@@ -29,6 +29,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
 import uk.gov.companieshouse.model.validator.EndDateValidator;
+import uk.gov.companieshouse.model.validator.IllnessPersonValidator;
 import uk.gov.companieshouse.model.validator.RelationshipValidator;
 import uk.gov.companieshouse.service.AppealService;
 
@@ -45,6 +46,8 @@ public class AppealController {
     private RelationshipValidator relationshipValidator;
     @Autowired
     private EndDateValidator endDateValidator;
+    @Autowired
+    private IllnessPersonValidator illnessPersonValidator;
 
     public AppealController(AppealService appealService) {
         this.appealService = appealService;
@@ -68,19 +71,18 @@ public class AppealController {
 
         String relationshipError = relationshipValidator.validateRelationship(appeal);
         if (relationshipError != null) {
-            LOGGER.infoContext("Appeal not valid for company " +  appeal.getPenaltyIdentifier().getCompanyNumber(),
-                relationshipError, appealService.createAppealDebugMap(userId, appeal));
-
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(relationshipError);
+            return buildApiMessageError(relationshipError, appeal, userId);
         }
 
         if (appeal.getReason().getIllness() != null) {
             String illnessDateError = endDateValidator.validateEndDate(appeal);
             if (illnessDateError != null) {
-                LOGGER.infoContext(" Appeal not valid for company " + appeal.getPenaltyIdentifier().getCompanyNumber(),
-                    illnessDateError, appealService.createAppealDebugMap(userId, appeal));
+                return buildApiMessageError(illnessDateError, appeal, userId);
+            }
 
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(illnessDateError);
+            String illnessPersonError = illnessPersonValidator.validateIllnessPerson(appeal);
+            if (illnessPersonError != null) {
+                return buildApiMessageError(illnessPersonError, appeal, userId);
             }
         }
 
@@ -139,4 +141,10 @@ public class AppealController {
         return errors;
     }
 
+    private ResponseEntity<String> buildApiMessageError(String errorMsg, Appeal appeal, String userId) {
+        LOGGER.infoContext(" Appeal not valid for company " + appeal.getPenaltyIdentifier().getCompanyNumber(),
+            errorMsg, appealService.createAppealDebugMap(userId, appeal));
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorMsg);
+    }
 }
