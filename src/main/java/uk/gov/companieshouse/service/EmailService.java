@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -14,8 +13,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import uk.gov.companieshouse.AppealApplication;
-import uk.gov.companieshouse.api.ApiClient;
-import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.email.EmailSend;
 import uk.gov.companieshouse.email.EmailSendMessageProducer;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
@@ -23,7 +20,6 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
-import uk.gov.companieshouse.sdk.manager.ApiSdkManager;
 
 /**
  * Communicates with <code>chs-email-sender</code> via the <code>send-email</code> Kafka topic to
@@ -158,7 +154,7 @@ public class EmailService {
 //        data.put("attachments_download_url_prefix", emailAttachmentDownloadUrlPrefix);
 //    }
     
-	private void buildJson(Appeal appeal) throws JSONException, ServiceException {
+	private void buildJson(Appeal appeal) throws JSONException {
 
 		PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
 		String companyNumber = penaltyIdentifier.getCompanyNumber();
@@ -176,7 +172,7 @@ public class EmailService {
     	jsonBody.put("templateName", "lfp-appeal-submission-internal");
         //data.put("templateData", );
         JSONObject companyDetails = new JSONObject();
-        companyDetails.put("companyName", getCompanyName(companyNumber));
+        //companyDetails.put("companyName", getCompanyName(companyNumber));
         companyDetails.put("companyNumber", companyNumber);
         companyDetails.put("penaltyReference", penaltyIdentifier.getPenaltyReference());
         jsonArray.put(companyDetails);
@@ -194,34 +190,34 @@ public class EmailService {
 		
 	}
     
-	private String getCompanyName(String companyNumber)
-		throws ServiceException {
-        try {
-//            Map<String, Object> logMap = new HashMap<>();
-//            logMap.put(LOG_COMPANY_NUMBER_KEY, companyNumber);
-
-            ApiClient apiClient = ApiSdkManager.getSDK();
-
-            String companyProfileUrl = String.format("/company/%s", companyNumber);
-
-//            apiLogger.infoContext(
-//                    requestId,
-//                    "Retrieving company details from the SDK",
-//                    logMap
-//            );
-
-            return apiClient.company().get(companyProfileUrl).execute().getData().getCompanyName();
-        } catch (IOException | URIValidationException e) {
-//            apiLogger.errorContext(
-//                    requestId,
+//	private String getCompanyName(String companyNumber)
+//		throws ServiceException {
+//        try {
+////            Map<String, Object> logMap = new HashMap<>();
+////            logMap.put(LOG_COMPANY_NUMBER_KEY, companyNumber);
+//
+//            ApiClient apiClient = ApiSdkManager.getSDK();
+//
+//            String companyProfileUrl = String.format("/company/%s", companyNumber);
+//
+////            apiLogger.infoContext(
+////                    requestId,
+////                    "Retrieving company details from the SDK",
+////                    logMap
+////            );
+//
+//            return apiClient.company().get(companyProfileUrl).execute().getData().getCompanyName();
+//        } catch (IOException | URIValidationException e) {
+////            apiLogger.errorContext(
+////                    requestId,
+////                    e);
+//
+//            throw new ServiceException(
+//                    String.format("Problem retrieving company details from the SDK for %s %s",
+//                            "company-number", companyNumber),
 //                    e);
-
-            throw new ServiceException(
-                    String.format("Problem retrieving company details from the SDK for %s %s",
-                            "company-number", companyNumber),
-                    e);
-        }
-    }
+//        }
+//    }
 
     /**
      * Builds the order confirmation and email based on the order provided.

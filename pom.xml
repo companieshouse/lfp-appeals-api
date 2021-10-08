@@ -22,7 +22,8 @@
         <commons-lang3.version>3.10</commons-lang3.version>
         <structured-logging.version>1.5.0-rc2</structured-logging.version>
         <kafka-models.version>1.0.17</kafka-models.version>
-        <ch-kafka.version>1.4.2</ch-kafka.version>
+        <ch-kafka.version>1.4.4</ch-kafka.version>
+        <avro.version>1.8.1</avro.version>
         <rest-service-common-library.version>0.0.5</rest-service-common-library.version>
         <api-sdk-java-version>4.3.8</api-sdk-java-version>
         <api-sdk-manager-java-library-version>1.0.4</api-sdk-manager-java-library-version>
@@ -81,23 +82,11 @@
             <artifactId>ch-kafka</artifactId>
             <version>${ch-kafka.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>uk.gov.companieshouse</groupId>
-            <artifactId>api-sdk-manager-java-library</artifactId>
-            <version>${api-sdk-manager-java-library-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>uk.gov.companieshouse</groupId>
-            <artifactId>api-sdk-java</artifactId>
-            <version>${api-sdk-java-version}</version>
-        </dependency>
         
         <dependency>
-            <groupId>uk.gov.companieshouse</groupId>
-            <artifactId>rest-service-common-library</artifactId>
-            <version>${rest-service-common-library.version}</version>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
         </dependency>
 
         <!-- Testing -->
