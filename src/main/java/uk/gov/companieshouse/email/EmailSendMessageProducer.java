@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.AppealApplication;
+import uk.gov.companieshouse.exception.ServiceException;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.message.Message;
 import uk.gov.companieshouse.logging.Logger;
@@ -32,16 +33,23 @@ public class EmailSendMessageProducer {
      * @throws ExecutionException should the production of the message to the topic error for some reason
      * @throws InterruptedException should the execution thread be interrupted
      */
-    public void sendMessage(final EmailSend email, String orderReference)
-            throws SerializationException, ExecutionException, InterruptedException {
-//        Map<String, Object> logMap =
-//      LoggingUtils.logWithOrderReference("Sending message to kafka producer", orderReference);
-    	LOGGER.info("Sending message to kafka producer: " + orderReference);
-        final Message message = emailSendAvroSerializer.createMessage(email, orderReference);
+    public void sendMessage(final EmailSend email, String penaltyReference) {
+//        Map<String, Object> logMap = new HashMap<>();
+//        LoggingUtils.logWithOrderReference("Sending message to kafka producer", orderReference);
+    	LOGGER.info("Sending message to kafka producer: " + penaltyReference);
+    	try {
+    		final Message message = emailSendAvroSerializer.createMessage(email, penaltyReference);
 //        LoggingUtils.logIfNotNull(logMap, LoggingUtils.TOPIC, message.getTopic());
-        emailSendKafkaProducer.sendMessage(message, orderReference,
-                recordMetadata ->
-                    logOffsetFollowingSendIngOfMessage(orderReference, recordMetadata));
+			emailSendKafkaProducer.sendMessage(message, penaltyReference,
+			        recordMetadata ->
+			            logOffsetFollowingSendIngOfMessage(penaltyReference, recordMetadata));
+		} catch (Exception e) {
+            final String errorMessage
+            	= String.format("Kafka 'email-send' message could not be sent for appeal with penalty reference - %s", penaltyReference);
+//		    logMap.put(LoggingUtils.EXCEPTION, e);
+//		    LOGGER.error(errorMessage, logMap);
+		    throw new ServiceException(errorMessage, e);
+		}
     }
 
     /**

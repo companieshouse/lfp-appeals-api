@@ -5,19 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.exception.ChipsServiceException;
-import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.mapper.AppealMapper;
@@ -61,13 +58,8 @@ public class AppealService {
             LOGGER.debug("CHIPS feature is disabled");
         }
 
-        try {
-			emailService.sendAppealEmails(appeal);
-		} catch (JsonProcessingException | InterruptedException | ExecutionException | SerializationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
+		emailService.sendAppealEmails(appeal);
+		
         return appealId;
     }
 

@@ -14,10 +14,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import uk.gov.companieshouse.AppealApplication;
+import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.email.EmailSend;
 import uk.gov.companieshouse.email.EmailSendMessageProducer;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.environment.impl.EnvironmentReaderImpl;
+import uk.gov.companieshouse.exception.ServiceException;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -48,9 +50,11 @@ public class EmailService {
     private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
 
     private final EmailSendMessageProducer producer;
+    private final CompanyProfileService companyProfileService;
 
-    public EmailService(EmailSendMessageProducer producer) {
+    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService) {
         this.producer = producer;
+		this.companyProfileService = companyProfileService;
     }
     
     @Bean
@@ -62,14 +66,8 @@ public class EmailService {
      * Sends out LFP Appeal confirmation and internal emails.
      *
      * @param appeal The appeal information used to compose the internal/confirmation emails.
-     * 
-     * @throws JsonProcessingException
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws SerializationException
      */
-    public void sendAppealEmails(final Appeal appeal)
-            throws JsonProcessingException, InterruptedException, ExecutionException, SerializationException {
+    public void sendAppealEmails(final Appeal appeal) {
 
     	sendInternalConfirmationEmail(appeal);
     	sendExternalConfirmationEmail(appeal);
@@ -99,13 +97,8 @@ public class EmailService {
      * Send an internal lfp appeal email to kafka.
      * 
      * @param appeal The appeal information used to compose the internal/confirmation emails.
-     * 
-     * @throws SerializationException
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void sendInternalConfirmationEmail(final Appeal appeal)
-    		throws SerializationException, ExecutionException, InterruptedException {
+    public void sendInternalConfirmationEmail(final Appeal appeal) {
 
         final EmailSend email = getEmailHeader(LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE);
 
@@ -119,13 +112,8 @@ public class EmailService {
      * Send an external lfp appeal email to kafka.
      * 
      * @param appeal The appeal information used to compose the internal/confirmation emails.
-     * 
-     * @throws SerializationException
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
-    public void sendExternalConfirmationEmail(final Appeal appeal)
-    		throws SerializationException, ExecutionException, InterruptedException {
+    public void sendExternalConfirmationEmail(final Appeal appeal) {
 
         final EmailSend email = getEmailHeader(LFP_APPEAL_SUBMISSION_CONFIRMATION_MESSAGE_TYPE);
 
@@ -141,13 +129,6 @@ public class EmailService {
      * @param emailType Type of email to build
      * 
      * @return Email content in JSON converted to String format
-     * 
-     * @throws ServiceException 
-     * @throws JSONException 
-     * @throws JsonProcessingException
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws SerializationException
      */    
 	private String buildEmailContent(Appeal appeal, String emailType) {
 
@@ -168,7 +149,8 @@ public class EmailService {
 		JSONObject jsonEmailContent = new JSONObject();
 		jsonEmailContent.put("to", emailTo);
 		jsonEmailContent.put("subject", emailSubject + companyNumber);
-		jsonEmailContent.put("companyName", "company name");//getCompanyName(companyNumber));
+		CompanyProfileApi companyProfile = companyProfileService.getCompanyProfile(companyNumber);
+		jsonEmailContent.put("companyName", companyProfile.getCompanyName());
 		jsonEmailContent.put("companyNumber", companyNumber);
 		jsonEmailContent.put("penaltyReference", penaltyIdentifier.getPenaltyReference());
 
@@ -267,32 +249,4 @@ public class EmailService {
 		
 		return attachmentArray;
 	}
-//	private String getCompanyName(String companyNumber)
-//		throws ServiceException {
-//        try {
-////            Map<String, Object> logMap = new HashMap<>();
-////            logMap.put(LOG_COMPANY_NUMBER_KEY, companyNumber);
-//
-//            ApiClient apiClient = ApiSdkManager.getSDK();
-//
-//            String companyProfileUrl = String.format("/company/%s", companyNumber);
-//
-////            apiLogger.infoContext(
-////                    requestId,
-////                    "Retrieving company details from the SDK",
-////                    logMap
-////            );
-//
-//            return apiClient.company().get(companyProfileUrl).execute().getData().getCompanyName();
-//        } catch (IOException | URIValidationException e) {
-////            apiLogger.errorContext(
-////                    requestId,
-////                    e);
-//
-//            throw new ServiceException(
-//                    String.format("Problem retrieving company details from the SDK for %s %s",
-//                            "company-number", companyNumber),
-//                    e);
-//        }
-//    }
 }
