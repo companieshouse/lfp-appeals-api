@@ -7,17 +7,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.CreatedBy;
 import uk.gov.companieshouse.model.OtherReason;
@@ -26,8 +30,9 @@ import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.service.AppealService;
 
 @SpringBootTest
+@EmbeddedKafka
 @AutoConfigureMockMvc
-public class AppealControllerTest_GET {
+class AppealControllerGetTest {
 
     private final String APPEALS_URI = "/companies/{company-id}/appeals";
     private final String TEST_RESOURCE_ID = "1";
@@ -43,7 +48,7 @@ public class AppealControllerTest_GET {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    public void whenAppealExistsById_return200() throws Exception {
+    void whenAppealExistsById_return200() throws Exception {
 
         when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
 
@@ -56,7 +61,7 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealDoesNotExistById_return404() throws Exception {
+    void whenAppealDoesNotExistById_return404() throws Exception {
 
         when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
 
@@ -67,7 +72,7 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealExistsByPenalty_return200() throws Exception {
+    void whenAppealExistsByPenalty_return200() throws Exception {
 
         when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of(getValidOtherAppeal()));
 
@@ -81,7 +86,7 @@ public class AppealControllerTest_GET {
     }
 
     @Test
-    public void whenAppealDoesNotExistByPenalty_return404() throws Exception {
+    void whenAppealDoesNotExistByPenalty_return404() throws Exception {
 
         when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of());
 

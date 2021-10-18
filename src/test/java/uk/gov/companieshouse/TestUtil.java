@@ -8,6 +8,7 @@ import uk.gov.companieshouse.database.entity.IllnessReasonEntity;
 import uk.gov.companieshouse.database.entity.OtherReasonEntity;
 import uk.gov.companieshouse.database.entity.PenaltyIdentifierEntity;
 import uk.gov.companieshouse.database.entity.ReasonEntity;
+import uk.gov.companieshouse.email.EmailSend;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.model.CreatedBy;
@@ -15,6 +16,7 @@ import uk.gov.companieshouse.model.IllnessReason;
 import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
+import uk.gov.companieshouse.service.EmailService;
 
 public class TestUtil {
     public static IllnessReason createIllnessReason() {
@@ -140,4 +142,15 @@ public class TestUtil {
         return createdByEntity;
     }
 
+//    public static EmailSend createEmailSend() {
+//        EmailSend emailSend = new EmailSend();
+//        emailSend.setAppId(EmailService.LFP_APPEALS_API_APP_ID);
+//        emailSend.setData(EMAIL_DATA);
+//        emailSend.setEmailAddress(TestData.EMAIL);
+//        emailSend.setMessageId(MSG_ID);
+//        emailSend.setMessageType(MSG_TYPE);
+//        emailSend.setCreatedAt(TestData.CREATED_AT);
+//
+//        return emailSend;
+//    }
 }

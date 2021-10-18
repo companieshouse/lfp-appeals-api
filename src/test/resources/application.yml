@@ -5,6 +5,8 @@ spring:
   data:
     mongodb:
       uri: "mongodb://localhost/test"
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers} 
 
 chips:
   enabled: true

@@ -1,32 +1,30 @@
 package uk.gov.companieshouse.service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.email.EmailSend;
 import uk.gov.companieshouse.email.EmailSendMessageProducer;
 import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.environment.impl.EnvironmentReaderImpl;
-import uk.gov.companieshouse.exception.ServiceException;
-import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
+import uk.gov.companieshouse.model.IllnessReason;
+import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
+import uk.gov.companieshouse.model.Region;
 
 /**
  * Communicates with <code>chs-email-sender</code> via the <code>send-email</code> Kafka topic to
@@ -37,6 +35,12 @@ public class EmailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
 
+    // This email address is supplied only to satisfy Avro contract.
+    private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
+
+    private final EmailSendMessageProducer producer;
+    private final CompanyProfileService companyProfileService;
+
     private static final String LFP_APPEALS_API_APP_ID = "lfp-appeals-api";
     private static final String LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE =
             "lfp-appeal-submission-internal";
@@ -44,22 +48,15 @@ public class EmailService {
             "lfp-appeal-submission-confirmation";
     private static final String LFP_APPEAL_INTERNAL_EMAIL_SUBJECT = "Appeal submitted - ";
     private static final String LFP_APPEAL_CONFIRMATION_EMAIL_SUBJECT = "Confirmation of your appeal - ";
-    private static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
+    public static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
+    
+    @Autowired
+    private final EnvironmentReader environmentReader;
 
-    // This email address is supplied only to satisfy Avro contract.
-    private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
-
-    private final EmailSendMessageProducer producer;
-    private final CompanyProfileService companyProfileService;
-
-    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService) {
+    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService, EnvironmentReader environmentReader) {
         this.producer = producer;
 		this.companyProfileService = companyProfileService;
-    }
-    
-    @Bean
-    public static EnvironmentReader getEnvironmentReader() {
-        return new EnvironmentReaderImpl();
+		this.environmentReader = environmentReader;
     }
 
     /**
@@ -162,7 +159,9 @@ public class EmailService {
         	jsonEmailContent.put("reasons", addReasonsData(appeal));
         }
         
-        LOGGER.info("JSON Array: " + jsonEmailContent.toString());
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("emailContent", jsonEmailContent.toString());
+        LOGGER.debugContext(penaltyIdentifier.getPenaltyReference(), "Email Contents", logMap);
         
         return jsonEmailContent.toString();
 	}
@@ -177,7 +176,6 @@ public class EmailService {
 	 * @return Appropriate email address based on region 
 	 */
 	private String determineInternalEmailAddressToSendTo(String companyNumber) {
-		EnvironmentReader environmentReader = getEnvironmentReader();
 		for( Region reg : Region.values()) {
 			if(companyNumber.startsWith(reg.name())) {
 				return environmentReader.getMandatoryString(reg.name() + TEAM_EMAIL_SUFFIX);
@@ -196,54 +194,45 @@ public class EmailService {
 	private JSONObject addReasonsData(Appeal appeal) {
 
 		Reason appealReason = appeal.getReason();
+		OtherReason otherReason = appealReason.getOther();
 		
+		JSONObject reason = new JSONObject();
 		JSONObject reasonData = new JSONObject();
 		reasonData.put("name", appeal.getCreatedBy().getName());
-		if( appealReason.getOther() != null ) {
+		if( otherReason != null ) {
 			reasonData.put("relationshipToCompany", appeal.getCreatedBy().getRelationshipToCompany());
-			reasonData.put("title", appeal.getReason().getOther().getTitle());
-			reasonData.put("description", appeal.getReason().getOther().getDescription());
-		} else {
-			reasonData.put("illPerson", appeal.getReason().getIllness().getIllPerson());
-			reasonData.put("illnessStart", appeal.getReason().getIllness().getIllnessStart());
-			reasonData.put("illnessEnd", appeal.getReason().getIllness().getIllnessEnd());		
-			reasonData.put("description", appeal.getReason().getIllness().getIllnessImpactFurtherInformation());
-		}
-		reasonData.put("attachments", addAttachments(appeal));
-        
-		JSONObject reason = new JSONObject();
-		if( appealReason.getOther() != null ) {
+			reasonData.put("title", otherReason.getTitle());
+			reasonData.put("description", otherReason.getDescription());
+			reasonData.put("attachments", addAttachments(appeal.getId(), otherReason.getAttachments()));
 			reason.put("other", reasonData);
 		} else {
+			IllnessReason illnessReason = appealReason.getIllness();
+			reasonData.put("illPerson", illnessReason.getIllPerson());
+			reasonData.put("illnessStart", illnessReason.getIllnessStart());
+			reasonData.put("illnessEnd", illnessReason.getIllnessEnd());		
+			reasonData.put("description", illnessReason.getIllnessImpactFurtherInformation());
+			reasonData.put("attachments", addAttachments(appeal.getId(), illnessReason.getAttachments()));
 			reason.put("illness", reasonData);
 		}
+        
         return reason;
-		
 	}
     
 	/**
 	 * Add any attachment links to be added to the email.
 	 * 
-	 * @param appeal The appeal information used to compose the internal/confirmation emails.
+	 * @param list The appeal information used to compose the internal/confirmation emails.
 	 * 
 	 * @return JSON array containing any links to attachments.
 	 */
-	private JSONArray addAttachments(Appeal appeal) {
-
-		Reason reason = appeal.getReason();
+	private JSONArray addAttachments(String appealId, List<Attachment> attachments) {
 
 		JSONArray attachmentArray = new JSONArray();
 
-		List<Attachment> attachments;
-		if( reason.getOther() != null ) {
-			attachments = reason.getOther().getAttachments();
-		} else {
-			attachments = reason.getIllness().getAttachments();
-		}
 		attachments.stream().forEach(a -> {
 			JSONObject jsonAttachments = new JSONObject();
 			jsonAttachments.put("name", a.getName());
-			jsonAttachments.put("url", a.getUrl() + "&a=" + appeal.getId());
+			jsonAttachments.put("url", a.getUrl() + "&a=" + appealId);
 			attachmentArray.put(jsonAttachments);
 		});
 		

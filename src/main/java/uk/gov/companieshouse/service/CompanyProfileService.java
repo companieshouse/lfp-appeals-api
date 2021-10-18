@@ -37,10 +37,8 @@ public class CompanyProfileService {
         try {
             companyProfileApi = apiClient.company().get(uri).execute().getData();
         } catch (ApiErrorResponseException e) {
-
             throw new ServiceException("Error retrieving company profile", e);
         } catch (URIValidationException e) {
-
             throw new ServiceException("Invalid URI for company resource", e);
         }
 

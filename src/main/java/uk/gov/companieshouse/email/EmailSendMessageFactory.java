@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.email;
 
-
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
@@ -27,15 +26,16 @@ public class EmailSendMessageFactory {
 
 	/**
 	 * Creates an email-send avro message.
+	 * 
 	 * @param emailSend email-send object
 	 * @return email-send avro message
 	 * @throws SerializationException should there be a failure to serialize the EmailSend object
 	 */
-	public Message createMessage(final EmailSend emailSend, String orderReference) throws SerializationException {
+	public Message createMessage(final EmailSend emailSend, String penaltyReference) throws SerializationException {
         //Map<String, Object> logMap = LoggingUtils.createLogMapWithOrderReference(orderReference);
 //	    logMap.put(LoggingUtils.TOPIC, EMAIL_SEND_TOPIC);
 //		LoggingUtils.getLogger().info("Create kafka message", logMap);
-        LOGGER.info("Create kafka message");
+        LOGGER.info("Create kafka message for penalty reference: " + penaltyReference);
 		final AvroSerializer<EmailSend> serializer =
 				serializerFactory.getGenericRecordSerializer(EmailSend.class);
 		final Message message = new Message();

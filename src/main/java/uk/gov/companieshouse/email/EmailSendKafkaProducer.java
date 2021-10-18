@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.email;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -19,18 +21,20 @@ public class EmailSendKafkaProducer extends KafkaProducer  {
 
     /**
      * Sends message to Kafka topic
-     * @param message certificate or certified copy appeal message to be produced to the <code>email-send</code> topic
-     * @param orderReference the reference of the order
+     * @param message Appeal message to be produced to the <code>email-send</code> topic
+     * @param penaltyReference The reference of the penalty
      * @param asyncResponseLogger RecordMetadata {@link Consumer} that can be implemented to allow the logging of
      *                            the offset once the message has been produced
      * @throws ExecutionException should the production of the message to the topic error for some reason
      * @throws InterruptedException should the execution thread be interrupted
      */
     public void sendMessage(final Message message,
-                            final String orderReference,
+                            final String penaltyReference,
                             final Consumer<RecordMetadata> asyncResponseLogger)
             throws ExecutionException, InterruptedException {
-        LOGGER.info("Sending message to Kafka");
+        Map<String, Object> logMap = new HashMap<>();
+    	logMap.put("message", message.toString());
+        LOGGER.infoContext(penaltyReference, "Sending message to Kafka", logMap);
 
         final Future<RecordMetadata> recordMetadataFuture = getChKafkaProducer().sendAndReturnFuture(message);
         asyncResponseLogger.accept(recordMetadataFuture.get());
