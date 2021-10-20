@@ -1,0 +1,18 @@
+{
+  "penaltyIdentifier": {
+    "companyNumber": "12345678",
+    "penaltyReference": "PEN1A/09627488"
+  },
+  "reasons": {
+    "other": {
+      "title": "This is a title",
+      "description": "This is a description"
+    }
+  },
+  "createdBy": {
+    "id": "123abc456",
+    "name": "User Userson",
+    "relationshipToCompany": "relationship",
+    "emailAddress": "user@example.com"
+  }
+}
