@@ -24,7 +24,7 @@ public class CompanyProfileService {
     @Autowired
     private ApiClientService apiClientService;
 
-    public CompanyProfileApi getCompanyProfile(String companyNumber) throws ServiceException {
+    public CompanyProfileApi getCompanyProfile(String companyNumber) {
 
     	LOGGER.debug("Get company profile for " + companyNumber);
     	
@@ -32,7 +32,7 @@ public class CompanyProfileService {
 
         CompanyProfileApi companyProfileApi;
 
-        String uri = GET_COMPANY_URI.expand(companyNumber).toString();
+        var uri = GET_COMPANY_URI.expand(companyNumber).toString();
 
         try {
             companyProfileApi = apiClient.company().get(uri).execute().getData();

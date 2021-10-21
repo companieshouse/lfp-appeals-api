@@ -79,10 +79,10 @@ public class LoggingUtils {
         return logMap;
     }
 
-    public static Map<String, Object> logMessageWithOrderReference(Message message,
-            String logMessage, String orderReference) {
+    public static Map<String, Object> logMessageWithPenaltyReference(Message message,
+            String logMessage, String penaltyReference) {
         Map<String, Object> logMap = createLogMapWithKafkaMessage(message);
-        logIfNotNull(logMap, PENALTY_REFERENCE, orderReference);
+        logIfNotNull(logMap, PENALTY_REFERENCE, penaltyReference);
         LOGGER.info(logMessage, logMap);
         return logMap;
     }
@@ -106,17 +106,4 @@ public class LoggingUtils {
     public static Logger getLogger() {
         return LOGGER;
     }
-
-//    public static Map<String, Object> getMessageHeadersAsMap(
-//            org.springframework.messaging.Message<OrderReceived> message) {
-//        Map<String, Object> logMap = LoggingUtils.createLogMap();
-//        MessageHeaders messageHeaders = message.getHeaders();
-//
-//        logIfNotNull(logMap, KEY, messageHeaders.get(KafkaHeaders.RECEIVED_MESSAGE_KEY));
-//        logIfNotNull(logMap, TOPIC, messageHeaders.get(KafkaHeaders.RECEIVED_TOPIC));
-//        logIfNotNull(logMap, OFFSET, messageHeaders.get(KafkaHeaders.OFFSET));
-//        logIfNotNull(logMap, PARTITION, messageHeaders.get(KafkaHeaders.RECEIVED_PARTITION_ID));
-//
-//        return logMap;
-//    }
 }
