@@ -77,7 +77,7 @@ class EmailServiceTests {
         appeal = TestUtil.createAppeal(createdBy, reason);
     }
     
-    @DisplayName("Succuessfully send an internal and external email")
+    @DisplayName("Successfully send an internal and external email")
     @Test
     void testSendInternalExternalEmailsSuccessfully() {
         
@@ -91,7 +91,7 @@ class EmailServiceTests {
         verify(emailSendMessageProducer, times(2)).sendMessage(ArgumentMatchers.any(EmailSend.class), ArgumentMatchers.anyString());
     }
 
-    @DisplayName("Unsuccuessfully send emails due to EnvironmentVariableException thrown when determining region email address")
+    @DisplayName("Unsuccessfully send emails due to EnvironmentVariableException thrown when determining region email address")
     @Test
     void testGetRegionEmailAddressThrowsEnvironmentVariableException() {
         
@@ -105,7 +105,7 @@ class EmailServiceTests {
         assertEquals(exception.getMessage(), thrown.getMessage());
     }
 
-    @DisplayName("Unsuccuessfully send emails due to ServiceException (ApiErrorResponseException) thrown when retrieving company name")
+    @DisplayName("Unsuccessfully send emails due to ServiceException (ApiErrorResponseException) thrown when retrieving company name")
     @Test
     void testGetCompanyNameThrowsServiceExceptionOfTypeApiValidationException() {
         
@@ -114,7 +114,7 @@ class EmailServiceTests {
         testExceptionHandingForGettingCompanyProfile(exception, apiErrorResponseException);
     }
 
-    @DisplayName("Unsuccuessfully send emails due to ServiceException (URIValidationException) thrown when retrieving company name")
+    @DisplayName("Unsuccessfully send emails due to ServiceException (URIValidationException) thrown when retrieving company name")
     @Test
     void testGetCompanyNameThrowsServiceExceptionOfTypeURIValidationException() {
         

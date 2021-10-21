@@ -124,13 +124,6 @@
             <version>${version.spring.boot}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
-            <version>${spring-kafka-test.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

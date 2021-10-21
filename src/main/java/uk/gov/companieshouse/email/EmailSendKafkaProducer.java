@@ -39,5 +39,4 @@ public class EmailSendKafkaProducer extends KafkaProducer  {
         final Future<RecordMetadata> recordMetadataFuture = getChKafkaProducer().sendAndReturnFuture(message);
         asyncResponseLogger.accept(recordMetadataFuture.get());
     }
-
 }

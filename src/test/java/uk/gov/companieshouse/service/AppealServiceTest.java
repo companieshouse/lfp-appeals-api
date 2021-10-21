@@ -65,6 +65,9 @@ class AppealServiceTest {
     @Mock
     private ChipsConfiguration chipsConfiguration;
 
+    @Mock
+    private EmailService emailService;
+
     @Test
     void testCreateAppeal_returnsResourceId() {
         CreatedBy createdBy = TestUtil.buildCreatedBy();

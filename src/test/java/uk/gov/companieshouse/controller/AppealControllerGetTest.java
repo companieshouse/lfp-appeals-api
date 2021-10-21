@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +28,9 @@ import uk.gov.companieshouse.model.OtherReason;
 import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.service.AppealService;
+import uk.gov.companieshouse.service.EmailService;
 
 @SpringBootTest
-@EmbeddedKafka
 @AutoConfigureMockMvc
 class AppealControllerGetTest {
 
@@ -41,6 +41,9 @@ class AppealControllerGetTest {
 
     @MockBean
     private AppealService appealService;
+
+    @Mock
+    private EmailService emailService;
 
     @Autowired
     private MockMvc mockMvc;

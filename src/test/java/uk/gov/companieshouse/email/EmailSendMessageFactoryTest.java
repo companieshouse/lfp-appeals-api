@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 
 import uk.gov.companieshouse.kafka.message.Message;
@@ -13,9 +12,9 @@ import uk.gov.companieshouse.kafka.serialization.SerializerFactory;
 
 @SpringBootTest
 @DirtiesContext
-@EmbeddedKafka
 class EmailSendMessageFactoryTest {
-    @Autowired
+	
+	@Autowired
     private SerializerFactory serializerFactory;
 
     private static final String APP_ID = "App Id";
@@ -36,7 +35,7 @@ class EmailSendMessageFactoryTest {
         // When
         Message message = messageFactory.createMessage(createEmailSend(), PENALTY_REF);
         String actualContent = new String(message.getValue());
-
+        
         // Then
         AvroSerializer<EmailSend> serializer = serializerFactory.getGenericRecordSerializer(EmailSend.class);
         String expectedContent = new String(serializer.toBinary(createEmailSend()));

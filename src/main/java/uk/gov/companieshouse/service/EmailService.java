@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.AppealApplication;
@@ -50,7 +49,6 @@ public class EmailService {
     private static final String LFP_APPEAL_CONFIRMATION_EMAIL_SUBJECT = "Confirmation of your appeal - ";
     public static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
     
-    @Autowired
     private final EnvironmentReader environmentReader;
 
     public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService, EnvironmentReader environmentReader) {
