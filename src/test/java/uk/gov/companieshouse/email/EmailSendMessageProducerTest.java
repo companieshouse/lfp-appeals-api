@@ -8,8 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.logging.LoggingUtils.PENALTY_REFERENCE;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.exception.ServiceException;
 import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.message.Message;

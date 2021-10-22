@@ -14,6 +14,8 @@ import uk.gov.companieshouse.logging.LoggingUtils;
 @Service
 public class EmailSendMessageProducer {
 
+	private static final String EXCEPTION_MESSAGE = "Kafka 'email-send' message could not be sent for appeal with penalty reference - %s";
+	
     private final EmailSendMessageFactory emailSendAvroSerializer;
     private final EmailSendKafkaProducer emailSendKafkaProducer;
 
@@ -34,17 +36,25 @@ public class EmailSendMessageProducer {
         Map<String, Object> logMap = new HashMap<>();
         LoggingUtils.logWithPenaltyReference("Sending message to kafka producer", penaltyReference);
     	try {
-    		final Message message = emailSendAvroSerializer.createMessage(email, penaltyReference);
-    		LoggingUtils.logIfNotNull(logMap, LoggingUtils.TOPIC, message.getTopic());
+    		Message message;
+    		message = emailSendAvroSerializer.createMessage(email, penaltyReference);
+			LoggingUtils.logIfNotNull(logMap, LoggingUtils.TOPIC, message.getTopic());
 			emailSendKafkaProducer.sendMessage(message, penaltyReference,
-			        recordMetadata ->
-			            LoggingUtils.logOffsetFollowingSendIngOfMessage(penaltyReference, recordMetadata));
-		} catch (Exception e) {
-            final String errorMessage
-            	= String.format("Kafka 'email-send' message could not be sent for appeal with penalty reference - %s", penaltyReference);
+				        recordMetadata ->
+				            LoggingUtils.logOffsetFollowingSendIngOfMessage(penaltyReference, recordMetadata));
+		} catch (SerializationException | ExecutionException e) {
+            final var errorMessage
+            	= String.format(EXCEPTION_MESSAGE, penaltyReference);
 		    logMap.put(LoggingUtils.EXCEPTION, e);
 		    LoggingUtils.logException(errorMessage, logMap);
-		    throw new ServiceException(errorMessage, e);
+            throw new ServiceException(errorMessage, e);
+		} catch (InterruptedException e) {
+	        final var errorMessage
+	        	= String.format(EXCEPTION_MESSAGE, penaltyReference);
+		    logMap.put(LoggingUtils.EXCEPTION, e);
+		    LoggingUtils.logException(errorMessage, logMap);
+		    Thread.currentThread().interrupt();
+	        throw new ServiceException(errorMessage, e);
 		}
     }
 }
