@@ -5,6 +5,8 @@ spring:
   data:
     mongodb:
       uri: "mongodb://localhost/test"
+  kafka:
+    bootstrap-servers: "localhost:9092" 
 
 chips:
   enabled: true

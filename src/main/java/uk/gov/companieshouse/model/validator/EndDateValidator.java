@@ -3,12 +3,21 @@ package uk.gov.companieshouse.model.validator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
+
+import uk.gov.companieshouse.AppealApplication;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 
 @Component
 public class EndDateValidator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
 
     static final String EMPTY_END_DATE = "Unable to validate. End date is empty";
     static final String END_DATE_CONTINUED_TRUE =
@@ -22,13 +31,20 @@ public class EndDateValidator {
     public String validateEndDate(Appeal appeal) {
         String rawStartDate = appeal.getReason().getIllness().getIllnessStart();
         String rawEndDate = appeal.getReason().getIllness().getIllnessEnd();
-        boolean continued = appeal.getReason().getIllness().getContinuedIllness();
+        Boolean continued = appeal.getReason().getIllness().getContinuedIllness();
 
-        if ((rawEndDate == null || rawEndDate.isEmpty()) && !continued) {
+        Map<String, Object> logMap = new HashMap<>();
+        logMap.put("rawStartDate", rawEndDate);
+        logMap.put("rawEndDate", rawEndDate);
+        logMap.put("continuedIllness", continued.toString());
+
+        LOGGER.debugContext(appeal.getPenaltyIdentifier().getPenaltyReference(), "Determine if illness end date is valid", logMap);
+        
+        if ((rawEndDate == null || rawEndDate.isEmpty()) && !continued.booleanValue()) {
             return EMPTY_END_DATE;
         }
 
-        if (rawEndDate != null && !rawEndDate.isEmpty() && continued) {
+        if (rawEndDate != null && !rawEndDate.isEmpty() && continued.booleanValue()) {
             return END_DATE_CONTINUED_TRUE;
         }
 

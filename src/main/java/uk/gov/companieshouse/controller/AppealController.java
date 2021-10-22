@@ -108,7 +108,7 @@ public class AppealController {
     public ResponseEntity<Appeal> getAppealById(@PathVariable("company-number") final String companyId,
                                                 @PathVariable("id") final String id) {
 
-        LOGGER.infoContext("Getting Appeal by ID", companyId, appealService.createDebugMapWithoutAppeal(id));
+        LOGGER.infoContext("Getting Appeal by ID ", companyId, appealService.createDebugMapWithoutAppeal(id));
         final Optional<Appeal> appeal = appealService.getAppeal(id);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
@@ -119,7 +119,7 @@ public class AppealController {
     public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-number") final String companyId,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
-        LOGGER.info("Getting Appeal by PenaltyReference" +  companyId + " with reference: " + penaltyReference);
+        LOGGER.info("Getting Appeal by PenaltyReference " +  companyId + " with reference: " + penaltyReference);
         final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(penaltyReference);
 
         if (appealList.isEmpty()){

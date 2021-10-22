@@ -11,16 +11,26 @@
     </parent>
 
     <artifactId>lfp-appeals-api</artifactId>
-    <version>0.0.1</version>
+    <version>unversioned</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-        <version.spring.boot>2.4.0</version.spring.boot>
+        <version.spring.boot>2.4.3</version.spring.boot>
         <commons-lang3.version>3.10</commons-lang3.version>
         <structured-logging.version>1.5.0-rc2</structured-logging.version>
+        <kafka-models.version>1.0.17</kafka-models.version>
+        <ch-kafka.version>1.4.4</ch-kafka.version>
+        <avro.version>1.8.1</avro.version>
+        <rest-service-common-library.version>0.0.5</rest-service-common-library.version>
+        <api-sdk-java.version>4.3.8</api-sdk-java.version>
+        <private-api-sdk-java.version>2.0.94</private-api-sdk-java.version>
+        <api-sdk-manager-java-library.version>1.0.4</api-sdk-manager-java-library.version>
+        <environment-reader-library.version>1.3.8</environment-reader-library.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <spring-kafka-test.version>2.7.7</spring-kafka-test.version>
     </properties>
 
     <repositories>
@@ -65,6 +75,48 @@
             <version>${commons-lang3.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>kafka-models</artifactId>
+            <version>${kafka-models.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>ch-kafka</artifactId>
+            <version>${ch-kafka.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.avro</groupId>
+            <artifactId>avro</artifactId>
+            <version>${avro.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>environment-reader-library</artifactId>
+            <version>${environment-reader-library.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>api-sdk-manager-java-library</artifactId>
+            <version>${api-sdk-manager-java-library.version}</version>
+        </dependency>
+
+	    <dependency>
+	        <groupId>uk.gov.companieshouse</groupId>
+	        <artifactId>private-api-sdk-java</artifactId>
+	        <version>${private-api-sdk-java.version}</version>
+	    </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient.version}</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -72,6 +124,12 @@
             <version>${version.spring.boot}</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+		    <groupId>org.mockito</groupId>
+		    <artifactId>mockito-inline</artifactId>
+		    <version>4.0.0</version>
+		    <scope>test</scope>
+		</dependency>
     </dependencies>
 
     <build>

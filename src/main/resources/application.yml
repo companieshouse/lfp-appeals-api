@@ -5,6 +5,8 @@ spring:
   data:
     mongodb:
       uri: ${APPEALS_API_MONGODB_URL}
+  kafka:
+    bootstrap-servers: ${KAFKA_BROKER_ADDR} 
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
@@ -13,3 +15,4 @@ chips:
 
 companyNumber:
   prefixes: ${ALLOWED_COMPANY_PREFIXES}
+
