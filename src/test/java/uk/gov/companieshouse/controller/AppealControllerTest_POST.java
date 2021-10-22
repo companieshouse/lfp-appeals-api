@@ -83,8 +83,8 @@ class AppealControllerTest_POST {
     }
 
     @Test
-    void whenValidOldPenaltyReference_return201() throws Exception {
-        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyAppeal.json", appeal -> {
+    void whenOldPenaltyReference_return201() throws Exception {
+        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceAppeal.json", appeal -> {
             appeal.getReason().getOther().setAttachments(attachments);
             return appeal;
         });
@@ -107,8 +107,8 @@ class AppealControllerTest_POST {
     }
 
     @Test
-    void whenValidOldPenaltyReferenceWhitespace_return201() throws Exception {
-        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyWhitespaceAppeal.json", appeal -> {
+    void whenOldPenaltyReferenceWhitespace_return201() throws Exception {
+        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceWhitespaceAppeal.json", appeal -> {
             appeal.getReason().getOther().setAttachments(attachments);
             return appeal;
         });
