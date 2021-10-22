@@ -1,11 +1,15 @@
 package uk.gov.companieshouse.email;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.logging.LoggingUtils.PENALTY_REFERENCE;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import uk.gov.companieshouse.TestData;
+import uk.gov.companieshouse.exception.ServiceException;
+import uk.gov.companieshouse.kafka.exceptions.SerializationException;
 import uk.gov.companieshouse.kafka.message.Message;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -71,5 +78,24 @@ class EmailSendMessageProducerTest {
         // Then
         verify(emailSendKafkaProducer).sendMessage(eq(message), eq(PENALTY_REFERENCE), any(Consumer.class));
 
+    }
+
+    @Test
+    @DisplayName("Call to createMessage throws SerializationException")
+    void createMessageThrowsSerializationException() throws Exception {
+
+    	String errorMessage = "Kafka 'email-send' message could not be sent for appeal with penalty reference - " + PENALTY_REFERENCE;
+    	
+        final SerializationException exception = new SerializationException(errorMessage);
+
+        // Given
+        when(emailSendMessageFactory.createMessage(emailSend, PENALTY_REFERENCE)).thenThrow(exception);
+
+        // When
+        ServiceException thrown = assertThrows(ServiceException.class, () -> messageProducerUnderTest.sendMessage(emailSend, PENALTY_REFERENCE));
+
+        // Then
+        assertEquals(exception.getMessage(), thrown.getMessage());
+        assertEquals(exception, thrown.getCause());
     }
 }
