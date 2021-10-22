@@ -39,7 +39,7 @@ public class EmailSendMessageFactory {
         LOGGER.infoContext(penaltyReference, "Create kafka message for penalty reference", logMap);
 		final AvroSerializer<EmailSend> serializer =
 				serializerFactory.getGenericRecordSerializer(EmailSend.class);
-		final Message message = new Message();
+		final var message = new Message();
 		message.setValue(serializer.toBinary(emailSend));
 		message.setTopic(EMAIL_SEND_TOPIC);
 		message.setTimestamp(new Date().getTime());

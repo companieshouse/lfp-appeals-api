@@ -23,7 +23,7 @@ public abstract class KafkaProducer implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         LOGGER.trace("Configuring CH Kafka producer");
-        final ProducerConfig config = createProducerConfig();
+        final var config = createProducerConfig();
         config.setRoundRobinPartitioner(true);
         config.setAcks(Acks.WAIT_FOR_ALL);
         config.setRetries(10);
@@ -48,7 +48,7 @@ public abstract class KafkaProducer implements InitializingBean {
      * @return the {@link ProducerConfig} created
      */
     protected ProducerConfig createProducerConfig() {
-        final ProducerConfig config = new ProducerConfig();
+        final var config = new ProducerConfig();
         if (brokerAddresses != null && !brokerAddresses.isEmpty()) {
             config.setBrokerAddresses(brokerAddresses.split(","));
         } else {

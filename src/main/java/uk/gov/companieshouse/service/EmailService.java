@@ -77,7 +77,7 @@ public class EmailService {
      */
     private EmailSend getEmailHeader(String emailType) {
 
-        EmailSend email = new EmailSend();
+        var email = new EmailSend();
 
         email.setAppId(LFP_APPEALS_API_APP_ID);
         email.setMessageType(emailType);
@@ -127,7 +127,7 @@ public class EmailService {
      */    
 	private String buildEmailContent(Appeal appeal, String emailType) {
 
-		PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
+		var penaltyIdentifier = appeal.getPenaltyIdentifier();
 		String companyNumber = penaltyIdentifier.getCompanyNumber();
 		String usersEmail = appeal.getCreatedBy().getEmailAddress();
 
@@ -141,7 +141,7 @@ public class EmailService {
 			emailSubject = LFP_APPEAL_INTERNAL_EMAIL_SUBJECT;			
 		}
 
-		JSONObject jsonEmailContent = new JSONObject();
+		var jsonEmailContent = new JSONObject();
 		jsonEmailContent.put("to", emailTo);
 		jsonEmailContent.put("subject", emailSubject + companyNumber);
 		CompanyProfileApi companyProfile = companyProfileService.getCompanyProfile(companyNumber);
@@ -149,7 +149,7 @@ public class EmailService {
 		jsonEmailContent.put("companyNumber", companyNumber);
 		jsonEmailContent.put("penaltyReference", penaltyIdentifier.getPenaltyReference());
 
-        JSONObject jsonUserProfile = new JSONObject();
+        var jsonUserProfile = new JSONObject();
         jsonUserProfile.put("email", usersEmail);
         jsonEmailContent.put("userProfile", jsonUserProfile);
         
@@ -191,11 +191,11 @@ public class EmailService {
 	 */
 	private JSONObject addReasonsData(Appeal appeal) {
 
-		Reason appealReason = appeal.getReason();
-		OtherReason otherReason = appealReason.getOther();
+		var appealReason = appeal.getReason();
+		var otherReason = appealReason.getOther();
 		
-		JSONObject reason = new JSONObject();
-		JSONObject reasonData = new JSONObject();
+		var reason = new JSONObject();
+		var reasonData = new JSONObject();
 		reasonData.put("name", appeal.getCreatedBy().getName());
 		if( otherReason != null ) {
 			reasonData.put("relationshipToCompany", appeal.getCreatedBy().getRelationshipToCompany());
@@ -204,7 +204,7 @@ public class EmailService {
 			reasonData.put("attachments", addAttachments(appeal.getId(), otherReason.getAttachments()));
 			reason.put("other", reasonData);
 		} else {
-			IllnessReason illnessReason = appealReason.getIllness();
+			var illnessReason = appealReason.getIllness();
 			reasonData.put("illPerson", illnessReason.getIllPerson());
 			reasonData.put("illnessStart", illnessReason.getIllnessStart());
 			reasonData.put("illnessEnd", illnessReason.getIllnessEnd());		
@@ -225,10 +225,10 @@ public class EmailService {
 	 */
 	private JSONArray addAttachments(String appealId, List<Attachment> attachments) {
 
-		JSONArray attachmentArray = new JSONArray();
+		var attachmentArray = new JSONArray();
 
 		attachments.stream().forEach(a -> {
-			JSONObject jsonAttachments = new JSONObject();
+			var jsonAttachments = new JSONObject();
 			jsonAttachments.put("name", a.getName());
 			jsonAttachments.put("url", a.getUrl() + "&a=" + appealId);
 			attachmentArray.put(jsonAttachments);
