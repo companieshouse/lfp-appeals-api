@@ -19,10 +19,6 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
-import uk.gov.companieshouse.model.IllnessReason;
-import uk.gov.companieshouse.model.OtherReason;
-import uk.gov.companieshouse.model.PenaltyIdentifier;
-import uk.gov.companieshouse.model.Reason;
 import uk.gov.companieshouse.model.Region;
 
 /**
