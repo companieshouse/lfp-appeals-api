@@ -1,6 +1,7 @@
 package uk.gov.companieshouse;
 
 import java.util.List;
+
 import uk.gov.companieshouse.database.entity.AppealEntity;
 import uk.gov.companieshouse.database.entity.AttachmentEntity;
 import uk.gov.companieshouse.database.entity.CreatedByEntity;
@@ -139,5 +140,4 @@ public class TestUtil {
         createdByEntity.setId(TestData.USER_ID);
         return createdByEntity;
     }
-
 }

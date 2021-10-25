@@ -7,11 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.util.List;
 import java.util.function.Function;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +20,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.Attachment;
 import uk.gov.companieshouse.service.AppealService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class AppealControllerTest_POST {
+class AppealControllerPostTest {
 
     private static final String APPEALS_URI = "/companies/{company-id}/appeals";
     private static final String IDENTITY_HEADER = "ERIC-identity";

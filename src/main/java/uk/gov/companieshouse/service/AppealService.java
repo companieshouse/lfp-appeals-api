@@ -6,8 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
@@ -40,6 +42,8 @@ public class AppealService {
     private ChipsConfiguration chipsConfiguration;
     @Autowired
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
+    @Autowired
+    private EmailService emailService;
 
     public String saveAppeal(Appeal appeal, String userId) {
         appeal.setCreatedAt(LocalDateTime.now());
@@ -54,6 +58,8 @@ public class AppealService {
             LOGGER.debug("CHIPS feature is disabled");
         }
 
+		emailService.sendAppealEmails(appeal);
+		
         return appealId;
     }
 

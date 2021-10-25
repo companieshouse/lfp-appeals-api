@@ -11,6 +11,7 @@ public class TestData {
     public static final String RELATIONSHIP = "relationship";
     public static final String EMAIL = "user@example.com";
     public static final String COMPANY_NUMBER = "12345678";
+    public static final String COMPANY_NAME = "Test company";
     public static final String PENALTY_REFERENCE = "A12345678";
     public static final String TITLE = "Some title";
     public static final String DESCRIPTION = "Some description";
@@ -26,5 +27,5 @@ public class TestData {
     public static final int ATTACHMENT_SIZE = 100;
     public static final String ATTACHMENT_URL = "http://localhost/appeal-a-penalty/download/prompt/1?c=00345567";
     public static final String RELATIONSHIP_ERROR_MESSAGE = "Createdby.RelationshipToCompany must not be null when supplying Other Reason";
-
+    public static final String EXCEPTION_MESSAGE = "BAD THINGS";
 }
