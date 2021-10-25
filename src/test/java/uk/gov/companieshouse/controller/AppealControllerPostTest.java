@@ -86,6 +86,54 @@ class AppealControllerPostTest {
     }
 
     @Test
+    void whenOldPenaltyReference_return201() throws Exception {
+        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceAppeal.json", appeal -> {
+            appeal.getReason().getOther().setAttachments(attachments);
+            return appeal;
+        });
+
+        List<String> validAppeals = List.of(
+            validAppeal,
+            validAppealWithAttachments
+        );
+
+        for (String appeal : validAppeals) {
+            mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(createHttpHeaders())
+                .content(appeal))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(TEST_RESOURCE_ID))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
+                    + TEST_RESOURCE_ID));
+        }
+    }
+
+    @Test
+    void whenOldPenaltyReferenceWhitespace_return201() throws Exception {
+        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceWhitespaceAppeal.json", appeal -> {
+            appeal.getReason().getOther().setAttachments(attachments);
+            return appeal;
+        });
+
+        List<String> validAppeals = List.of(
+            validAppeal,
+            validAppealWithAttachments
+        );
+
+        for (String appeal : validAppeals) {
+            mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(createHttpHeaders())
+                .content(appeal))
+                .andExpect(status().isCreated())
+                .andExpect(content().json(TEST_RESOURCE_ID))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
+                    + TEST_RESOURCE_ID));
+        }
+    }
+
+    @Test
     void whenNullEricIdentityHeader_return400() throws Exception {
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
@@ -258,6 +306,17 @@ class AppealControllerPostTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .headers(createHttpHeaders())
             .content(invalidEndDateAppeal))
+            .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void whenPenaltyReferenceIsInvalid_return422() throws Exception {
+        final String invalidPenaltyReferenceAppeal = asJsonString("src/test/resources/data/invalidPenaltyReferenceAppeal.json", appeal -> { return appeal; });
+
+        mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(invalidPenaltyReferenceAppeal))
             .andExpect(status().isUnprocessableEntity());
     }
 

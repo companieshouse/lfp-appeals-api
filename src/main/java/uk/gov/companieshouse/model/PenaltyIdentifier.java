@@ -13,8 +13,8 @@ public class PenaltyIdentifier {
     private String companyNumber;
 
     @NotBlank(message = "penaltyReference must not be blank")
-    @Pattern(regexp = "([A-Z0-9/]{8,14})",
-        message = "penaltyReference is invalid")
+    @Pattern(regexp = "^[A-Z][0-9]{8}$|^PEN\\s?[1-2]A\\/[0-9]{8}$",
+        message = "Unable to Validate. penaltyReference is invalid")
     private String penaltyReference;
 
     public PenaltyIdentifier() {
