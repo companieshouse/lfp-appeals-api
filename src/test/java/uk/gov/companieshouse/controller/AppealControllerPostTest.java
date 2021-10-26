@@ -85,7 +85,7 @@ class AppealControllerPostTest {
         }
     }
 
-    @Test
+    /*@Test
     void whenOldPenaltyReference_return201() throws Exception {
         String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceAppeal.json", appeal -> {
             appeal.getReason().getOther().setAttachments(attachments);
@@ -132,7 +132,7 @@ class AppealControllerPostTest {
                     + TEST_RESOURCE_ID));
         }
     }
-
+*/
     @Test
     void whenNullEricIdentityHeader_return400() throws Exception {
 
