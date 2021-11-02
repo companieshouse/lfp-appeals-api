@@ -46,6 +46,7 @@ class AppealServiceTest {
     private static final String APPEAL_ID = "appeal_id";
     private static final String PENALTY_REF = "penalty_reference";
     private static final String COMPANY_NUMBER = "company_number";
+	private static final String UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE = "Appeal not saved in database for companyNumber: 12345678, penaltyReference: A1234567 and userId: USER#1";
 
     @Mock
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
@@ -108,7 +109,7 @@ class AppealServiceTest {
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
 
         String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
-        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
+        assertEquals(UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE, message);
     }
 
     @Test
@@ -121,7 +122,7 @@ class AppealServiceTest {
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
         String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
-        assertEquals("Appeal not saved in database for companyNumber: 12345678, penaltyReference: A12345678 and userId: USER#1", message);
+        assertEquals(UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE, message);
     }
 
     @Test
