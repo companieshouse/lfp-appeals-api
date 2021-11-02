@@ -12,7 +12,7 @@ public class TestData {
     public static final String EMAIL = "user@example.com";
     public static final String COMPANY_NUMBER = "12345678";
     public static final String COMPANY_NAME = "Test company";
-    public static final String PENALTY_REFERENCE = "A12345678";
+    public static final String PENALTY_REFERENCE = "A1234567";
     public static final String TITLE = "Some title";
     public static final String DESCRIPTION = "Some description";
     public static final String ILL_PERSON = "someoneElse";
