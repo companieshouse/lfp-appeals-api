@@ -18,7 +18,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-        <version.spring.boot>2.4.3</version.spring.boot>
+        <version.spring.boot>2.5.12</version.spring.boot>
         <commons-lang3.version>3.10</commons-lang3.version>
         <structured-logging.version>1.9.11</structured-logging.version>
         <kafka-models.version>1.0.17</kafka-models.version>
