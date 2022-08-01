@@ -23,7 +23,7 @@
         <structured-logging.version>1.9.11</structured-logging.version>
         <kafka-models.version>1.0.17</kafka-models.version>
         <ch-kafka.version>1.4.4</ch-kafka.version>
-        <avro.version>1.8.1</avro.version>
+        <avro.version>1.11.1</avro.version>
         <rest-service-common-library.version>0.0.5</rest-service-common-library.version>
         <api-sdk-java.version>4.3.8</api-sdk-java.version>
         <private-api-sdk-java.version>2.0.94</private-api-sdk-java.version>
