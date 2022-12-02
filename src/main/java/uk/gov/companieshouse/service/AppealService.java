@@ -67,9 +67,32 @@ public class AppealService {
         LOGGER.debugContext("Inserting appeal into mongo db for companyId: ",
             appeal.getPenaltyIdentifier().getCompanyNumber(), createAppealDebugMap(userId, appeal));
 
-        return Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal))).map(AppealEntity::getId).orElseThrow(() ->
-            new RuntimeException(String.format("Appeal not saved in database for companyNumber: %s, penaltyReference: %s and userId: %s",
-                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+        removeDuplicateRecordsIfFound(appeal);
+
+        return Optional
+            .ofNullable(appealRepository.insert(this.appealMapper.map(appeal)))
+            .map(AppealEntity::getId)
+            .orElseThrow(() ->
+                new RuntimeException(String.format("Appeal not saved in database for companyNumber: %s, " +
+                        "penaltyReference: %s and userId: %s",
+                    appeal.getPenaltyIdentifier().getCompanyNumber(),
+                    appeal.getPenaltyIdentifier().getPenaltyReference(),
+                    userId)));
+
+    }
+
+    /**
+     * Removes duplicate mongo records, if found.
+     * @param appeal
+     */
+    private void removeDuplicateRecordsIfFound(Appeal appeal) {
+        final List<AppealEntity> entitiesFound = appealRepository.findByPenaltyReferenceAndCompanyNumber(
+            appeal.getPenaltyIdentifier().getPenaltyReference(), appeal.getPenaltyIdentifier().getCompanyNumber());
+
+        if (! entitiesFound.isEmpty()) {
+            // entities should not exist in the first place, they are now removed
+            entitiesFound.forEach(entity -> appealRepository.delete(entity));
+        }
     }
 
     private void createContactInChips(Appeal appeal, String userId) {
