@@ -85,7 +85,7 @@ public class AppealService {
 
     /**
      * Removes duplicate mongo records, if found.
-     * @param appeal
+     * @param appeal appeal
      */
     private void removeDuplicateRecordsIfFound(Appeal appeal) {
         final List<AppealEntity> entitiesFound = appealRepository.findByPenaltyReferenceAndCompanyNumber(
@@ -93,6 +93,7 @@ public class AppealService {
 
         if (! entitiesFound.isEmpty()) {
             // entities should not exist in the first place, they are now removed
+            LOGGER.info("Removing appeals that should not have been there, number = " + entitiesFound.size());
             entitiesFound.forEach(entity -> appealRepository.delete(entity));
         }
     }
