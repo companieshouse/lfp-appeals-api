@@ -32,6 +32,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <spring-kafka-test.version>2.7.7</spring-kafka-test.version>
         <json.version>20211205</json.version>
+        <sonar.exclusions>uk/gov/companieshouse/config/**</sonar.exclusions>
     </properties>
 
     <repositories>
