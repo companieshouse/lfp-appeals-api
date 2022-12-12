@@ -77,7 +77,7 @@ class AppealControllerGetTest {
     @Test
     void whenAppealExistsByPenalty_return200() throws Exception {
 
-        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of(getValidOtherAppeal()));
+    	when(appealService.getAppealsByPenaltyReference(any(String.class), any(String.class))).thenReturn(List.of(getValidOtherAppeal()));
 
         final String validAppeal = asJsonArray();
 
@@ -91,7 +91,7 @@ class AppealControllerGetTest {
     @Test
     void whenAppealDoesNotExistByPenalty_return404() throws Exception {
 
-        when(appealService.getAppealsByPenaltyReference(any(String.class))).thenReturn(List.of());
+        when(appealService.getAppealsByPenaltyReference(any(String.class), any(String.class))).thenReturn(List.of());
 
         mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
             .queryParam("penaltyReference", TEST_PENALTY_ID)

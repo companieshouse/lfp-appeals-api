@@ -55,7 +55,7 @@ public class AppealService {
         if (chipsConfiguration.isChipsEnabled()) {
             createContactInChips(appeal, userId);
         } else {
-            LOGGER.debug("CHIPS feature is disabled");
+            LOGGER.debugContext(appeal.getPenaltyIdentifier().getPenaltyReference(), "CHIPS feature is disabled", createDebugMapAppeal(userId, appeal));
         }
 
 		emailService.sendAppealEmails(appeal);
@@ -64,25 +64,45 @@ public class AppealService {
     }
 
     private String createAppealInMongoDB(Appeal appeal, String userId) {
-        LOGGER.debugContext("Inserting appeal into mongo db for companyId: ",
-            appeal.getPenaltyIdentifier().getCompanyNumber(), createAppealDebugMap(userId, appeal));
+    	String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
+    	String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+    	
+        LOGGER.debugContext(penaltyReference, "Creating appeal in mongo db", createDebugMapAppeal(userId, appeal));
 
-        return Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal))).map(AppealEntity::getId).orElseThrow(() ->
-            new RuntimeException(String.format("Appeal not saved in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+        String appealId = null;
+        List<AppealEntity> queryResult = appealRepository.findByCompanyNumberPenaltyReference(companyNumber, penaltyReference);
+        LOGGER.infoContext(penaltyReference, "Is there an appeal for this company/reference? " + queryResult.isEmpty(), null);
+        
+        if (queryResult.isEmpty()) {
+        	appealId = Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal))).map(AppealEntity::getId).orElseThrow(() ->
+	            new RuntimeException(String.format("Appeal not created in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+	                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+        } else {
+            LOGGER.infoContext(penaltyReference, "Update existing appeal record with reason: " + queryResult.isEmpty(), null);
+        	Appeal updatedAppeal = this.appealMapper.map(queryResult.get(0));
+        	updatedAppeal.setReason(appeal.getReason());
+        	updatedAppeal.setCreatedAt(LocalDateTime.now());
+
+        	appealId = Optional.ofNullable(appealRepository.save(this.appealMapper.map(updatedAppeal))).map(AppealEntity::getId).orElseThrow(() ->
+            new RuntimeException(String.format("Appeal not updated in database for companyNumber: %s, penaltyReference: %s and userId: %s",
                 appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+        }
+        
+        return appealId;
     }
 
     private void createContactInChips(Appeal appeal, String userId) {
 
+    	String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+    	
         final ChipsContact chipsContact = chipsContactDescriptionFormatter.buildChipsContact(appeal);
 
-        LOGGER.debugContext("Creating CHIPS contact for companyId: ",
-            appeal.getPenaltyIdentifier().getCompanyNumber(), createAppealDebugMap(userId, appeal));
+        LOGGER.debugContext(penaltyReference, "Creating CHIPS contact", createDebugMapAppeal(userId, appeal));
 
         try {
             chipsRestClient.createContactInChips(chipsContact, chipsConfiguration.getChipsRestServiceUrl());
         } catch (ChipsServiceException chipsServiceException) {
-            LOGGER.debug("Appeal with id: " + appeal.getId() + " has failed to create contact", createAppealDebugMap(userId, appeal));
+            LOGGER.errorContext(penaltyReference, "Appeal with id: " + appeal.getId() + " has failed to create contact", chipsServiceException, createDebugMapAppeal(userId, appeal));
             throw chipsServiceException;
         }
     }
@@ -91,22 +111,30 @@ public class AppealService {
         return appealRepository.findById(id).map(this.appealMapper::map);
     }
 
-    public List<Appeal> getAppealsByPenaltyReference(String penaltyReference){
-        return appealRepository.findByPenaltyReference(penaltyReference).stream().map(this.appealMapper::map).collect(Collectors.toList());
+    public List<Appeal> getAppealsByPenaltyReference(String companyNumber, String penaltyReference){
+        return appealRepository.findByCompanyNumberPenaltyReference(companyNumber, penaltyReference).stream().map(this.appealMapper::map).collect(Collectors.toList());
     }
 
-    public Map<String, Object> createAppealDebugMap(String userId, Appeal appeal){
+    public Map<String, Object> createDebugMapAppeal(String userId, Appeal appeal){
         final Map<String, Object> debugMap = new HashMap<>();
         debugMap.put(USER_ID, userId);
         debugMap.put(APPEAL_ID, appeal.getId());
-        debugMap.put(PENALTY_REF, appeal.getPenaltyIdentifier().getPenaltyReference());
         debugMap.put(COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
+        debugMap.put(PENALTY_REF, appeal.getPenaltyIdentifier().getPenaltyReference());
         return debugMap;
     }
 
     public Map<String, Object> createDebugMapWithoutAppeal(String appealId){
         final Map<String, Object> debugMap = new HashMap<>();
         debugMap.put(APPEAL_ID, appealId);
+        return debugMap;
+    }
+
+
+    public Map<String, Object> createDebugMapAppealSearch(String companyNumber, String penaltyReference){
+        final Map<String, Object> debugMap = new HashMap<>();
+        debugMap.put(COMPANY_NUMBER, companyNumber);
+        debugMap.put(PENALTY_REF, penaltyReference);
         return debugMap;
     }
 }
