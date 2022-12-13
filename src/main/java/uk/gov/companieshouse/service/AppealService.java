@@ -59,43 +59,54 @@ public class AppealService {
             LOGGER.debugContext(appeal.getPenaltyIdentifier().getPenaltyReference(), "CHIPS feature is disabled", createDebugMapAppeal(userId, appeal));
         }
 
-		emailService.sendAppealEmails(appeal);
-		
+        emailService.sendAppealEmails(appeal);
+
         return appealId;
     }
 
     private String createAppealInMongoDB(Appeal appeal, String userId) {
-    	String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
-    	String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
-    	
-        LOGGER.debugContext(penaltyReference, "Creating appeal in mongo db", createDebugMapAppeal(userId, appeal));
+        String companyNumber = appeal.getPenaltyIdentifier().getCompanyNumber();
+        String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+
+        LOGGER.debugContext(penaltyReference, "Creating appeal in mongo db",
+                createDebugMapAppeal(userId, appeal));
 
         final String appealId;
-        List<AppealEntity> queryResult = appealRepository.findByCompanyNumberPenaltyReference(companyNumber, penaltyReference);
-        LOGGER.infoContext(penaltyReference, "Is there an appeal for this company/reference? " + queryResult.isEmpty(), null);
-        
-        if (queryResult.isEmpty()) {
-        	appealId = Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal))).map(AppealEntity::getId).orElseThrow(() ->
-	            new RuntimeException(String.format("Appeal not created in database for companyNumber: %s, penaltyReference: %s and userId: %s",
-	                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
-        } else {
-            LOGGER.infoContext(penaltyReference, "Update existing appeal record with reason: " + queryResult.isEmpty(), null);
-        	Appeal updatedAppeal = this.appealMapper.map(queryResult.get(0));
-        	updatedAppeal.setReason(appeal.getReason());
-        	updatedAppeal.setCreatedAt(LocalDateTime.now());
+        List<AppealEntity> queryResult = appealRepository
+                .findByCompanyNumberPenaltyReference(companyNumber, penaltyReference);
+        LOGGER.infoContext(penaltyReference,
+                "Is there an appeal for this company/reference? " + queryResult.isEmpty(), null);
 
-        	appealId = Optional.ofNullable(appealRepository.save(this.appealMapper.map(updatedAppeal))).map(AppealEntity::getId).orElseThrow(() ->
-	            new RuntimeException(String.format("Appeal not updated in database for companyNumber: %s, penaltyReference: %s and userId: %s",
-	                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+        if (queryResult.isEmpty()) {
+            appealId = Optional.ofNullable(appealRepository.insert(this.appealMapper.map(appeal)))
+                    .map(AppealEntity::getId)
+                    .orElseThrow(() -> new RuntimeException(String.format(
+                            "Appeal not created in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+                            appeal.getPenaltyIdentifier().getCompanyNumber(),
+                            appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+        } else {
+            LOGGER.infoContext(penaltyReference,
+                    "Update existing appeal record with reason: " + queryResult.isEmpty(), null);
+            Appeal updatedAppeal = this.appealMapper.map(queryResult.get(0));
+            updatedAppeal.setReason(appeal.getReason());
+            updatedAppeal.setCreatedAt(LocalDateTime.now());
+
+            appealId = Optional
+                    .ofNullable(appealRepository.save(this.appealMapper.map(updatedAppeal)))
+                    .map(AppealEntity::getId)
+                    .orElseThrow(() -> new RuntimeException(String.format(
+                            "Appeal not updated in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+                            appeal.getPenaltyIdentifier().getCompanyNumber(),
+                            appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
         }
-        
+
         return appealId;
     }
 
     private void createContactInChips(Appeal appeal, String userId) {
 
-    	String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
-    	
+        String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+
         final ChipsContact chipsContact = chipsContactDescriptionFormatter.buildChipsContact(appeal);
 
         LOGGER.debugContext(penaltyReference, "Creating CHIPS contact", createDebugMapAppeal(userId, appeal));
@@ -130,7 +141,6 @@ public class AppealService {
         debugMap.put(APPEAL_ID, appealId);
         return debugMap;
     }
-
 
     public Map<String, Object> createDebugMapAppealSearch(String companyNumber, String penaltyReference){
         final Map<String, Object> debugMap = new HashMap<>();
