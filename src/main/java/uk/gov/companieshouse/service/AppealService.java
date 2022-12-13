@@ -2,6 +2,7 @@ package uk.gov.companieshouse.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +70,7 @@ public class AppealService {
     	
         LOGGER.debugContext(penaltyReference, "Creating appeal in mongo db", createDebugMapAppeal(userId, appeal));
 
-        String appealId = null;
+        final String appealId;
         List<AppealEntity> queryResult = appealRepository.findByCompanyNumberPenaltyReference(companyNumber, penaltyReference);
         LOGGER.infoContext(penaltyReference, "Is there an appeal for this company/reference? " + queryResult.isEmpty(), null);
         
@@ -84,8 +85,8 @@ public class AppealService {
         	updatedAppeal.setCreatedAt(LocalDateTime.now());
 
         	appealId = Optional.ofNullable(appealRepository.save(this.appealMapper.map(updatedAppeal))).map(AppealEntity::getId).orElseThrow(() ->
-            new RuntimeException(String.format("Appeal not updated in database for companyNumber: %s, penaltyReference: %s and userId: %s",
-                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
+	            new RuntimeException(String.format("Appeal not updated in database for companyNumber: %s, penaltyReference: %s and userId: %s",
+	                appeal.getPenaltyIdentifier().getCompanyNumber(), appeal.getPenaltyIdentifier().getPenaltyReference(), userId)));
         }
         
         return appealId;
@@ -116,7 +117,7 @@ public class AppealService {
     }
 
     public Map<String, Object> createDebugMapAppeal(String userId, Appeal appeal){
-        final Map<String, Object> debugMap = new HashMap<>();
+        final Map<String, Object> debugMap = new LinkedHashMap<>();
         debugMap.put(USER_ID, userId);
         debugMap.put(APPEAL_ID, appeal.getId());
         debugMap.put(COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
