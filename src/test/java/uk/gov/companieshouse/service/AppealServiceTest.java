@@ -5,20 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import uk.gov.companieshouse.TestData;
 import uk.gov.companieshouse.TestUtil;
 import uk.gov.companieshouse.client.ChipsRestClient;
@@ -46,7 +49,8 @@ class AppealServiceTest {
     private static final String APPEAL_ID = "appeal_id";
     private static final String PENALTY_REF = "penalty_reference";
     private static final String COMPANY_NUMBER = "company_number";
-	private static final String UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE = "Appeal not saved in database for companyNumber: 12345678, penaltyReference: A1234567 and userId: USER#1";
+    private static final String UNABLE_TO_CREATE_APPEAL_ERROR_MESSAGE = "Appeal not created in database for companyNumber: 12345678, penaltyReference: A1234567 and userId: USER#1";
+    private static final String UNABLE_TO_UPDATE_APPEAL_ERROR_MESSAGE = "Appeal not updated in database for companyNumber: 12345678, penaltyReference: A1234567 and userId: USER#1";
 
     @Mock
     private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
@@ -100,6 +104,31 @@ class AppealServiceTest {
     }
 
     @Test
+    void testUpdateAppeal_verify_createdBy_createdAt_setOnAppeal() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
+        ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
+        Reason reason = TestUtil.createReasonWithOther();
+        AppealEntity existingAppealEntity = TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
+        List<AppealEntity> appealEntityList = new ArrayList<>();
+        appealEntityList.add(existingAppealEntity);
+        when(appealRepository.findByCompanyNumberPenaltyReference(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE)).thenReturn(appealEntityList);
+        when(appealMapper.map(existingAppealEntity)).thenReturn(appeal);
+        when(appealMapper.map(appeal)).thenReturn(existingAppealEntity);
+        when(appealRepository.save(any(AppealEntity.class))).thenReturn(existingAppealEntity);
+
+        appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID);
+
+        ArgumentCaptor<AppealEntity> appealArgumentCaptor = ArgumentCaptor.forClass(AppealEntity.class);
+        verify(appealRepository).findByCompanyNumberPenaltyReference(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE);
+        verify(appealRepository).save(appealArgumentCaptor.capture());
+
+        assertEquals(TestData.USER_ID, appealArgumentCaptor.getValue().getCreatedBy().getId());
+        assertNotNull(appealArgumentCaptor.getValue().getCreatedAt());
+    }
+
+    @Test
     void testCreateAppeal_throwsExceptionIfNoResourceIdReturned() {
         CreatedBy createdBy = TestUtil.buildCreatedBy();
         CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
@@ -109,7 +138,7 @@ class AppealServiceTest {
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(TestUtil.createAppealEntity(null, createdByEntity, reasonEntity));
 
         String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
-        assertEquals(UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE, message);
+        assertEquals(UNABLE_TO_CREATE_APPEAL_ERROR_MESSAGE, message);
     }
 
     @Test
@@ -122,7 +151,26 @@ class AppealServiceTest {
         when(appealRepository.insert(any(AppealEntity.class))).thenReturn(null);
 
         String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
-        assertEquals(UNABLE_TO_SAVE_APPEAL_ERROR_MESSAGE, message);
+        assertEquals(UNABLE_TO_CREATE_APPEAL_ERROR_MESSAGE, message);
+    }
+
+    @Test
+    void testUpdateAppeal_throwsExceptionIfNoResourceIdReturned() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
+        ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
+        Reason reason = TestUtil.createReasonWithOther();
+        AppealEntity existingAppealEntity = TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity);
+        Appeal appeal = TestUtil.createAppeal(createdBy, reason);
+        List<AppealEntity> appealEntityList = new ArrayList<>();
+        appealEntityList.add(existingAppealEntity);
+        when(appealRepository.findByCompanyNumberPenaltyReference(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE)).thenReturn(appealEntityList);
+        when(appealMapper.map(existingAppealEntity)).thenReturn(appeal);
+        when(appealMapper.map(appeal)).thenReturn(existingAppealEntity);
+        when(appealRepository.save(any(AppealEntity.class))).thenReturn(null);
+
+        String message = assertThrows(Exception.class, () -> appealService.saveAppeal(TestUtil.createAppeal(createdBy, reason), TestData.USER_ID)).getMessage();
+        assertEquals(UNABLE_TO_UPDATE_APPEAL_ERROR_MESSAGE, message);
     }
 
     @Test
@@ -202,11 +250,11 @@ class AppealServiceTest {
         CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
         ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
         Reason reason = TestUtil.createReasonWithOther();
-        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
+        when(appealRepository.findByCompanyNumberPenaltyReference(any(String.class), any(String.class))).thenReturn(
             List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy, reason));
 
-        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.COMPANY_NUMBER,
             TestData.PENALTY_REFERENCE);
         Appeal appeal = appealList.get(0);
 
@@ -224,36 +272,18 @@ class AppealServiceTest {
     }
 
     @Test
-    void testGetMultipleAppealByPenaltyReference_returnsListOfAppeals() {
-        CreatedBy createdBy = TestUtil.buildCreatedBy();
-        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
-        ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
-        Reason reason = TestUtil.createReasonWithOther();
-        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(
-            List.of(TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity),
-                TestUtil.createAppealEntity(TestData.PENALTY_REFERENCE, createdByEntity, reasonEntity)));
-
-        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy,reason));
-
-        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
-
-        assertEquals(2, appealList.size());
-
-    }
-
-    @Test
     void testGetAppealsByPenaltyReference_returnsEmptyListOfAppeals() {
 
-        when(appealRepository.findByPenaltyReference(any(String.class))).thenReturn(List.of());
+        when(appealRepository.findByCompanyNumberPenaltyReference(any(String.class), any(String.class))).thenReturn(List.of());
 
-        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.PENALTY_REFERENCE);
+        List<Appeal> appealList = appealService.getAppealsByPenaltyReference(TestData.COMPANY_NUMBER, TestData.PENALTY_REFERENCE);
 
         assertTrue(appealList.isEmpty());
     }
 
     @Test
     void testCreateDebugMapWithAppeal_returnsMapWithAppealDetails() {
-        Map<String, Object> returnedMap = appealService.createAppealDebugMap(TestData.USER_ID,
+        Map<String, Object> returnedMap = appealService.createDebugMapAppeal(TestData.USER_ID,
             TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithOther()));
         assertEquals(4, returnedMap.size());
         assertEquals(TestData.ID, returnedMap.get(APPEAL_ID));
