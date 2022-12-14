@@ -62,9 +62,12 @@ public class AppealController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+        
         String validationError = appealReasonValidator.validate(appeal.getReason());
         if (validationError != null) {
-            LOGGER.info("Appeal not valid for company " +  appeal.getPenaltyIdentifier().getCompanyNumber() + " : "  + validationError);
+            LOGGER.errorContext(penaltyReference,
+            		validationError, null, appealService.createDebugMapAppeal(userId, appeal));
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(validationError);
         }
@@ -87,8 +90,8 @@ public class AppealController {
         }
 
         try {
+            LOGGER.infoContext(penaltyReference, "Create an Appeal for a Late Filing Penalty", appealService.createDebugMapAppeal(userId, appeal));
             final String id = appealService.saveAppeal(appeal, userId);
-            LOGGER.infoContext(id, "Create an Appeal for an Late Filing Penalty", appealService.createAppealDebugMap(userId, appeal));
 
             final URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -98,8 +101,8 @@ public class AppealController {
 
             return ResponseEntity.created(location).body(id);
         } catch (Exception ex) {
-            final Map<String, Object> debugMap = appealService.createAppealDebugMap(userId, appeal);
-            LOGGER.error("Unable to create appeal", ex, debugMap);
+            final Map<String, Object> debugMap = appealService.createDebugMapAppeal(userId, appeal);
+            LOGGER.errorContext(penaltyReference, "Unable to create appeal", ex, debugMap);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -116,12 +119,13 @@ public class AppealController {
     }
 
     @GetMapping(value = "/{company-number}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-number") final String companyId,
+    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-number") final String companyNumber,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
 
-        LOGGER.info("Getting Appeal by PenaltyReference " +  companyId + " with reference: " + penaltyReference);
-        final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(penaltyReference);
-
+        LOGGER.infoContext(penaltyReference, "Get appeals for company/reference", appealService.createDebugMapAppealSearch(companyNumber, penaltyReference));
+        final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(companyNumber, penaltyReference);
+        LOGGER.debugContext(penaltyReference, "Is there an appeal with reference: " + penaltyReference + "? " + !appealList.isEmpty(), null);
+        
         if (appealList.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -142,8 +146,7 @@ public class AppealController {
     }
 
     private ResponseEntity<String> buildApiMessageError(String errorMsg, Appeal appeal, String userId) {
-        LOGGER.infoContext(" Appeal not valid for company " + appeal.getPenaltyIdentifier().getCompanyNumber(),
-            errorMsg, appealService.createAppealDebugMap(userId, appeal));
+        LOGGER.errorContext(appeal.getPenaltyIdentifier().getPenaltyReference(), errorMsg, null, appealService.createDebugMapAppeal(userId, appeal));
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorMsg);
     }
