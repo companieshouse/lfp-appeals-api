@@ -13,6 +13,8 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -60,10 +62,14 @@ class AppealControllerPostTest {
         );
     }
 
-    @Test
-    void whenValidInput_return201() throws Exception {
+    @ParameterizedTest
+    @CsvSource(value = {
+        "src/test/resources/data/validAppeal.json,validInput",
+        "src/test/resources/data/validOldPenaltyReferenceAppeal.json,OldPenaltyReference",
+        "src/test/resources/data/validOldPenaltyReferenceAppeal.json,OldPenaltyReferenceWhitespace"})
+    void scenarios_return201(String jsonSource) throws Exception {
 
-        String validAppealWithAttachments = asJsonString("src/test/resources/data/validAppeal.json", appeal -> {        
+        String validAppealWithAttachments = asJsonString(jsonSource, appeal -> {
             appeal.getReason().getOther().setAttachments(attachments);
             return appeal;
         });
@@ -82,54 +88,6 @@ class AppealControllerPostTest {
                 .andExpect(content().json(TEST_RESOURCE_ID))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
                 + TEST_RESOURCE_ID));
-        }
-    }
-
-    @Test
-    void whenOldPenaltyReference_return201() throws Exception {
-        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceAppeal.json", appeal -> {
-            appeal.getReason().getOther().setAttachments(attachments);
-            return appeal;
-        });
-
-        List<String> validAppeals = List.of(
-            validAppeal,
-            validAppealWithAttachments
-        );
-
-        for (String appeal : validAppeals) {
-            mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .headers(createHttpHeaders())
-                .content(appeal))
-                .andExpect(status().isCreated())
-                .andExpect(content().json(TEST_RESOURCE_ID))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
-                    + TEST_RESOURCE_ID));
-        }
-    }
-
-    @Test
-    void whenOldPenaltyReferenceWhitespace_return201() throws Exception {
-        String validAppealWithAttachments = asJsonString("src/test/resources/data/validOldPenaltyReferenceWhitespaceAppeal.json", appeal -> {
-            appeal.getReason().getOther().setAttachments(attachments);
-            return appeal;
-        });
-
-        List<String> validAppeals = List.of(
-            validAppeal,
-            validAppealWithAttachments
-        );
-
-        for (String appeal : validAppeals) {
-            mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .headers(createHttpHeaders())
-                .content(appeal))
-                .andExpect(status().isCreated())
-                .andExpect(content().json(TEST_RESOURCE_ID))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
-                    + TEST_RESOURCE_ID));
         }
     }
 

@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ChipsRestClientTest {
+class ChipsRestClientTest {
 
     private static final String TEST_CHIPS_URL = "http://resttemplate/appeals";
     private static final String TEST_COMPANY_NUMBER = "12345678";
@@ -35,7 +35,7 @@ public class ChipsRestClientTest {
     private RestTemplate restTemplate;
 
     @Test
-    public void testCreateContactInChips() {
+    void testCreateContactInChips() {
 
         final ChipsContact chipsContact = createChipsContact();
 
@@ -50,7 +50,7 @@ public class ChipsRestClientTest {
     }
 
     @Test
-    public void testCreateContactInChips_restCallThrowsException() {
+    void testCreateContactInChips_restCallThrowsException() {
 
         final ChipsContact chipsContact = createChipsContact();
 
@@ -67,7 +67,7 @@ public class ChipsRestClientTest {
     }
 
     @Test
-    public void testCreateContactInChips_badRequestThrowsChipsServiceException() {
+    void testCreateContactInChips_badRequestThrowsChipsServiceException() {
 
         final ChipsContact chipsContact = createChipsContact();
 
@@ -84,7 +84,7 @@ public class ChipsRestClientTest {
     }
 
     @Test
-    public void testCreateContactInChips_internalServerErrorThrowsChipsServiceException() {
+    void testCreateContactInChips_internalServerErrorThrowsChipsServiceException() {
 
         final ChipsContact chipsContact = createChipsContact();
 
