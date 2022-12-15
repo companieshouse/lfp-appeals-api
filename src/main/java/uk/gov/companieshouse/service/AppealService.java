@@ -87,7 +87,7 @@ public class AppealService {
         } else {
             LOGGER.infoContext(penaltyReference,
                     "Update existing appeal record with reason: " + queryResult.isEmpty(), null);
-            Appeal updatedAppeal = this.appealMapper.map(queryResult.get(0));
+            var updatedAppeal = this.appealMapper.map(queryResult.get(0));
             updatedAppeal.setReason(appeal.getReason());
             updatedAppeal.setCreatedAt(LocalDateTime.now());
 
