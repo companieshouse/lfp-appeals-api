@@ -98,7 +98,7 @@ class AppealControllerPostTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(validAppeal))
             .andExpect(status().isBadRequest())
-            .andExpect(status().reason("Missing request header 'ERIC-identity' for method parameter of type String"));
+            .andExpect(status().reason("Required request header 'ERIC-identity' for method parameter type String is not present"));
     }
 
     @Test
