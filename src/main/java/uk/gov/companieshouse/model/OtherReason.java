@@ -2,8 +2,8 @@ package uk.gov.companieshouse.model;
 
 import java.util.Collections;
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 public class OtherReason {
 

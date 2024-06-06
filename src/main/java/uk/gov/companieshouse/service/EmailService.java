@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.email.EmailSend;
 import uk.gov.companieshouse.email.EmailSendMessageProducer;
 import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.exception.JsonException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
@@ -138,21 +140,25 @@ public class EmailService {
 		}
 
 		var jsonEmailContent = new JSONObject();
-		jsonEmailContent.put("to", emailTo);
-		jsonEmailContent.put("subject", emailSubject + companyNumber);
-		CompanyProfileApi companyProfile = companyProfileService.getCompanyProfile(companyNumber);
-		jsonEmailContent.put("companyName", companyProfile.getCompanyName());
-		jsonEmailContent.put("companyNumber", companyNumber);
-		jsonEmailContent.put("penaltyReference", penaltyIdentifier.getPenaltyReference());
+        try {
+            jsonEmailContent.put("to", emailTo);
+            jsonEmailContent.put("subject", emailSubject + companyNumber);
+            CompanyProfileApi companyProfile = companyProfileService.getCompanyProfile(companyNumber);
+            jsonEmailContent.put("companyName", companyProfile.getCompanyName());
+            jsonEmailContent.put("companyNumber", companyNumber);
+            jsonEmailContent.put("penaltyReference", penaltyIdentifier.getPenaltyReference());
 
-        var jsonUserProfile = new JSONObject();
-        jsonUserProfile.put("email", usersEmail);
-        jsonEmailContent.put("userProfile", jsonUserProfile);
-        
-        if( emailType.equals(LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE)) {
-        	jsonEmailContent.put("reasons", addReasonsData(appeal));
+            var jsonUserProfile = new JSONObject();
+            jsonUserProfile.put("email", usersEmail);
+            jsonEmailContent.put("userProfile", jsonUserProfile);
+
+            if( emailType.equals(LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE)) {
+                jsonEmailContent.put("reasons", addReasonsData(appeal));
+            }
+        } catch (JSONException e) {
+            throw new JsonException("Error amending attachments",e);
         }
-        
+
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("emailContent", jsonEmailContent.toString());
         LOGGER.debugContext(penaltyIdentifier.getPenaltyReference(), "Email Contents", logMap);
@@ -192,23 +198,27 @@ public class EmailService {
 		
 		var reason = new JSONObject();
 		var reasonData = new JSONObject();
-		reasonData.put("name", appeal.getCreatedBy().getName());
-		if( otherReason != null ) {
-			reasonData.put("relationshipToCompany", appeal.getCreatedBy().getRelationshipToCompany());
-			reasonData.put("title", otherReason.getTitle());
-			reasonData.put("description", otherReason.getDescription());
-			reasonData.put("attachments", addAttachments(appeal.getId(), otherReason.getAttachments()));
-			reason.put("other", reasonData);
-		} else {
-			var illnessReason = appealReason.getIllness();
-			reasonData.put("illPerson", illnessReason.getIllPerson());
-			reasonData.put("illnessStart", illnessReason.getIllnessStart());
-			reasonData.put("illnessEnd", illnessReason.getIllnessEnd());		
-			reasonData.put("description", illnessReason.getIllnessImpactFurtherInformation());
-			reasonData.put("attachments", addAttachments(appeal.getId(), illnessReason.getAttachments()));
-			reason.put("illness", reasonData);
-		}
-        
+        try {
+            reasonData.put("name", appeal.getCreatedBy().getName());
+            if( otherReason != null ) {
+                reasonData.put("relationshipToCompany", appeal.getCreatedBy().getRelationshipToCompany());
+                reasonData.put("title", otherReason.getTitle());
+                reasonData.put("description", otherReason.getDescription());
+                reasonData.put("attachments", addAttachments(appeal.getId(), otherReason.getAttachments()));
+                reason.put("other", reasonData);
+            } else {
+                var illnessReason = appealReason.getIllness();
+                reasonData.put("illPerson", illnessReason.getIllPerson());
+                reasonData.put("illnessStart", illnessReason.getIllnessStart());
+                reasonData.put("illnessEnd", illnessReason.getIllnessEnd());
+                reasonData.put("description", illnessReason.getIllnessImpactFurtherInformation());
+                reasonData.put("attachments", addAttachments(appeal.getId(), illnessReason.getAttachments()));
+                reason.put("illness", reasonData);
+            }
+        } catch (JSONException e) {
+            throw new JsonException("Error amending attachments",e);
+        }
+
         return reason;
 	}
     
@@ -225,9 +235,13 @@ public class EmailService {
 
 		attachments.stream().forEach(a -> {
 			var jsonAttachments = new JSONObject();
-			jsonAttachments.put("name", a.getName());
-			jsonAttachments.put("url", a.getUrl() + "&a=" + appealId);
-			attachmentArray.put(jsonAttachments);
+            try {
+                jsonAttachments.put("name", a.getName());
+                jsonAttachments.put("url", a.getUrl() + "&a=" + appealId);
+            } catch (JSONException e) {
+                throw new JsonException("Error amending attachments",e);
+            }
+            attachmentArray.put(jsonAttachments);
 		});
 		
 		return attachmentArray;
