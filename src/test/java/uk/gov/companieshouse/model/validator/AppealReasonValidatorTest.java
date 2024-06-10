@@ -15,7 +15,7 @@ class AppealReasonValidatorTest {
     private AppealReasonValidator appealReasonValidator;
 
     @BeforeEach
-    private void setup() {
+    void setup() {
         appealReasonValidator = new AppealReasonValidator();
     }
 
