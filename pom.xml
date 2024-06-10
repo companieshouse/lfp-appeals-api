@@ -39,6 +39,7 @@
         <maven-jar-plugin>3.3.0</maven-jar-plugin>
         <sonar-maven-plugin>4.0.0.4121</sonar-maven-plugin>
         <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
+        <byte-buddy.version>1.14.17</byte-buddy.version>
         <mockito-inline>5.2.0</mockito-inline>
     </properties>
 
@@ -137,6 +138,11 @@
             <artifactId>mockito-inline</artifactId>
             <version>${mockito-inline}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
