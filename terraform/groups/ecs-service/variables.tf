@@ -124,9 +124,9 @@ variable "use_set_environment_files" {
   description = "Toggle default global and shared  environment files"
 }
 
-variable "company_accounts_api_version" {
+variable "lfp_appeals_api_version" {
   type        = string
-  description = "The version of the company-accounts-api container to run."
+  description = "The version of the lfp-appeals-api container to run."
 }
 
 variable "eric_version" {
