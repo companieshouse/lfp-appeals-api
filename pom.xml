@@ -18,6 +18,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
+
         <version.spring.boot>3.2.5</version.spring.boot>
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <structured-logging.version>3.0.7</structured-logging.version>
@@ -36,7 +37,7 @@
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <maven-resources-plugin>3.3.1</maven-resources-plugin>
-        <maven-jar-plugin>3.3.0</maven-jar-plugin>
+        <maven-jar-plugin>3.4.1</maven-jar-plugin>
         <sonar-maven-plugin>4.0.0.4121</sonar-maven-plugin>
         <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
         <byte-buddy.version>1.14.17</byte-buddy.version>
@@ -56,6 +57,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${version.spring.boot}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -76,6 +87,16 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
             <version>${structured-logging.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

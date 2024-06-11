@@ -6,7 +6,9 @@ spring:
     mongodb:
       uri: "mongodb://localhost/test"
   kafka:
-    bootstrap-servers: "localhost:9092" 
+    bootstrap-servers: "localhost:9092"
+  main:
+    lazy-initialization: true
 
 chips:
   enabled: true
