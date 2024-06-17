@@ -4,15 +4,15 @@ server:
 spring:
   data:
     mongodb:
-      uri: mongodb://mongo/appeals
+      uri: ${APPEALS_API_MONGODB_URL}
   kafka:
-    bootstrap-servers: kafka:9092
+    bootstrap-servers: ${KAFKA_BROKER_ADDR}
 
 chips:
-  enabled: false
+  enabled: ${CHIPS_FEATURE_ENABLED}
   restservice:
-    url: localhost
+    url: ${CHIPS_REST_SERVICE_URL}
 
 companyNumber:
-  prefixes: SE
+  prefixes: ${ALLOWED_COMPANY_PREFIXES}
 

@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
 
-        <version.spring.boot>3.2.5</version.spring.boot>
+        <version.spring.boot>3.2.6</version.spring.boot>
         <commons-lang3.version>3.14.0</commons-lang3.version>
         <structured-logging.version>3.0.7</structured-logging.version>
         <kafka-models.version>3.0.7</kafka-models.version>
@@ -42,6 +42,9 @@
         <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
         <byte-buddy.version>1.14.17</byte-buddy.version>
         <mockito-inline>5.2.0</mockito-inline>
+<!--        excluded and updated sub dependencies-->
+        <commons-compress.version>1.26.2</commons-compress.version>
+        <http2-common.version>11.0.20</http2-common.version>
     </properties>
 
     <repositories>
@@ -109,8 +112,27 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>kafka-models</artifactId>
             <version>${kafka-models.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.http2</groupId>
+                    <artifactId>http2-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-common</artifactId>
+            <version>${http2-common.version}</version>
+        </dependency>
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
