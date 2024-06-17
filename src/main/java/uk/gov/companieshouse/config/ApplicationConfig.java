@@ -27,6 +27,6 @@ public class ApplicationConfig implements WebMvcConfigurer {
 
     @Bean
     ConcurrentHashMap<ServiceResultStatus, ResponseEntityFactory> pluggableResponseEntityFactoryBean(){
-        return new ConcurrentHashMap<>();
+        return new ConcurrentHashMap<ServiceResultStatus, ResponseEntityFactory>();
     }
 }
