@@ -38,7 +38,9 @@ import uk.gov.companieshouse.service.AppealService;
 public class AppealController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
-    private final AppealService appealService;
+
+    @Autowired
+    AppealService appealService;
 
     @Autowired
     private AppealReasonValidator appealReasonValidator;
@@ -49,9 +51,7 @@ public class AppealController {
     @Autowired
     private IllnessPersonValidator illnessPersonValidator;
 
-    public AppealController(AppealService appealService) {
-        this.appealService = appealService;
-    }
+
 
     @PostMapping(value = "/{company-number}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> submitAppeal(@RequestHeader("ERIC-identity") String userId,

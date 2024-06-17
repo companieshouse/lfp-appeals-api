@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.AppealApplication;
@@ -35,8 +36,10 @@ public class EmailService {
     // This email address is supplied only to satisfy Avro contract.
     private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
 
-    private final EmailSendMessageProducer producer;
-    private final CompanyProfileService companyProfileService;
+    @Autowired
+    EmailSendMessageProducer producer;
+    @Autowired
+   CompanyProfileService companyProfileService;
 
     private static final String LFP_APPEALS_API_APP_ID = "lfp-appeals-api";
     private static final String LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE =
@@ -46,14 +49,15 @@ public class EmailService {
     private static final String LFP_APPEAL_INTERNAL_EMAIL_SUBJECT = "Appeal submitted - ";
     private static final String LFP_APPEAL_CONFIRMATION_EMAIL_SUBJECT = "Confirmation of your appeal - ";
     public static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
-    
-    private final EnvironmentReader environmentReader;
 
-    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService, EnvironmentReader environmentReader) {
-        this.producer = producer;
-		this.companyProfileService = companyProfileService;
-		this.environmentReader = environmentReader;
-    }
+   @Autowired
+   EnvironmentReader environmentReader;
+
+//    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService, EnvironmentReader environmentReader) {
+//        this.producer = producer;
+//		this.companyProfileService = companyProfileService;
+//		this.environmentReader = environmentReader;
+//    }
 
     /**
      * Sends out LFP Appeal confirmation and internal emails.
