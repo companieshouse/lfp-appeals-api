@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +22,12 @@ public class EmailSendMessageProducer {
     @Autowired
     EmailSendKafkaProducer emailSendKafkaProducer;
 
-//    @Autowired
-//    public EmailSendMessageProducer(final EmailSendMessageFactory avroSerializer,
-//                                    final EmailSendKafkaProducer kafkaMessageProducer) {
-//        this.emailSendAvroSerializer = avroSerializer;
-//        this.emailSendKafkaProducer = kafkaMessageProducer;
-//    }
+    @Autowired
+    public EmailSendMessageProducer(final EmailSendMessageFactory avroSerializer,
+                                    final EmailSendKafkaProducer kafkaMessageProducer) {
+        this.emailSendAvroSerializer = avroSerializer;
+        this.emailSendKafkaProducer = kafkaMessageProducer;
+    }
 
     /**
      * Sends an email-send message to the Kafka producer.

@@ -7,7 +7,6 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.AppealApplication;

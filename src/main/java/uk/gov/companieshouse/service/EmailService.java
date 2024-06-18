@@ -53,11 +53,6 @@ public class EmailService {
    @Autowired
    EnvironmentReader environmentReader;
 
-//    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService, EnvironmentReader environmentReader) {
-//        this.producer = producer;
-//		this.companyProfileService = companyProfileService;
-//		this.environmentReader = environmentReader;
-//    }
 
     /**
      * Sends out LFP Appeal confirmation and internal emails.

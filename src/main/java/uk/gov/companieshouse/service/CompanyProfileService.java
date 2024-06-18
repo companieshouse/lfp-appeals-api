@@ -6,13 +6,13 @@ import org.springframework.web.util.UriTemplate;
 
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.api.ApiClient;
+import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.exception.ServiceException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
-import uk.gov.companieshouse.sdk.ApiClientService;
 
 @Service
 public class CompanyProfileService {
@@ -22,13 +22,13 @@ public class CompanyProfileService {
     private static final UriTemplate GET_COMPANY_URI = new UriTemplate("/company/{companyNumber}");
 
     @Autowired
-    private ApiClientService apiClientService;
+    InternalApiClient internalApiClient;
 
     public CompanyProfileApi getCompanyProfile(String companyNumber) {
 
     	LOGGER.debug("Get company profile for " + companyNumber);
-    	
-        ApiClient apiClient = apiClientService.getInternalApiClient();
+
+        ApiClient apiClient = internalApiClient;
 
         CompanyProfileApi companyProfileApi;
 
