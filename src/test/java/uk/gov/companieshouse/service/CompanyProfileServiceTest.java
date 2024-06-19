@@ -22,6 +22,7 @@ import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.exception.ServiceException;
+import uk.gov.companieshouse.sdk.ApiClientService;
 
 @ExtendWith(MockitoExtension.class)
 class CompanyProfileServiceTest {
@@ -30,6 +31,9 @@ class CompanyProfileServiceTest {
 
     @Mock
     private InternalApiClient internalApiClient;
+    
+    @Mock
+    private ApiClientService apiClientService;
 
     @Mock
     private CompanyResourceHandler companyResourceHandler;
@@ -56,6 +60,7 @@ class CompanyProfileServiceTest {
     @DisplayName("Successfully return a company profile from the company profile SDK")
     @Test
     void testGetCompanyProfile() throws ApiErrorResponseException, URIValidationException, ServiceException {
+        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClient);
         when(internalApiClient.company()).thenReturn(companyResourceHandler);
         when(companyResourceHandler.get("/company/" + COMPANY_NUMBER)).thenReturn(companyGet);
         when(companyGet.execute()).thenReturn(apiResponse);
@@ -70,6 +75,7 @@ class CompanyProfileServiceTest {
     @Test
     void testGetCompanyProfileThrowsServiceExceptionIfCallFails()
             throws ApiErrorResponseException, URIValidationException {
+        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClient);
         when(internalApiClient.company()).thenReturn(companyResourceHandler);
         when(companyResourceHandler.get("/company/" + COMPANY_NUMBER)).thenReturn(companyGet);
         when(companyGet.execute()).thenThrow(ApiErrorResponseException.fromIOException(new IOException("Error")));
@@ -84,6 +90,7 @@ class CompanyProfileServiceTest {
     @Test
     void testGetCompanyProfileThrowsServiceExceptionIfCallFails2()
             throws ApiErrorResponseException, URIValidationException {
+        when(apiClientService.getInternalApiClient()).thenReturn(internalApiClient);
         when(internalApiClient.company()).thenReturn(companyResourceHandler);
         when(companyResourceHandler.get("/company/" + COMPANY_NUMBER)).thenReturn(companyGet);
         when(companyGet.execute()).thenThrow(URIValidationException.class);

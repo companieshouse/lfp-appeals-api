@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import uk.gov.companieshouse.model.validator.ValidCompanyNumber;
 

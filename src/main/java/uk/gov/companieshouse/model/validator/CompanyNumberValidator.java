@@ -3,8 +3,8 @@ package uk.gov.companieshouse.model.validator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.companieshouse.AppealApplication;
@@ -27,7 +27,7 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
         String regexString = "(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$";
 
-        LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE).debug(regexString);
+        LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE).debug(regexString);
 
         this.companyNumberRegex = Pattern.compile(regexString);
 

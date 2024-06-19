@@ -6,7 +6,7 @@ spring:
     mongodb:
       uri: ${APPEALS_API_MONGODB_URL}
   kafka:
-    bootstrap-servers: ${KAFKA_BROKER_ADDR}
+    bootstrap-servers: ${KAFKA_BROKER_ADDR} 
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
@@ -15,17 +15,4 @@ chips:
 
 companyNumber:
   prefixes: ${ALLOWED_COMPANY_PREFIXES}
-
-
-management:
-  endpoints:
-    enabled-by-default: false
-    web:
-      base-path: /lfp-appeals-api
-      path-mapping:
-        health: healthcheck
-  endpoint:
-    health:
-      show-details: never
-      enabled: true
 
