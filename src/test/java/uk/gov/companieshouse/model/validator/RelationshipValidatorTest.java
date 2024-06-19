@@ -17,7 +17,7 @@ class RelationshipValidatorTest {
     private RelationshipValidator relationshipValidator;
 
     @BeforeEach
-    void setup() {
+    private void setup() {
         relationshipValidator = new RelationshipValidator();
     }
 

@@ -6,29 +6,29 @@ import org.springframework.web.util.UriTemplate;
 
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.api.ApiClient;
-import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.error.ApiErrorResponseException;
 import uk.gov.companieshouse.api.handler.exception.URIValidationException;
 import uk.gov.companieshouse.api.model.company.CompanyProfileApi;
 import uk.gov.companieshouse.exception.ServiceException;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
+import uk.gov.companieshouse.sdk.ApiClientService;
 
 @Service
 public class CompanyProfileService {
 	
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);	
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);	
 
     private static final UriTemplate GET_COMPANY_URI = new UriTemplate("/company/{companyNumber}");
 
     @Autowired
-    private InternalApiClient internalApiClient;
+    private ApiClientService apiClientService;
 
     public CompanyProfileApi getCompanyProfile(String companyNumber) {
 
     	LOGGER.debug("Get company profile for " + companyNumber);
-
-        ApiClient apiClient = internalApiClient;
+    	
+        ApiClient apiClient = apiClientService.getInternalApiClient();
 
         CompanyProfileApi companyProfileApi;
 

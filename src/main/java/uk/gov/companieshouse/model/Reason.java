@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.model;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 public class Reason {
 

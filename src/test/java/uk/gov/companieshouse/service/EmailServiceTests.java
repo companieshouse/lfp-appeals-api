@@ -71,7 +71,7 @@ class EmailServiceTests {
     private Appeal appeal;
     
     @BeforeEach
-    public void setUp() {
+    private void setUp() {
         createdBy = TestUtil.buildCreatedBy();
         reason = TestUtil.createReasonWithOther();
         appeal = TestUtil.createAppeal(createdBy, reason);

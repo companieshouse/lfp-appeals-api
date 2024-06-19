@@ -17,7 +17,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Service
 public class EmailSendKafkaProducer extends KafkaProducer  {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
 
     /**
      * Sends message to Kafka topic

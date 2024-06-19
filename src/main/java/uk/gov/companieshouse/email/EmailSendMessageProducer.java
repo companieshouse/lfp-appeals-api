@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import uk.gov.companieshouse.exception.ServiceException;
@@ -16,13 +15,10 @@ import uk.gov.companieshouse.logging.LoggingUtils;
 public class EmailSendMessageProducer {
 
 	private static final String EXCEPTION_MESSAGE = "Kafka 'email-send' message could not be sent for appeal with penalty reference - %s";
-	@Autowired
-    private EmailSendMessageFactory emailSendAvroSerializer;
+	
+    private final EmailSendMessageFactory emailSendAvroSerializer;
+    private final EmailSendKafkaProducer emailSendKafkaProducer;
 
-    @Autowired
-    private EmailSendKafkaProducer emailSendKafkaProducer;
-
-    @Autowired
     public EmailSendMessageProducer(final EmailSendMessageFactory avroSerializer,
                                     final EmailSendKafkaProducer kafkaMessageProducer) {
         this.emailSendAvroSerializer = avroSerializer;

@@ -98,7 +98,7 @@ class AppealControllerPostTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(validAppeal))
             .andExpect(status().isBadRequest())
-            .andExpect(status().reason("Required header 'ERIC-identity' is not present."));
+            .andExpect(status().reason("Required request header 'ERIC-identity' for method parameter type String is not present"));
     }
 
     @Test
@@ -139,7 +139,7 @@ class AppealControllerPostTest {
 
         final String invalidAppeal = asJsonString
             ("src/test/resources/data/validAppeal.json", appeal -> {
-                final Attachment invalidAttachment = attachments.getFirst();
+                final Attachment invalidAttachment = attachments.get(0);
                 invalidAttachment.setName("");
                 appeal.getReason().getOther().setAttachments(List.of(invalidAttachment));
                 return appeal;
@@ -200,7 +200,7 @@ class AppealControllerPostTest {
     @Test
     void whenInvalidAppealReason_return400() throws Exception {
         final String invalidAppeal = asJsonString
-            ("src/test/resources/data/invalidAppealReason.json", appeal -> appeal);
+            ("src/test/resources/data/invalidAppealReason.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -224,7 +224,7 @@ class AppealControllerPostTest {
 
     @Test
     void whenIllnessReasonIncludesRelationship_return422() throws Exception {
-        final String invalidRelationshipAppeal = asJsonString("src/test/resources/data/invalidRelationshipAppeal.json", appeal -> appeal);
+        final String invalidRelationshipAppeal = asJsonString("src/test/resources/data/invalidRelationshipAppeal.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -235,7 +235,7 @@ class AppealControllerPostTest {
 
     @Test
     void whenIllnessReasonHasInvalidCreateByAppeal_return422() throws Exception {
-        final String invalidCreateByAppeal = asJsonString("src/test/resources/data/invalidCreateByAppeal.json", appeal -> appeal);
+        final String invalidCreateByAppeal = asJsonString("src/test/resources/data/invalidCreateByAppeal.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -247,7 +247,7 @@ class AppealControllerPostTest {
 
     @Test
     void whenIllnessReasonHasInvalidIllPerson_return422() throws Exception {
-        final String invalidIllPersonAppeal = asJsonString("src/test/resources/data/invalidIllPersonAppeal.json", appeal -> appeal);
+        final String invalidIllPersonAppeal = asJsonString("src/test/resources/data/invalidIllPersonAppeal.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -258,7 +258,7 @@ class AppealControllerPostTest {
 
     @Test
     void whenIllnessReasonEndDateIsInvalid_return422() throws Exception {
-        final String invalidEndDateAppeal = asJsonString("src/test/resources/data/invalidIllnessEndDate.json", appeal -> appeal);
+        final String invalidEndDateAppeal = asJsonString("src/test/resources/data/invalidIllnessEndDate.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -269,7 +269,7 @@ class AppealControllerPostTest {
 
     @Test
     void whenPenaltyReferenceIsInvalid_return422() throws Exception {
-        final String invalidPenaltyReferenceAppeal = asJsonString("src/test/resources/data/invalidPenaltyReferenceAppeal.json", appeal -> appeal);
+        final String invalidPenaltyReferenceAppeal = asJsonString("src/test/resources/data/invalidPenaltyReferenceAppeal.json", appeal -> { return appeal; });
 
         mockMvc.perform(post(APPEALS_URI, TEST_COMPANY_ID)
             .contentType(MediaType.APPLICATION_JSON_VALUE)

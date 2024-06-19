@@ -3,8 +3,8 @@ package uk.gov.companieshouse.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

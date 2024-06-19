@@ -37,7 +37,7 @@ class EmailSendMessageFactoryTest {
         String actualContent = new String(message.getValue());
         
         // Then
-        AvroSerializer<EmailSend> serializer = serializerFactory.getSpecificRecordSerializer(EmailSend.class);
+        AvroSerializer<EmailSend> serializer = serializerFactory.getGenericRecordSerializer(EmailSend.class);
         String expectedContent = new String(serializer.toBinary(createEmailSend()));
         Assertions.assertEquals(expectedContent, actualContent);
         Assertions.assertEquals(TOPIC, message.getTopic());
