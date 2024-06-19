@@ -34,17 +34,17 @@ public class AppealService {
     private static final String COMPANY_NUMBER = "company_number";
 
     @Autowired
-     AppealMapper appealMapper;
+    private AppealMapper appealMapper;
     @Autowired
-     AppealRepository appealRepository;
+    private AppealRepository appealRepository;
     @Autowired
-     ChipsRestClient chipsRestClient;
+    private ChipsRestClient chipsRestClient;
     @Autowired
-     ChipsConfiguration chipsConfiguration;
+    private ChipsConfiguration chipsConfiguration;
     @Autowired
-     ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
+    private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
     @Autowired
-    EmailService emailService;
+    private EmailService emailService;
 
     public String saveAppeal(Appeal appeal, String userId) {
         appeal.setCreatedAt(LocalDateTime.now());

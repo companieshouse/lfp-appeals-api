@@ -22,7 +22,7 @@ public class CompanyProfileService {
     private static final UriTemplate GET_COMPANY_URI = new UriTemplate("/company/{companyNumber}");
 
     @Autowired
-    InternalApiClient internalApiClient;
+    private InternalApiClient internalApiClient;
 
     public CompanyProfileApi getCompanyProfile(String companyNumber) {
 

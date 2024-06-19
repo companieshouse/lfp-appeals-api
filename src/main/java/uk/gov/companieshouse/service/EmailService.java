@@ -37,9 +37,9 @@ public class EmailService {
     private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
 
     @Autowired
-    EmailSendMessageProducer producer;
+    private EmailSendMessageProducer producer;
     @Autowired
-   CompanyProfileService companyProfileService;
+    private CompanyProfileService companyProfileService;
 
     private static final String LFP_APPEALS_API_APP_ID = "lfp-appeals-api";
     private static final String LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE =
@@ -51,7 +51,7 @@ public class EmailService {
     public static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
 
    @Autowired
-   EnvironmentReader environmentReader;
+   private EnvironmentReader environmentReader;
 
 
     /**

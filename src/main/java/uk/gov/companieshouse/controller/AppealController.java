@@ -40,7 +40,7 @@ public class AppealController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     @Autowired
-    AppealService appealService;
+    private AppealService appealService;
 
     @Autowired
     private AppealReasonValidator appealReasonValidator;

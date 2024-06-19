@@ -17,10 +17,10 @@ public class EmailSendMessageProducer {
 
 	private static final String EXCEPTION_MESSAGE = "Kafka 'email-send' message could not be sent for appeal with penalty reference - %s";
 	@Autowired
-    EmailSendMessageFactory emailSendAvroSerializer;
+    private EmailSendMessageFactory emailSendAvroSerializer;
 
     @Autowired
-    EmailSendKafkaProducer emailSendKafkaProducer;
+    private EmailSendKafkaProducer emailSendKafkaProducer;
 
     @Autowired
     public EmailSendMessageProducer(final EmailSendMessageFactory avroSerializer,
