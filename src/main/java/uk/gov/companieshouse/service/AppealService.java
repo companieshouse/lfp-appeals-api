@@ -27,7 +27,7 @@ import uk.gov.companieshouse.util.ChipsContactDescriptionFormatter;
 @Service
 public class AppealService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
     private static final String USER_ID = "user_id";
     private static final String APPEAL_ID = "appeal_id";
     private static final String PENALTY_REF = "penalty_reference";

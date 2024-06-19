@@ -20,7 +20,7 @@ public class EmailSendMessageFactory {
 	private final SerializerFactory serializerFactory;
 	private static final String EMAIL_SEND_TOPIC = "email-send";
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     public EmailSendMessageFactory(SerializerFactory serializer) {
 		serializerFactory = serializer;

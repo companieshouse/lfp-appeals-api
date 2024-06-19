@@ -37,7 +37,7 @@ import uk.gov.companieshouse.service.AppealService;
 @RequestMapping("/companies")
 public class AppealController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     @Autowired
     AppealService appealService;

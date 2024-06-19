@@ -27,7 +27,7 @@ public class CompanyNumberValidator implements ConstraintValidator<ValidCompanyN
 
         String regexString = "(?i)^(" + String.join("|", generatePrefixList(prefixString)) + ")$";
 
-        LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE).debug(regexString);
+        LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE).debug(regexString);
 
         this.companyNumberRegex = Pattern.compile(regexString);
 

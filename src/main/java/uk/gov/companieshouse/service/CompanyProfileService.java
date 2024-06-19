@@ -17,7 +17,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 @Service
 public class CompanyProfileService {
 	
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);	
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);	
 
     private static final UriTemplate GET_COMPANY_URI = new UriTemplate("/company/{companyNumber}");
 

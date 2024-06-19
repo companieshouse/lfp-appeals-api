@@ -31,7 +31,7 @@ import uk.gov.companieshouse.model.Region;
 @Service
 public class EmailService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     // This email address is supplied only to satisfy Avro contract.
     private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
