@@ -31,7 +31,7 @@ public class LoggingUtils {
     public static final String PAYMENT_REFERENCE = "payment_reference";
     public static final String COMPANY_NUMBER = "company_number";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     public static Map<String, Object> createLogMap() {
         return new HashMap<>();

@@ -1,6 +1,6 @@
 package uk.gov.companieshouse.model;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class CreatedBy {
 

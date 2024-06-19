@@ -15,7 +15,7 @@ import uk.gov.companieshouse.model.ChipsContact;
 @Component
 public class ChipsRestClient {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
     private static final String CHIPS_ERROR_MESSAGE = "Failed to create contact in CHIPS for company number: %s";
 
     private final RestTemplate restTemplate;

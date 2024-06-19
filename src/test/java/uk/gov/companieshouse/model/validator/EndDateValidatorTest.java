@@ -17,7 +17,7 @@ class EndDateValidatorTest
     private Appeal appeal = new Appeal();
 
     @BeforeEach
-    private void setup() {
+    void setup() {
         endDateValidator = new EndDateValidator();
         appeal = TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithIllness());
     }

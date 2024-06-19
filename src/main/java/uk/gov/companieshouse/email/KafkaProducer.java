@@ -13,7 +13,7 @@ import uk.gov.companieshouse.logging.LoggerFactory;
 
 public abstract class KafkaProducer implements InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     private CHKafkaProducer chKafkaProducer;
 

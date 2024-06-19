@@ -17,7 +17,7 @@ import uk.gov.companieshouse.model.Appeal;
 @Component
 public class EndDateValidator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     static final String EMPTY_END_DATE = "Unable to validate. End date is empty";
     static final String END_DATE_CONTINUED_TRUE =
