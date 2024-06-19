@@ -33,18 +33,31 @@ public class AppealService {
     private static final String PENALTY_REF = "penalty_reference";
     private static final String COMPANY_NUMBER = "company_number";
 
+
+    private final AppealMapper appealMapper;
+
+    private final AppealRepository appealRepository;
+
+    private final ChipsRestClient chipsRestClient;
+
+    private final ChipsConfiguration chipsConfiguration;
+
+    private final ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
+
+    private final EmailService emailService;
+
     @Autowired
-    private AppealMapper appealMapper;
-    @Autowired
-    private AppealRepository appealRepository;
-    @Autowired
-    private ChipsRestClient chipsRestClient;
-    @Autowired
-    private ChipsConfiguration chipsConfiguration;
-    @Autowired
-    private ChipsContactDescriptionFormatter chipsContactDescriptionFormatter;
-    @Autowired
-    private EmailService emailService;
+    public AppealService(AppealMapper appealMapper, AppealRepository appealRepository,
+                         ChipsRestClient chipsRestClient, ChipsConfiguration chipsConfiguration,
+                         ChipsContactDescriptionFormatter chipsContactDescriptionFormatter,
+                         EmailService emailService) {
+        this.appealMapper = appealMapper;
+        this.appealRepository = appealRepository;
+        this.chipsRestClient = chipsRestClient;
+        this.chipsConfiguration = chipsConfiguration;
+        this.chipsContactDescriptionFormatter = chipsContactDescriptionFormatter;
+        this.emailService = emailService;
+    }
 
     public String saveAppeal(Appeal appeal, String userId) {
         appeal.setCreatedAt(LocalDateTime.now());

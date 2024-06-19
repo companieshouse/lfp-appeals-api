@@ -16,11 +16,11 @@ import uk.gov.companieshouse.logging.LoggingUtils;
 public class EmailSendMessageProducer {
 
 	private static final String EXCEPTION_MESSAGE = "Kafka 'email-send' message could not be sent for appeal with penalty reference - %s";
-	@Autowired
-    private EmailSendMessageFactory emailSendAvroSerializer;
 
-    @Autowired
-    private EmailSendKafkaProducer emailSendKafkaProducer;
+    private final EmailSendMessageFactory emailSendAvroSerializer;
+
+
+    private final EmailSendKafkaProducer emailSendKafkaProducer;
 
     @Autowired
     public EmailSendMessageProducer(final EmailSendMessageFactory avroSerializer,

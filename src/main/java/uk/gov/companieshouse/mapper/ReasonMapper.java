@@ -9,11 +9,16 @@ import uk.gov.companieshouse.model.Reason;
 @Component
 public class ReasonMapper implements Mapper<ReasonEntity, Reason> {
 
-    @Autowired
-    private OtherReasonMapper otherReasonMapper;
+
+    private final OtherReasonMapper otherReasonMapper;
+
+    private final IllnessReasonMapper illnessReasonMapper;
 
     @Autowired
-    private IllnessReasonMapper illnessReasonMapper;
+    public ReasonMapper(OtherReasonMapper otherReasonMapper, IllnessReasonMapper illnessReasonMapper) {
+        this.otherReasonMapper = otherReasonMapper;
+        this.illnessReasonMapper = illnessReasonMapper;
+    }
 
     @Override
     public ReasonEntity map(Reason value) {

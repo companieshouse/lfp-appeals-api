@@ -11,8 +11,13 @@ import java.util.stream.Collectors;
 @Component
 public class IllnessReasonMapper implements Mapper<IllnessReasonEntity, IllnessReason> {
 
+
+    private final AttachmentMapper attachmentMapper;
+
     @Autowired
-    private AttachmentMapper attachmentMapper;
+    public IllnessReasonMapper(AttachmentMapper attachmentMapper) {
+        this.attachmentMapper = attachmentMapper;
+    }
 
     public IllnessReasonEntity map(IllnessReason value) {
         if (value == null) {

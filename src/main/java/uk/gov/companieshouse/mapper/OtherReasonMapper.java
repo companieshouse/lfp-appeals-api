@@ -11,8 +11,13 @@ import java.util.stream.Collectors;
 @Component
 public class OtherReasonMapper implements Mapper<OtherReasonEntity, OtherReason> {
 
+
+    private final AttachmentMapper attachmentMapper;
+
     @Autowired
-    private AttachmentMapper attachmentMapper;
+    public OtherReasonMapper(AttachmentMapper attachmentMapper) {
+        this.attachmentMapper = attachmentMapper;
+    }
 
     public OtherReasonEntity map(OtherReason value) {
         if (value == null) {

@@ -36,10 +36,8 @@ public class EmailService {
     // This email address is supplied only to satisfy Avro contract.
     private static final String TOKEN_EMAIL_ADDRESS = "lfp-appeals@ch.gov.uk";
 
-    @Autowired
-    private EmailSendMessageProducer producer;
-    @Autowired
-    private CompanyProfileService companyProfileService;
+    private final EmailSendMessageProducer producer;
+    private final CompanyProfileService companyProfileService;
 
     private static final String LFP_APPEALS_API_APP_ID = "lfp-appeals-api";
     private static final String LFP_APPEAL_SUBMISSION_INTERNAL_MESSAGE_TYPE =
@@ -49,10 +47,17 @@ public class EmailService {
     private static final String LFP_APPEAL_INTERNAL_EMAIL_SUBJECT = "Appeal submitted - ";
     private static final String LFP_APPEAL_CONFIRMATION_EMAIL_SUBJECT = "Confirmation of your appeal - ";
     public static final String TEAM_EMAIL_SUFFIX = "_TEAM_EMAIL";
+    private static final String EXCEPTION_ERROR="Error amending attachments ";
 
-   @Autowired
-   private EnvironmentReader environmentReader;
+   private final EnvironmentReader environmentReader;
 
+    @Autowired
+    public EmailService(EmailSendMessageProducer producer, CompanyProfileService companyProfileService,
+                        EnvironmentReader environmentReader) {
+        this.producer = producer;
+		this.companyProfileService = companyProfileService;
+		this.environmentReader = environmentReader;
+    }
 
     /**
      * Sends out LFP Appeal confirmation and internal emails.
@@ -155,9 +160,9 @@ public class EmailService {
                 jsonEmailContent.put("reasons", addReasonsData(appeal));
             }
         } catch (JSONException e) {
-            throw new JsonException("Error amending attachments",e);
+            throw new JsonException(EXCEPTION_ERROR,e);
         }
-
+        
         Map<String, Object> logMap = new HashMap<>();
         logMap.put("emailContent", jsonEmailContent.toString());
         LOGGER.debugContext(penaltyIdentifier.getPenaltyReference(), "Email Contents", logMap);
@@ -215,7 +220,7 @@ public class EmailService {
                 reason.put("illness", reasonData);
             }
         } catch (JSONException e) {
-            throw new JsonException("Error amending attachments",e);
+            throw new JsonException(EXCEPTION_ERROR,e);
         }
 
         return reason;
@@ -238,7 +243,7 @@ public class EmailService {
                 jsonAttachments.put("name", a.getName());
                 jsonAttachments.put("url", a.getUrl() + "&a=" + appealId);
             } catch (JSONException e) {
-                throw new JsonException("Error amending attachments",e);
+                throw new JsonException(EXCEPTION_ERROR,e);
             }
             attachmentArray.put(jsonAttachments);
 		});

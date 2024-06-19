@@ -39,18 +39,27 @@ public class AppealController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
-    @Autowired
-    private AppealService appealService;
+
+    private final AppealService appealService;
+
+    private final AppealReasonValidator appealReasonValidator;
+
+    private final RelationshipValidator relationshipValidator;
+
+    private final EndDateValidator endDateValidator;
+
+    private final IllnessPersonValidator illnessPersonValidator;
 
     @Autowired
-    private AppealReasonValidator appealReasonValidator;
-    @Autowired
-    private RelationshipValidator relationshipValidator;
-    @Autowired
-    private EndDateValidator endDateValidator;
-    @Autowired
-    private IllnessPersonValidator illnessPersonValidator;
-
+    public AppealController(AppealService appealService, AppealReasonValidator appealReasonValidator,
+                            RelationshipValidator relationshipValidator, EndDateValidator endDateValidator,
+                            IllnessPersonValidator illnessPersonValidator) {
+        this.appealService = appealService;
+        this.appealReasonValidator = appealReasonValidator;
+        this.relationshipValidator = relationshipValidator;
+        this.endDateValidator = endDateValidator;
+        this.illnessPersonValidator = illnessPersonValidator;
+    }
 
 
     @PostMapping(value = "/{company-number}/appeals", consumes = MediaType.APPLICATION_JSON_VALUE)
