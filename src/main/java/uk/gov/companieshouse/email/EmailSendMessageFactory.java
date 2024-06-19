@@ -20,7 +20,7 @@ public class EmailSendMessageFactory {
 	private final SerializerFactory serializerFactory;
 	private static final String EMAIL_SEND_TOPIC = "email-send";
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APP_NAMESPACE);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
     public EmailSendMessageFactory(SerializerFactory serializer) {
 		serializerFactory = serializer;
@@ -38,7 +38,7 @@ public class EmailSendMessageFactory {
 	    logMap.put(LoggingUtils.TOPIC, EMAIL_SEND_TOPIC);
         LOGGER.infoContext(penaltyReference, "Create kafka message for penalty reference", logMap);
 		final AvroSerializer<EmailSend> serializer =
-				serializerFactory.getGenericRecordSerializer(EmailSend.class);
+				serializerFactory.getSpecificRecordSerializer(EmailSend.class);
 		final var message = new Message();
 		message.setValue(serializer.toBinary(emailSend));
 		message.setTopic(EMAIL_SEND_TOPIC);

@@ -15,7 +15,7 @@ class IllnessPersonValidatorTest {
     private Appeal appeal;
 
     @BeforeEach
-    private void setup() {
+    void setup() {
         illnessPersonValidator = new IllnessPersonValidator();
         appeal = TestUtil.createAppeal(TestUtil.buildCreatedBy(), TestUtil.createReasonWithIllness());
     }

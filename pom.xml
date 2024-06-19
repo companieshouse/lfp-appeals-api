@@ -7,31 +7,44 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>1.3.0</version>
+        <version>2.1.5</version>
     </parent>
 
     <artifactId>lfp-appeals-api</artifactId>
     <version>unversioned</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-        <version.spring.boot>2.7.16</version.spring.boot>
-        <commons-lang3.version>3.12.0</commons-lang3.version>
-        <structured-logging.version>1.9.11</structured-logging.version>
-        <kafka-models.version>1.0.17</kafka-models.version>
-        <ch-kafka.version>1.4.4</ch-kafka.version>
-        <avro.version>1.11.1</avro.version>
-        <rest-service-common-library.version>0.0.5</rest-service-common-library.version>
-        <api-sdk-java.version>4.3.31</api-sdk-java.version>
-        <private-api-sdk-java.version>2.0.94</private-api-sdk-java.version>
-        <api-sdk-manager-java-library.version>1.0.4</api-sdk-manager-java-library.version>
-        <environment-reader-library.version>1.3.8</environment-reader-library.version>
+
+        <version.spring.boot>3.2.6</version.spring.boot>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <structured-logging.version>3.0.7</structured-logging.version>
+        <kafka-models.version>3.0.7</kafka-models.version>
+        <ch-kafka.version>3.0.2</ch-kafka.version>
+        <avro.version>1.11.3</avro.version>
+        <rest-service-common-library.version>2.0.2</rest-service-common-library.version>
+        <api-sdk-java.version>6.0.17</api-sdk-java.version>
+        <private-api-sdk-java.version>4.0.144</private-api-sdk-java.version>
+        <api-sdk-manager-java-library.version>3.0.5</api-sdk-manager-java-library.version>
+        <environment-reader-library.version>3.0.1</environment-reader-library.version>
         <httpclient.version>4.5.14</httpclient.version>
         <spring-kafka-test.version>2.7.7</spring-kafka-test.version>
-        <json.version>20230227</json.version>
+        <json.version>20240303</json.version>
+        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+        <maven-resources-plugin>3.3.1</maven-resources-plugin>
+        <maven-jar-plugin>3.4.1</maven-jar-plugin>
+        <sonar-maven-plugin>4.0.0.4121</sonar-maven-plugin>
+        <jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
+        <byte-buddy.version>1.14.17</byte-buddy.version>
+        <mockito-inline>5.2.0</mockito-inline>
+<!--        excluded and updated sub dependencies-->
+        <commons-compress.version>1.26.2</commons-compress.version>
+        <http2-common.version>11.0.20</http2-common.version>
     </properties>
 
     <repositories>
@@ -41,12 +54,22 @@
         </repository>
     </repositories>
 
-	<dependencies>
+    <dependencies>
         <!-- Spring/SpringBoot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>${version.spring.boot}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -67,6 +90,16 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
             <version>${structured-logging.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>logback-classic</artifactId>
+                    <groupId>ch.qos.logback</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -79,37 +112,56 @@
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>kafka-models</artifactId>
             <version>${kafka-models.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.jetty.http2</groupId>
+                    <artifactId>http2-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-compress</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${commons-compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty.http2</groupId>
+            <artifactId>http2-common</artifactId>
+            <version>${http2-common.version}</version>
+        </dependency>
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>ch-kafka</artifactId>
             <version>${ch-kafka.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.avro</groupId>
             <artifactId>avro</artifactId>
             <version>${avro.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>environment-reader-library</artifactId>
             <version>${environment-reader-library.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>api-sdk-manager-java-library</artifactId>
             <version>${api-sdk-manager-java-library.version}</version>
         </dependency>
 
-	    <dependency>
-	        <groupId>uk.gov.companieshouse</groupId>
-	        <artifactId>private-api-sdk-java</artifactId>
-	        <version>${private-api-sdk-java.version}</version>
-	    </dependency>
+        <dependency>
+            <groupId>uk.gov.companieshouse</groupId>
+            <artifactId>private-api-sdk-java</artifactId>
+            <version>${private-api-sdk-java.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -124,17 +176,22 @@
             <version>${version.spring.boot}</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-		    <groupId>org.mockito</groupId>
-		    <artifactId>mockito-inline</artifactId>
-		    <version>5.2.0</version>
-		    <scope>test</scope>
-		</dependency>
-		<dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>${mockito-inline}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>${byte-buddy.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
-       	</dependency>
+        </dependency>
     </dependencies>
 
     <build>
@@ -154,17 +211,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${maven-resources-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
                         <include>**/*Test*.java</include>
@@ -174,23 +234,30 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
+                <version>${maven-jar-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
+                <version>${jacoco-maven-plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
+                <version>${sonar-maven-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${jib-maven-plugin.version}</version>
                 <configuration>
+                    <from>
+                        <image>416670754337.dkr.ecr.eu-west-2.amazonaws.com/ci-corretto-build-21:latest</image>
+                    </from>
+                    <to>
+                        //Once the pipeline is moved to shared services need to update this to image reference from shared services
+                        <image>169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/lfp-appeals-api:latest</image>
+                    </to>
                     <container>
                         <expandClasspathDependencies>true</expandClasspathDependencies>
                         <jvmFlags>
