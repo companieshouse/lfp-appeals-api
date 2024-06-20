@@ -59,6 +59,10 @@ endif
 .PHONY: dist
 dist: clean build package
 
+.PHONY: test-integration
+test-integration:
+	mvn integration-test verify -Dskip.unit.tests=true failsafe:verify
+
 .PHONY: sonar
 sonar:
 	mvn sonar:sonar
