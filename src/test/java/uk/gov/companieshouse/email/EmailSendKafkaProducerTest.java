@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import uk.gov.companieshouse.kafka.ChKafkaProducer;
 import uk.gov.companieshouse.kafka.message.Message;
-import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import uk.gov.companieshouse.kafka.producer.ProducerConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggingUtils;
@@ -38,7 +38,7 @@ class EmailSendKafkaProducerTest {
     private Consumer<RecordMetadata> consumer;
 
     @Mock
-    private CHKafkaProducer chKafkaProducer;
+    private ChKafkaProducer chKafkaProducer;
 
     @Mock
     private Future<RecordMetadata> recordMetadataFuture;
