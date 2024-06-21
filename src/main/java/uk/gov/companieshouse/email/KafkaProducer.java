@@ -4,9 +4,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 
 import uk.gov.companieshouse.AppealApplication;
+import uk.gov.companieshouse.kafka.ChKafkaProducer;
 import uk.gov.companieshouse.kafka.exceptions.ProducerConfigException;
 import uk.gov.companieshouse.kafka.producer.Acks;
-import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import uk.gov.companieshouse.kafka.producer.ProducerConfig;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
@@ -15,7 +15,7 @@ public abstract class KafkaProducer implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AppealApplication.APPLICATION_NAME_SPACE);
 
-    private CHKafkaProducer chKafkaProducer;
+    private ChKafkaProducer chKafkaProducer;
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String brokerAddresses;
@@ -39,7 +39,7 @@ public abstract class KafkaProducer implements InitializingBean {
         // Does nothing here
     }
 
-    protected CHKafkaProducer getChKafkaProducer() {
+    protected ChKafkaProducer getChKafkaProducer() {
         return chKafkaProducer;
     }
 
@@ -62,9 +62,9 @@ public abstract class KafkaProducer implements InitializingBean {
     /**
      * Extending classes may implement this to facilitate testing for example.
      * @param config the {@link ProducerConfig} used to configure the producer
-     * @return the {@link CHKafkaProducer} created
+     * @return the {@link ChKafkaProducer} created
      */
-    protected CHKafkaProducer createChKafkaProducer(final ProducerConfig config) {
-        return new CHKafkaProducer(config);
+    protected ChKafkaProducer createChKafkaProducer(final ProducerConfig config) {
+        return new ChKafkaProducer(config);
     }
 }

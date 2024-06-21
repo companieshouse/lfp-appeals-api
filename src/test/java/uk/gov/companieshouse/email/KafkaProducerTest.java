@@ -7,9 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.companieshouse.kafka.ChKafkaProducer;
 import uk.gov.companieshouse.kafka.exceptions.ProducerConfigException;
 import uk.gov.companieshouse.kafka.producer.Acks;
-import uk.gov.companieshouse.kafka.producer.CHKafkaProducer;
 import uk.gov.companieshouse.kafka.producer.ProducerConfig;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +32,7 @@ class KafkaProducerTest {
     private TestKafkaProducer kafkaProducerUnderTest;
 
     @Mock
-    private CHKafkaProducer chKafkaProducer;
+    private ChKafkaProducer chKafkaProducer;
 
     @Mock
     private ProducerConfig producerConfig;
@@ -75,7 +75,7 @@ class KafkaProducerTest {
         }
 
         @Override
-        protected CHKafkaProducer createChKafkaProducer(final ProducerConfig config) {
+        protected ChKafkaProducer createChKafkaProducer(final ProducerConfig config) {
             createChKafkaProducerCalled = true;
             return chKafkaProducer;
         }
