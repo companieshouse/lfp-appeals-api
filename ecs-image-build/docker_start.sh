@@ -1,4 +1,5 @@
 #!/bin/bash
+#
 # Start script for lfp-appeals-api
 
 PORT=8080
