@@ -51,7 +51,7 @@
     <repositories>
         <repository>
             <id>Companies House</id>
-            <url>http://repository.aws.chdev.org:8081/artifactory/virtual-release</url>
+            <url>https://artifactory.companieshouse.gov.uk/artifactory</url>
         </repository>
     </repositories>
 
