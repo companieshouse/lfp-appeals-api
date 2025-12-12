@@ -1,16 +1,7 @@
 package uk.gov.companieshouse.service;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.client.ChipsRestClient;
 import uk.gov.companieshouse.config.ChipsConfiguration;
@@ -23,6 +14,14 @@ import uk.gov.companieshouse.model.Appeal;
 import uk.gov.companieshouse.model.ChipsContact;
 import uk.gov.companieshouse.repository.AppealRepository;
 import uk.gov.companieshouse.util.ChipsContactDescriptionFormatter;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppealService {
