@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+    <!-- Jetty webapp 11.0.19 -->
+    <suppress until="2026-03-31Z">
+        <notes><![CDATA[
+      Suppressing jetty-webapp 11.0.19 vulnerabilities temporarily.
+      Reason: Pending upgrade to Jetty 11.0.26 or later.
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty-webapp@11\.0\.19$</packageUrl>
+        <cvssBelow>10.0</cvssBelow>
+    </suppress>
+
+    <!-- Jetty xml 12.0.5 -->
+    <suppress until="2026-03-31Z">
+        <notes><![CDATA[
+      Suppressing jetty-xml 12.0.5 vulnerabilities temporarily.
+      Reason: Pending upgrade to Jetty 12.0.17 or later.
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty-xml@12\.0\.5$</packageUrl>
+        <cvssBelow>10.0</cvssBelow>
+    </suppress>
+
+    <!-- Kafka clients 3.6.0 -->
+    <suppress until="2026-03-31Z">
+        <notes><![CDATA[
+      Suppressing kafka-clients 3.6.0 vulnerabilities temporarily.
+      Reason: Dependency constraints; upgrade planned.
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.kafka/kafka-clients@3\.6\.0$</packageUrl>
+        <cvssBelow>10.0</cvssBelow>
+    </suppress>
+
+</suppressions>
