@@ -14,7 +14,7 @@
 
 1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
 
-2. Enable the `lfp-appeals` module
+2. Enable the `lfp-appeals` module.
 
 3. Navigate to `http://api.chs.local:9000`
 
