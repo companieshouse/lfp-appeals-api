@@ -17,7 +17,7 @@ companyNumber:
 chs:
   kafka:
     api:
-      url: ${KAFKA_API_URL:https://kafka-api.cidev.aws.chdev.org}
+      url: ${KAFKA_API_URL}
   api:
     key: ${CHS_API_KEY}
 
