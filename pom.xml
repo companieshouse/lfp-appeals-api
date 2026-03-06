@@ -21,7 +21,7 @@
         <!-- Versions -->
         <version.spring.boot>3.5.8</version.spring.boot>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <structured-logging.version>3.0.43</structured-logging.version>
+        <structured-logging.version>3.0.51</structured-logging.version>
         <rest-service-common-library.version>2.0.2</rest-service-common-library.version>
         <api-sdk-java.version>6.0.21</api-sdk-java.version>
         <private-api-sdk-java.version>4.0.428</private-api-sdk-java.version>
