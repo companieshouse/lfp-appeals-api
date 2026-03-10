@@ -40,6 +40,7 @@
         <byte-buddy.version>1.18.2</byte-buddy.version>
         <mockito-inline>5.2.0</mockito-inline>
         <jackson-databind.version>2.20.1</jackson-databind.version>
+        <assertj-core.version>3.27.7</assertj-core.version>
         <!--        excluded and updated sub dependencies-->
         <commons-compress.version>1.28.0</commons-compress.version>
         <!--sonar configuration-->
@@ -126,7 +127,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
