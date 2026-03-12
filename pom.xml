@@ -127,6 +127,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--Fix for CVE-2026-24400 vulnerability-->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
