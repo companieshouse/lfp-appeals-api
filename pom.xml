@@ -19,13 +19,13 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-        <version.spring.boot>3.5.8</version.spring.boot>
+        <version.spring.boot>3.5.11</version.spring.boot>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <structured-logging.version>3.0.51</structured-logging.version>
         <rest-service-common-library.version>2.0.2</rest-service-common-library.version>
         <api-sdk-java.version>6.0.21</api-sdk-java.version>
-        <private-api-sdk-java.version>4.0.428</private-api-sdk-java.version>
-        <api-sdk-manager-java-library.version>3.0.13</api-sdk-manager-java-library.version>
+        <private-api-sdk-java.version>4.0.477</private-api-sdk-java.version>
+        <api-sdk-manager-java-library.version>3.0.16</api-sdk-manager-java-library.version>
         <environment-reader-library.version>3.0.5</environment-reader-library.version>
         <httpclient.version>5.5.1</httpclient.version>
         <json.version>20250517</json.version>
@@ -36,7 +36,7 @@
         <maven-jar-plugin>3.4.2</maven-jar-plugin>
         <sonar-maven-plugin>4.0.0.4121</sonar-maven-plugin>
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
-        <jetty.version>12.1.5</jetty.version>
+        <jetty.version>12.1.6</jetty.version>
         <byte-buddy.version>1.18.2</byte-buddy.version>
         <mockito-inline>5.2.0</mockito-inline>
         <jackson-databind.version>2.20.1</jackson-databind.version>
