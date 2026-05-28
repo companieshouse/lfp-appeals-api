@@ -24,7 +24,7 @@
         <structured-logging.version>3.0.51</structured-logging.version>
         <rest-service-common-library.version>2.0.2</rest-service-common-library.version>
         <api-sdk-java.version>6.0.21</api-sdk-java.version>
-        <private-api-sdk-java.version>4.0.477</private-api-sdk-java.version>
+        <private-api-sdk-java.version>6.0.19</private-api-sdk-java.version>
         <api-sdk-manager-java-library.version>3.0.16</api-sdk-manager-java-library.version>
         <environment-reader-library.version>3.0.5</environment-reader-library.version>
         <httpclient.version>5.5.1</httpclient.version>
@@ -43,7 +43,6 @@
         <assertj-core.version>3.27.7</assertj-core.version>
         <!-- Add Tomcat version property for consistent override -->
         <tomcat.version>10.1.55</tomcat.version>
-        <log4j-api.version>2.25.4</log4j-api.version>
         <!--        excluded and updated sub dependencies-->
         <commons-compress.version>1.28.0</commons-compress.version>
         <!--sonar configuration-->
@@ -243,12 +242,6 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-el</artifactId>
             <version>${tomcat.version}</version>
-        </dependency>
-        <!-- Addresses CVE-2025-68161 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j-api.version}</version>
         </dependency>
     </dependencies>
 
