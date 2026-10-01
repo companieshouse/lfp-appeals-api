@@ -2,9 +2,11 @@ server:
   port: 9000
 
 spring:
-  data:
-    mongodb:
-      uri: ${APPEALS_API_MONGODB_URL}
+  mongodb:
+    uri: ${APPEALS_API_MONGODB_URL}
+  http:
+    converters:
+      preferred-json-mapper: jackson2
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
@@ -32,3 +34,17 @@ management:
     health:
       show-details: never
       enabled: true
+  opentelemetry:
+    enabled: ${OTEL_LOG_ENABLED:false}
+    logging:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/logs
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/traces
+    metrics:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT}/v1/metrics

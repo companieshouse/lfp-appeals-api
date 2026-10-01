@@ -13,12 +13,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +35,7 @@ import uk.gov.companieshouse.service.EmailService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class AppealControllerGetTest {
 
     private final String APPEALS_URI = "/companies/{company-id}/appeals";
@@ -40,7 +43,7 @@ class AppealControllerGetTest {
     private final String TEST_COMPANY_ID = "12345678";
     private final String TEST_PENALTY_ID = "A1234567";
 
-    @MockBean
+    @MockitoBean
     private AppealService appealService;
 
     @Mock
