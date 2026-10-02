@@ -6,7 +6,7 @@ spring:
     uri: ${APPEALS_API_MONGODB_URL}
   http:
     converters:
-      preferred-json-mapper: jackson2
+      preferred-json-mapper: jackson
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
