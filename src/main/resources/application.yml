@@ -4,9 +4,6 @@ server:
 spring:
   mongodb:
     uri: ${APPEALS_API_MONGODB_URL}
-  http:
-    converters:
-      preferred-json-mapper: jackson
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
