@@ -17,13 +17,11 @@
     <properties>
         <!-- Versions -->
         <version.spring.boot>4.1.1</version.spring.boot>
-        <ch-dependency-bom.version>0.1.26</ch-dependency-bom.version>
-        <ch-test-bom.version>0.1.26</ch-test-bom.version>
+        <ch-bom.version>0.1.27</ch-bom.version>
         <api-sdk-java.version>6.0.21</api-sdk-java.version>
         <private-api-sdk-java.version>7.2.29</private-api-sdk-java.version>
         <httpclient.version>5.6.4</httpclient.version>
         <json.version>20250517</json.version>
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <maven-resources-plugin>3.3.1</maven-resources-plugin>
         <maven-jar-plugin>3.4.2</maven-jar-plugin>
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
@@ -62,14 +60,14 @@
             <dependency>
                 <groupId>uk.gov.companieshouse</groupId>
                 <artifactId>ch-dependency-bom</artifactId>
-                <version>${ch-dependency-bom.version}</version>
+                <version>${ch-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>uk.gov.companieshouse</groupId>
                 <artifactId>ch-test-bom</artifactId>
-                <version>${ch-test-bom.version}</version>
+                <version>${ch-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
