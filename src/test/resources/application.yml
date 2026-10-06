@@ -2,9 +2,8 @@ server:
   port: 9000
 
 spring:
-  data:
-    mongodb:
-      uri: "mongodb://localhost/test"
+  mongodb:
+    uri: "mongodb://localhost/test"
   main:
     lazy-initialization: true
 

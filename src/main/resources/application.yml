@@ -2,9 +2,8 @@ server:
   port: 9000
 
 spring:
-  data:
-    mongodb:
-      uri: ${APPEALS_API_MONGODB_URL}
+  mongodb:
+    uri: ${APPEALS_API_MONGODB_URL}
 
 chips:
   enabled: ${CHIPS_FEATURE_ENABLED}
@@ -22,6 +21,20 @@ chs:
     key: ${CHS_API_KEY}
 
 management:
+  opentelemetry:
+    enabled: ${OTEL_LOG_ENABLED:false}
+    logging:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/logs
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/traces
+  otlp:
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/metrics
   endpoints:
     enabled-by-default: false
     web:

@@ -7,7 +7,7 @@
     <parent>
         <groupId>uk.gov.companieshouse</groupId>
         <artifactId>companies-house-parent</artifactId>
-        <version>2.1.12</version>
+        <version>2.1.20</version>
         <relativePath/>
     </parent>
 
@@ -15,43 +15,25 @@
     <version>unversioned</version>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Versions -->
-        <version.spring.boot>3.5.14</version.spring.boot>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
-        <structured-logging.version>3.0.51</structured-logging.version>
-        <rest-service-common-library.version>2.0.2</rest-service-common-library.version>
+        <version.spring.boot>4.1.1</version.spring.boot>
+        <ch-bom.version>0.1.27</ch-bom.version>
         <api-sdk-java.version>6.0.21</api-sdk-java.version>
-        <private-api-sdk-java.version>6.0.19</private-api-sdk-java.version>
-        <api-sdk-manager-java-library.version>3.0.16</api-sdk-manager-java-library.version>
-        <environment-reader-library.version>3.0.5</environment-reader-library.version>
-        <httpclient.version>5.5.1</httpclient.version>
+        <private-api-sdk-java.version>7.2.29</private-api-sdk-java.version>
+        <httpclient.version>5.6.4</httpclient.version>
         <json.version>20250517</json.version>
-        <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.5.1</maven-surefire-plugin.version>
         <maven-resources-plugin>3.3.1</maven-resources-plugin>
         <maven-jar-plugin>3.4.2</maven-jar-plugin>
-        <sonar-maven-plugin>4.0.0.4121</sonar-maven-plugin>
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
-        <jetty.version>12.1.8</jetty.version>
+        <jetty.version>12.1.13</jetty.version>
         <byte-buddy.version>1.18.2</byte-buddy.version>
         <mockito-inline>5.2.0</mockito-inline>
-        <jackson-databind.version>2.20.1</jackson-databind.version>
-        <assertj-core.version>3.27.7</assertj-core.version>
-        <!-- Add Tomcat version property for consistent override -->
-        <tomcat.version>10.1.55</tomcat.version>
         <!--        excluded and updated sub dependencies-->
         <commons-compress.version>1.28.0</commons-compress.version>
         <!--sonar configuration-->
-        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
         <sonar.projectName>lfp-appeals-api</sonar.projectName>
         <sonar.projectKey>uk.gov.companieshouse:lfp-appeals-api</sonar.projectKey>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.login></sonar.login>        
-        <sonar.password></sonar.password>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>
@@ -59,7 +41,6 @@
             ${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.build.directory}/site</sonar.jacoco.reports>
-        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
     </properties>
 
     <repositories>
@@ -71,10 +52,19 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Import CH BOMs first so CH-approved versions (CVE overrides, CH internal
+                 library versions) take precedence -->
             <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>2.24.0</version>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-dependency-bom</artifactId>
+                <version>${ch-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>uk.gov.companieshouse</groupId>
+                <artifactId>ch-test-bom</artifactId>
+                <version>${ch-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -91,13 +81,19 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-opentelemetry</artifactId>
+            <version>${version.spring.boot}</version>
+        </dependency>
+        <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-spring-boot-starter</artifactId>
+            <artifactId>opentelemetry-logback-appender-1.0</artifactId>
+            <scope>compile</scope>
         </dependency>
         <!-- Spring/SpringBoot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
             <version>${version.spring.boot}</version>
             <exclusions>
                 <exclusion>
@@ -117,6 +113,11 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-restclient</artifactId>
+            <version>${version.spring.boot}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
             <version>${version.spring.boot}</version>
         </dependency>
@@ -128,7 +129,6 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>structured-logging</artifactId>
-            <version>${structured-logging.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
@@ -140,24 +140,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!--Fix for CVE-2026-24400 vulnerability-->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson-databind.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -178,13 +170,11 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>environment-reader-library</artifactId>
-            <version>${environment-reader-library.version}</version>
         </dependency>
 
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>api-sdk-manager-java-library</artifactId>
-            <version>${api-sdk-manager-java-library.version}</version>
         </dependency>
 
         <dependency>
@@ -202,7 +192,7 @@
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <version>${version.spring.boot}</version>
             <scope>test</scope>
         </dependency>
@@ -221,27 +211,6 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>${json.version}</version>
-        </dependency>
-        <!--
-            TEMPORARY FIX: Override Tomcat dependencies to ${tomcat.version} to 
-            remediate CVEs (CVE-2026-43515,CVE-2026-43514, CVE-2026-43513, CVE-2026-43512,
-             CVE-2026-42498,CVE-2026-41293, CVE-2026-41284).
-            Remove these overrides when the Spring Boot BOM manages a secure version.
-        -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-el</artifactId>
-            <version>${tomcat.version}</version>
         </dependency>
     </dependencies>
 
@@ -267,7 +236,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <parameters>true</parameters>
                 </configuration>
@@ -275,7 +243,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
                         <include>**/*Test*.java</include>
@@ -319,7 +286,6 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar-maven-plugin}</version>
             </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
