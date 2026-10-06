@@ -21,16 +21,6 @@ chs:
     key: ${CHS_API_KEY}
 
 management:
-  endpoints:
-    enabled-by-default: false
-    web:
-      base-path: /lfp-appeals-api
-      path-mapping:
-        health: healthcheck
-  endpoint:
-    health:
-      show-details: never
-      enabled: true
   opentelemetry:
     enabled: ${OTEL_LOG_ENABLED:false}
     logging:
@@ -41,7 +31,17 @@ management:
       export:
         otlp:
           endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/traces
+  otlp:
     metrics:
       export:
-        otlp:
-          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/metrics
+        url: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/metrics
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /lfp-appeals-api
+      path-mapping:
+        health: healthcheck
+  endpoint:
+    health:
+      show-details: never
+      enabled: true

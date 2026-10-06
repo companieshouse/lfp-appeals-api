@@ -34,8 +34,6 @@
         <sonar.projectName>lfp-appeals-api</sonar.projectName>
         <sonar.projectKey>uk.gov.companieshouse:lfp-appeals-api</sonar.projectKey>
         <sonar.token>${CODE_ANALYSIS_TOKEN}</sonar.token>
-        <sonar.login></sonar.login>        
-        <sonar.password></sonar.password>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>
@@ -43,7 +41,6 @@
             ${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.jacoco.reports>${project.build.directory}/site</sonar.jacoco.reports>
-        <sonar.java.binaries>${project.basedir}/target,${project.basedir}/target/*</sonar.java.binaries>
     </properties>
 
     <repositories>
