@@ -57,7 +57,7 @@ class AppealControllerGetTest {
     @Test
     void whenAppealExistsById_return200() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
+        when(appealService.getAppeal(any(String.class), any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
 
         final String validAppeal = asJsonString();
 
@@ -71,7 +71,7 @@ class AppealControllerGetTest {
     @Test
     void whenAppealDoesNotExistById_return404() throws Exception {
 
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
+        when(appealService.getAppeal(any(String.class), any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
             .header("ERIC-identity", "user-1")
@@ -106,16 +106,6 @@ class AppealControllerGetTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());
-    }
-
-    @Test
-    void whenAppealBelongsToDifferentCompany_return404() throws Exception {
-
-        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
-
-        mockMvc.perform(get(APPEALS_URI + "/{id}", "87654321", TEST_RESOURCE_ID)
-            .header("ERIC-identity", "user-1"))
-            .andExpect(status().isNotFound());
     }
 
     @Test

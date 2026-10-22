@@ -126,9 +126,7 @@ public class AppealController {
         }
 
         LOGGER.infoContext("Getting Appeal by ID ", companyId, appealService.createDebugMapWithoutAppeal(id));
-        final Optional<Appeal> appeal = appealService.getAppeal(id)
-            .filter(a -> a.getPenaltyIdentifier() != null
-                && companyId.equals(a.getPenaltyIdentifier().getCompanyNumber()));
+        final Optional<Appeal> appeal = appealService.getAppeal(companyId, id);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
