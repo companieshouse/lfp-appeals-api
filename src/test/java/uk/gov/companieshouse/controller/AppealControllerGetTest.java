@@ -62,6 +62,7 @@ class AppealControllerGetTest {
         final String validAppeal = asJsonString();
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
+            .header("ERIC-identity", "user-1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().json(validAppeal));
@@ -73,6 +74,7 @@ class AppealControllerGetTest {
         when(appealService.getAppeal(any(String.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
+            .header("ERIC-identity", "user-1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());
@@ -87,6 +89,7 @@ class AppealControllerGetTest {
 
         mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
             .queryParam("penaltyReference", TEST_PENALTY_ID)
+            .header("ERIC-identity", "user-1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isOk())
             .andExpect(content().json(validAppeal));
@@ -99,9 +102,37 @@ class AppealControllerGetTest {
 
         mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
             .queryParam("penaltyReference", TEST_PENALTY_ID)
+            .header("ERIC-identity", "user-1")
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    void whenAppealBelongsToDifferentCompany_return404() throws Exception {
+
+        when(appealService.getAppeal(any(String.class))).thenReturn(Optional.of(getValidOtherAppeal()));
+
+        mockMvc.perform(get(APPEALS_URI + "/{id}", "87654321", TEST_RESOURCE_ID)
+            .header("ERIC-identity", "user-1"))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void whenEricIdentityBlankOnGetById_return401() throws Exception {
+
+        mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID)
+            .header("ERIC-identity", " "))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenEricIdentityBlankOnGetByPenalty_return401() throws Exception {
+
+        mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
+            .queryParam("penaltyReference", TEST_PENALTY_ID)
+            .header("ERIC-identity", " "))
+            .andExpect(status().isUnauthorized());
     }
 
     private String asJsonString() {
