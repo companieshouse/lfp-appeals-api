@@ -221,7 +221,7 @@ class AppealServiceTest {
             Optional.of(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity)));
         when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy, reason));
 
-        Appeal appeal = appealService.getAppeal(TestData.ID).orElseThrow();
+        Appeal appeal = appealService.getAppeal(TestData.COMPANY_NUMBER, TestData.ID).orElseThrow();
 
         assertEquals(TestData.COMPANY_NUMBER, appeal.getPenaltyIdentifier().getCompanyNumber());
         assertEquals(TestData.PENALTY_REFERENCE, appeal.getPenaltyIdentifier().getPenaltyReference());
@@ -235,11 +235,24 @@ class AppealServiceTest {
     }
 
     @Test
+    void testGetAppealById_returnsEmptyWhenCompanyNumberDoesNotMatch() {
+        CreatedBy createdBy = TestUtil.buildCreatedBy();
+        CreatedByEntity createdByEntity = TestUtil.buildCreatedByEntity();
+        ReasonEntity reasonEntity = TestUtil.createReasonEntityWithOther();
+        Reason reason = TestUtil.createReasonWithOther();
+        when(appealRepository.findById(any(String.class))).thenReturn(
+            Optional.of(TestUtil.createAppealEntity(TestData.ID, createdByEntity, reasonEntity)));
+        when(appealMapper.map(any(AppealEntity.class))).thenReturn(TestUtil.createAppeal(createdBy, reason));
+
+        assertFalse(appealService.getAppeal("87654321", TestData.ID).isPresent());
+    }
+
+    @Test
     void testGetAppealById_returnsEmptyAppeal() {
 
         when(appealRepository.findById(any(String.class))).thenReturn(Optional.empty());
 
-        Optional<Appeal> appeal = appealService.getAppeal(TestData.ID);
+        Optional<Appeal> appeal = appealService.getAppeal(TestData.COMPANY_NUMBER, TestData.ID);
 
         assertFalse(appeal.isPresent());
     }
