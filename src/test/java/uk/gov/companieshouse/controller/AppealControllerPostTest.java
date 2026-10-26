@@ -1,6 +1,8 @@
 package uk.gov.companieshouse.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -89,6 +91,19 @@ class AppealControllerPostTest {
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/companies/12345678/appeals/"
                 + TEST_RESOURCE_ID));
         }
+    }
+
+    @Test
+    void whenPathCompanyNumberDoesNotMatchBody_return400() throws Exception {
+
+        mockMvc.perform(post(APPEALS_URI, "SC999999")
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .headers(createHttpHeaders())
+            .content(validAppeal))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string("company-number in path does not match companyNumber in request body"));
+
+        verify(appealService, never()).saveAppeal(any(), any());
     }
 
     @Test
