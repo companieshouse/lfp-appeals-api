@@ -124,7 +124,22 @@ class AppealControllerGetTest {
             .header("ERIC-identity", " "))
             .andExpect(status().isUnauthorized());
     }
+    
+    @Test
+    void whenEricIdentityNotPresentOnGetByPenalty_return400() throws Exception {
 
+        mockMvc.perform(get(APPEALS_URI, TEST_COMPANY_ID)
+                .queryParam("penaltyReference", TEST_PENALTY_ID))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenEricIdentityNotPresentOnGetById_return400() throws Exception {
+
+        mockMvc.perform(get(APPEALS_URI + "/{id}", TEST_COMPANY_ID, TEST_RESOURCE_ID))
+            .andExpect(status().isBadRequest());
+    }
+    
     private String asJsonString() {
         try {
             Appeal appeal = mapper.readValue(new File("src/test/resources/data/validAppeal.json"), Appeal.class);
