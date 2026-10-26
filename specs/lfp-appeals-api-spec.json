@@ -15,6 +15,14 @@
         "operationId": "getAppealsByPenaltyReference",
         "parameters": [
           {
+            "name": "ERIC-identity",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "company_number",
             "description": "number of the company filing the appeal",
             "in": "path",
@@ -46,6 +54,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "ERIC-identity header is blank"
           },
           "404": {
             "description": "Appeals not found"
@@ -124,6 +135,14 @@
         "operationId": "getAppealById",
         "parameters": [
           {
+            "name": "ERIC-identity",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "company_number",
             "description": "number of the company filing the appeal",
             "in": "path",
@@ -153,8 +172,11 @@
               }
             }
           },
+          "401": {
+            "description": "ERIC-identity header is blank"
+          },
           "404": {
-            "description": "Appeal not found"
+            "description": "Appeal not found, or it does not belong to the given company"
           },
           "500": {
             "description": "Internal server error"
