@@ -131,19 +131,29 @@ public class AppealController {
     }
 
     @GetMapping(value = "/{company-number}/appeals/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appeal> getAppealById(@PathVariable("company-number") final String companyId,
-                                                @PathVariable("id") final String id) {
+    public ResponseEntity<Appeal> getAppealById(@RequestHeader("ERIC-identity") String userId,
+        @PathVariable("company-number") final String companyId,
+        @PathVariable("id") final String id) {
+
+        if (StringUtils.isBlank(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         LOGGER.infoContext("Getting Appeal by ID ", companyId, appealService.createDebugMapWithoutAppeal(id));
-        final Optional<Appeal> appeal = appealService.getAppeal(id);
+        final Optional<Appeal> appeal = appealService.getAppeal(companyId, id);
 
         return appeal.map(a -> ResponseEntity.status(HttpStatus.OK).body(a))
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     @GetMapping(value = "/{company-number}/appeals", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@PathVariable("company-number") final String companyNumber,
+    public ResponseEntity<List<Appeal>> getAppealsByPenaltyReference(@RequestHeader("ERIC-identity") String userId,
+                                                              @PathVariable("company-number") final String companyNumber,
                                                               @RequestParam(value="penaltyReference") final String penaltyReference) {
+
+        if (StringUtils.isBlank(userId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         LOGGER.infoContext(penaltyReference, "Get appeals for company/reference", appealService.createDebugMapAppealSearch(companyNumber, penaltyReference));
         final List<Appeal> appealList = appealService.getAppealsByPenaltyReference(companyNumber, penaltyReference);

@@ -131,8 +131,11 @@ public class AppealService {
         }
     }
 
-    public Optional<Appeal> getAppeal(String id) {
-        return appealRepository.findById(id).map(this.appealMapper::map);
+    public Optional<Appeal> getAppeal(String companyNumber, String id) {
+        return appealRepository.findById(id)
+            .map(this.appealMapper::map)
+            .filter(a -> a.getPenaltyIdentifier() != null
+                && companyNumber.equals(a.getPenaltyIdentifier().getCompanyNumber()));
     }
 
     public List<Appeal> getAppealsByPenaltyReference(String companyNumber, String penaltyReference){
