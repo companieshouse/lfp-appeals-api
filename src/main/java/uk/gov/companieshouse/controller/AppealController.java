@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +28,7 @@ import uk.gov.companieshouse.AppealApplication;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.model.Appeal;
+import uk.gov.companieshouse.model.PenaltyIdentifier;
 import uk.gov.companieshouse.model.validator.AppealReasonValidator;
 import uk.gov.companieshouse.model.validator.EndDateValidator;
 import uk.gov.companieshouse.model.validator.IllnessPersonValidator;
@@ -70,8 +72,20 @@ public class AppealController {
         if (StringUtils.isBlank(userId)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        String penaltyReference = appeal.getPenaltyIdentifier().getPenaltyReference();
+        
+        PenaltyIdentifier penaltyIdentifier = appeal.getPenaltyIdentifier();
+        String penaltyReference = penaltyIdentifier.getPenaltyReference();
+        
+        if(!Objects.equals(companyId, penaltyIdentifier.getCompanyNumber())) {
+            String companyNumberError = "company-number in path does not match companyNumber in request body";
+            LOGGER.errorContext(
+                penaltyReference, 
+                companyNumberError,
+                null, 
+                appealService.createDebugMapAppeal(userId, appeal)
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(companyNumberError);
+        }
         
         String validationError = appealReasonValidator.validate(appeal.getReason());
         if (validationError != null) {
